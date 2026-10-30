@@ -1,17 +1,25 @@
-# Flare: passenger issue reporting for airports (working name)
+# Flare: passenger issue reporting for airports
 
-> "Flare" is a working name and may change. In aviation, a squawk is a reported problem that needs attention.
+> "Flare" is the project name (decided in the grilling session). "Squawk" was an earlier working name and is dropped.
 
 ## One-line summary
 
-A passenger scans a QR code in the airport, describes a problem in a very simple web form, and staff see it in real time on a dashboard that sorts by severity, groups duplicates, and routes each issue to the right team.
+A passenger scans a QR code in the airport, describes a problem in a very simple web form, and staff see it in real time on a dashboard that sorts by severity and groups duplicates. Routing to specific teams comes later (see "Staff app, phase 1").
 
 ## Hackathon context
 
 - City council and town hall hackathon with airport and aviation themes. Team of three.
 - Target setting: Craiova International Airport. The demo uses simulated data. This is not a real deployment, and every piece of demo data must be labelled as simulated.
-- Track: to be confirmed with the team (likely Control Tower; it also fits Ground Control).
+- Track: not decided. The team will worry about the pitch later (Control Tower and Ground Control are the candidates).
+- Time budget: one full day plus a few extra hours: 1-2 hours on the first evening, a few more hours on Sunday. The pitch is on Sunday. Scope must fit this, so keep it small.
 - Nothing about the airport should be invented. If a fact is unknown, mark it as an assumption.
+
+## Scope for the hackathon (decided)
+
+- **Must-have:** passenger form, triage, duplicate grouping, and a user-friendly staff dashboard.
+- **Stretch (handled later, not now):** everything else, for example photo upload, admin QR inventory, management trends, shift handover, airline or handling-agent roles, and any further abuse-handling beyond the basics.
+- The Security and abuse model below is the intended design. Which parts get built in the time available is decided at planning time.
+- Categories and the severity scale below are a starting point and **will probably change**. Keep them in one place in the code so they are cheap to change.
 
 ## Problem
 
@@ -21,18 +29,32 @@ A passenger scans a QR code in the airport, describes a problem in a very simple
 ## Users
 
 - **Passenger:** any language, possibly stressed, in a hurry, using one hand, possibly elderly or with low digital skill. No app install, no account, no sign-up.
-- **Staff roles:** cleaning, maintenance, security, passenger assistance and information desk, duty or operations manager. Possibly airline or handling-agent staff for issues they own (stretch goal).
-- **Admin:** manages QR codes, locations, teams and rules.
+- **Staff roles (later, not phase 1):** cleaning, maintenance, security, passenger assistance and information desk, duty or operations manager. Possibly airline or handling-agent staff for issues they own (stretch goal). The team decides roles later.
+- **Admin (later):** manages QR codes, locations, teams and rules.
+
+## Staff app, phase 1 (decided)
+
+- In the first phase, every report goes to one shared employee app. There is no per-team routing, role-based filtering or role login yet.
+- The triage still suggests a responsible team, but the suggestion is only displayed. It does not decide who sees the report.
+- Roles, teams and role-based views come in a later phase, after the team decides them.
 
 ## Core flow
 
 1. The passenger scans a code. The form opens, and the location is already known from the code.
-2. They pick from a few large options or write free text, optionally add a photo, and optionally leave contact details for follow-up (never required).
+2. They pick from a few large options or write free text, optionally add a photo, and optionally leave contact details for follow-up (never required). For luggage and similar issues, they can optionally add ticket or baggage details (see "Ticket and luggage details").
 3. The submission is checked for abuse and spam, then triaged by an LLM: category, severity, short summary, language, suggested responsible team.
 4. Duplicates are grouped. Many reports of the same problem in a short time become one issue with a count, which raises its priority.
-5. Staff see a live dashboard, filtered to their role, with one-tap actions: acknowledge, assign, resolve.
-6. The passenger sees honest status updates: received, seen, on its way, resolved.
-7. Management gets a simple view of trends, hotspots and response times.
+5. Staff see a live dashboard with one-tap actions: acknowledge, assign, resolve. In phase 1 everyone sees everything. Role-filtered views come later.
+6. The passenger gets a confirmation that explains what happens next. Whether and how they see later status updates is **undecided** (see open questions).
+7. Management gets a simple view of trends, hotspots and response times (stretch).
+
+## Ticket and luggage details (decided in principle, details open)
+
+- For issues like lost luggage, the passenger can optionally provide their ticket or boarding pass details, ideally by scanning the code on the ticket instead of typing.
+- If there is no ticket or the scan fails, there must be a fallback way to give the minimum details. The team has asked for this to be designed.
+- GDPR constraint: a boarding pass or ticket holds personal data (for example name and booking reference). Provide only the minimum needed, never make it mandatory, say clearly what is stored and why, and set a short retention period. Prefer extracting only the needed fields (for example flight number or baggage tag) over storing an image of the ticket.
+- This conflicts with the rule "the system never asks for sensitive personal data" unless it stays optional and minimal. The team must confirm how to reconcile them (open question).
+- Flight data integration is out of scope, so any scanned value is just stored as text and shown to staff.
 
 ## Product principles (in priority order)
 
@@ -80,8 +102,9 @@ The team considers these threats and intends these mitigations. Implementation c
 ## Staff dashboard requirements
 
 - Live updates without refreshing, clear but non-annoying new-issue signals.
-- Filters by team, severity, status and location. Default view is based on role (cleaning sees cleaning issues).
-- One-tap acknowledge, assign and resolve; notes; photo view; shift handover view.
+- Phase 1: one shared view of all issues, filterable by severity, status and location. Filters by team and a role-based default view (cleaning sees cleaning issues) come later.
+- One-tap acknowledge, assign and resolve. Notes, photo view and shift handover view are stretch.
+- Employees or management close issues (see "Resolution model").
 - Big text, minimal jargon, no complex tables.
 
 ## Passenger form requirements
@@ -89,8 +112,15 @@ The team considers these threats and intends these mitigations. Implementation c
 - No account, no app, no mandatory personal data.
 - Location pre-filled from the code, with a quick correction option.
 - A few big category buttons plus an optional free-text box and photo.
-- Immediate confirmation that explains what happens next, and a status page for the report.
+- Immediate confirmation that explains what happens next. A separate status page is not confirmed (open question).
 - Works on slow connections and small screens.
+
+## Resolution model (decided)
+
+- Flare works like a hotline: the passenger reports and is done. Passengers are not expected to confirm, mark or follow up on resolution.
+- Employees or management mark issues acknowledged, assigned and resolved.
+- There is no "still a problem?" passenger button.
+- Staff can reopen an issue, or a new report about the same problem can reopen or re-prioritise it through dedup.
 
 ## Out of scope for the hackathon
 
@@ -124,20 +154,39 @@ The team considers these threats and intends these mitigations. Implementation c
 
 ## Decisions (to fill in)
 
-- Name: TBD
-- Stack: TBD
-- Severity scale: TBD
-- Staff roles and teams: TBD
-- Languages: Romanian and English at minimum
+- Name: **Flare**.
+- Track: not decided; pitch is handled later.
+- Time budget: about one full day plus a few hours; pitch on Sunday.
+- Must-have scope: passenger form, triage, duplicate grouping, user-friendly staff dashboard. Everything else is stretch.
+- Stack: TBD (still open, see below).
+- Severity scale (tentative, will probably change): four levels.
+  - Critical: emergency or safety hazard (medical, security threat, missing child, fire or smoke). Set by deterministic rules, never by the LLM alone.
+  - High: blocks passengers or poses a hazard (broken lift with no alternative, large spill, blocked exit).
+  - Medium: degraded service (dirty toilet, broken seat, missing assistance).
+  - Low: minor or informational (unclear sign, small litter, suggestion).
+- Categories (tentative, will probably change): Cleaning or spill, Toilet, Lift or escalator, Broken or maintenance, Sign or information, Assistance needed, Lost item or person, Safety or security concern, Other (free text).
+- Staff roles and teams: deferred. Phase 1 sends everything to one shared employee app.
+- Anonymity: reports are anonymous by default. Contact details are optional. Ticket or baggage details are optional and minimal (see "Ticket and luggage details").
+- Resolution: hotline model. Employees or management resolve issues. Passengers do not confirm. No passenger "reopen" button.
+- Languages: Romanian and English at minimum.
 
-## Open questions for the grilling session
+## Open questions
 
-- Exact categories and the severity scale, with examples for each level.
-- Which staff roles exist at the airport, and what do they actually carry (phone, radio, tablet)?
-- How should a passenger without a data connection or without a camera be handled?
-- What is the policy for anonymous versus contactable reports?
-- How are fake codes detected in practice, and who audits the physical codes?
-- Who owns issues that belong to airlines or handling agents, and how are they handed off?
-- What does "resolved" mean, and who confirms it?
-- What is the minimum data we keep, and for how long?
-- What will we measure in the demo to show it works?
+Still to settle (some are for the next grilling round):
+
+- Stack, hosting, LLM provider and how the demo runs (depends on the team's skills, which are not yet known).
+- Does the passenger get any status page or later updates after submitting? The team said they were unsure what this means. Options: (a) confirmation only, (b) a private link showing received, seen and resolved, as the staff change it. The hotline model suggests (a) or a very light (b).
+- Ticket and luggage details: what exact fields, how to scan (camera and barcode support on phones), what the fallback is, and how to reconcile this with "never ask for sensitive personal data" and GDPR.
+- Retention period for reports, contact details and ticket details.
+- Is photo upload in the first phase, or stretch? (It is currently stretch, but the ticket scan idea may need the camera.)
+- How passengers without a data connection or without a camera are handled.
+- How fake codes are detected in practice, and who audits the physical codes (stretch).
+- Who owns issues that belong to airlines or handling agents (stretch).
+- What to measure in the demo to show it works.
+- Staff roles, teams and what staff actually carry (phone, radio, tablet), for the later phase.
+
+## Planning approach (agreed, not started)
+
+- The team wants a workplan that lets three people work in parallel.
+- The idea: an architecture plan, then tasks or issues written as markdown files in the project.
+- Do not start planning until the team says so.

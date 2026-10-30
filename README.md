@@ -1,6 +1,6 @@
 # Flare
 
-Passenger issue reporting for airports. A passenger scans a QR code, describes a problem in a short form, and staff see it on a live dashboard that sorts by severity, groups duplicates, and routes each issue to the right team.
+Passenger issue reporting for airports. A passenger scans a QR code, describes a problem in a short form, and staff see it on a live dashboard that sorts by severity, groups duplicates. Routing to specific teams comes in a later phase.
 
 ## Status
 
@@ -9,18 +9,20 @@ Hackathon prototype, in the planning stage. The technology stack is not chosen y
 ## What it does
 
 1. A passenger scans a QR code at a location. The form opens with the location already filled in.
-2. They choose a category or write free text, optionally add a photo, and optionally leave contact details. Nothing is required except the problem itself.
+2. They choose a category or write free text, optionally add a photo, and optionally leave contact details. For issues like lost luggage they can optionally add ticket details, kept to the minimum. Nothing is required except the problem itself.
 3. The report is checked for spam and abuse, then triaged (category, severity, short summary, language, responsible team). An LLM assists with triage, and a basic fallback always runs without it.
 4. Reports about the same problem in the same place within a short time are grouped into one issue with a count.
-5. Staff see a live dashboard filtered to their role and can acknowledge, assign, or resolve an issue in one tap.
-6. The passenger sees honest status updates: received, seen, on its way, resolved.
+5. Staff see a live dashboard and can acknowledge, assign, or resolve an issue in one tap. In the first phase all staff see all issues.
+6. The passenger gets a confirmation that explains what happens next. Flare works like a hotline: staff close issues, and the passenger does not need to follow up.
 
 ## Scope
 
 - **Target setting:** Craiova International Airport, for the hackathon demo only.
 - **Data:** all demo data is simulated and fictional. It is labelled as simulated wherever it appears.
 - **Languages:** Romanian and English at minimum.
-- **Users:** passengers (no account, no app install), staff by role (cleaning, maintenance, security, passenger assistance, duty manager), and admins who manage QR codes, locations, teams, and rules.
+- **Must-have for the hackathon:** passenger form, triage, duplicate grouping, and a user-friendly staff dashboard. Everything else is a stretch goal.
+- **Users:** passengers (no account, no app install) and staff. Staff roles and teams are decided later.
+- **Time:** about one day plus a few hours. The pitch is on Sunday.
 
 ### Out of scope
 
