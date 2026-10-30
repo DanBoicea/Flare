@@ -4,7 +4,7 @@ Passenger issue reporting for airports. A passenger scans a QR code, describes a
 
 ## Status
 
-Hackathon prototype, in the planning stage. The technology stack is not chosen yet, and there is no runnable code. The product brief and open questions are in [CLAUDE.md](CLAUDE.md).
+Hackathon prototype, in the planning stage. The technology stack is not chosen yet, and there is no runnable code. The product brief, decisions and open questions are in [CLAUDE.md](CLAUDE.md) and the [docs](docs/) folder.
 
 ## What it does
 
@@ -36,7 +36,9 @@ This is not an emergency channel. The passenger form shows the emergency number 
 
 - Fake QR codes (stickers placed over real ones) are treated as a real threat. Mitigations include an official domain only, the short URL printed under every code, a unique ID per code with an admin inventory, and anomaly alerts for unknown IDs.
 - The form never asks for payments, passwords, or sensitive personal data.
-- Spam is limited by throttling, a bot challenge, daily caps, and a quarantine queue that keeps suspicious reports off the main dashboard.
+- Spam is limited by throttling, a bot challenge, and a quarantine queue that keeps suspicious reports off the main dashboard.
+- Garbage, joke and spam reports are caught by a quality check. The passenger is told why and asked to rewrite the report, and only a relevant report reaches staff.
+- Software cannot stop a fake sticker over a real QR code, so Flare relies on signage next to each code, printed short URLs, unique code IDs, and flagging of unknown codes.
 - Passenger text is treated as untrusted data, and the staff interface escapes all displayed content.
 - Uploaded photos are size-limited and have their metadata stripped.
 - Staff access is by role, with an audit log.
