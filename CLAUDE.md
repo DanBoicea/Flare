@@ -39,6 +39,15 @@ Passenger form, triage, duplicate grouping, a user-friendly staff dashboard, and
 - The form shows the emergency number prominently. If a report suggests a medical emergency, security threat or missing child, show the passenger emergency instructions immediately and flag the report to staff as top priority. Do not give medical or security advice. Emergency handling is never blocked by the quality gate, rate limits or an LLM outage.
 - The system never asks for payments, passwords or sensitive personal data. Optional minimal ticket details are the one open exception and need team confirmation (see [docs/decisions.md](docs/decisions.md)).
 
+## Never commit
+
+- Secrets: API keys (including the LLM key), `.env` files, credentials. Keys live in environment variables or an ignored `.env`. Commit only `.env.example` with fake placeholders.
+- Real passenger data: reports, photos, tickets, contact details. Only simulated data labelled as such goes in the repo. Simulated seed data and the labelled test set are committed.
+- The demo fallback recording (kept in the ignored `recordings/` folder, shared outside git).
+- Personal `.claude/settings.local.json`. The shared `.claude/settings.json` is committed.
+- Keep `.gitignore` free of broad patterns (`*.json`, `*.csv`, `data/`) that would hide seed data or the test set. When the stack is chosen, add its ignore rules before anyone installs anything.
+- `.gitignore` does not protect tracked files or history. If a secret is committed, rotate it.
+
 ## Working agreements for Claude
 
 - The technology stack is undecided. Do not assume, add or install any framework, language, database, service or library unprompted. When a technical decision is needed, present options and wait for the team.

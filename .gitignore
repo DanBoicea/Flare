@@ -1,0 +1,49 @@
+# Flare .gitignore
+# Stack-agnostic baseline. The stack is not chosen yet: add its rules (dependencies,
+# build output, virtual environments) BEFORE anyone installs anything.
+#
+# Deliberately NOT ignored, do not add broad patterns for these:
+#   - simulated seed data and the labelled RO/EN test set (*.json, *.csv, ...)
+#   - .env.example
+#   - lockfiles
+# Ignoring does not protect files that are already tracked or already in history.
+# If a secret is ever committed, rotate it.
+
+# --- Secrets ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+credentials.json
+service-account*.json
+
+# --- Personal Claude Code config (the shared .claude/settings.json IS committed) ---
+.claude/settings.local.json
+
+# --- Real passenger data: never commit (demo uses simulated data only) ---
+uploads/
+photos/
+
+# --- Local databases and logs ---
+*.sqlite
+*.sqlite3
+*.log
+
+# --- Demo fallback recording (large; share outside git) ---
+/recordings/
+
+# --- Temp and scratch ---
+tmp/
+temp/
+*.tmp
+*.swp
+
+# --- OS and editor ---
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
