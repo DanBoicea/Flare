@@ -1,6 +1,6 @@
 # Flare .gitignore
-# Stack-agnostic baseline. The stack is not chosen yet: add its rules (dependencies,
-# build output, virtual environments) BEFORE anyone installs anything.
+# Root safety net. Each app in apps/ also has its own .gitignore from its template;
+# the stack sections below repeat the important rules so nothing slips through.
 #
 # Deliberately NOT ignored, do not add broad patterns for these:
 #   - simulated seed data and the labelled RO/EN test set (*.json, *.csv, ...)
@@ -47,3 +47,34 @@ Thumbs.db
 desktop.ini
 .vscode/
 .idea/
+
+# --- Node (flare-webapp, flare-mobile, scripts) ---
+node_modules/
+dist/
+*.tsbuildinfo
+npm-debug.log*
+
+# --- Vite ---
+.vite/
+
+# --- Expo (managed workflow: no native folders) ---
+.expo/
+web-build/
+expo-env.d.ts
+.metro-health-check*
+/apps/flare-mobile/ios/
+/apps/flare-mobile/android/
+*.jks
+*.p8
+*.mobileprovision
+
+# --- Maven / Java ---
+apps/flare-backend/target/
+*.class
+hs_err_pid*
+
+# --- IDEs ---
+*.iml
+.classpath
+.project
+.settings/
