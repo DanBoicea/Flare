@@ -67,7 +67,7 @@ User turn:
 <passenger_insisted>false</passenger_insisted>
 <passenger_message>…untrusted text…</passenger_message>
 ```
-Output schema (`additionalProperties: false`, all fields required, nullable where noted):
+Output schema (`additionalProperties: false`, all fields required, nullable where noted). The code sends it as one shape per kind (`anyOf`), so `llama-server`'s grammar already enforces the per-kind rules below (C02):
 
 | Field | Type | Rule |
 | --- | --- | --- |
@@ -78,7 +78,7 @@ Output schema (`additionalProperties: false`, all fields required, nullable wher
 | `language` | `ro` \| `en` \| `other` | Language of the message |
 | `confidence` | number 0-1 | Below 0.5, the Report gets no Team (duty manager) |
 | `staffSummary` | `{ro, en}` \| null | At most 140 characters each. Required for `REPORT` |
-| `mentionedPlace` | string \| null | At most 80 characters. Only if it clearly differs from the scanned Location |
+| `mentionedPlace` | string \| null | At most 80 characters. Only if it clearly differs from the scanned Location; code drops one that repeats it |
 | `flightNumber` | string \| null | Only if typed. Code checks `^[A-Z0-9]{2}\d{1,4}[A-Z]?$` and drops anything else |
 | `answer` | string \| null | Required for `QUESTION`, at most 600 characters, in the message's language (or the UI language if `other`), **only from the Knowledge base** |
 | `answerFound` | boolean | False when the Knowledge base doesn't cover the Question (`answer` then says so) |
