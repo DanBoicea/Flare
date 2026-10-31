@@ -12,7 +12,7 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--s3);
-  padding: 18px var(--s5) 22px;
+  padding: var(--s3) var(--s5) var(--s4);
   border-radius: 0 0 var(--r-header) var(--r-header);
   background: var(--navy);
   color: var(--paper);
@@ -70,7 +70,7 @@
   width: 100%;
   max-width: var(--page-max);
   margin: 0 auto;
-  padding: 22px var(--s5) var(--s8);
+  padding: var(--s5) var(--s5) var(--s8);
 }
 
 .app__footer {
@@ -151,7 +151,8 @@
   width: 100%;
   min-height: var(--tap-main);
   padding: 14px var(--s4);
-  border: 2px solid var(--line);
+  /* --ink-2, not --line: a field outline needs 3:1 (WCAG 1.4.11); --line is only 1.4:1. */
+  border: 2px solid var(--ink-2);
   border-radius: var(--r-control);
   background: var(--paper);
   font-size: var(--fs-lead);
@@ -325,6 +326,12 @@
   line-height: 1.4;
   text-align: left;
   white-space: pre-wrap;
+}
+
+.quote--plain {
+  padding: 0;
+  background: none;
+  font-weight: 500;
 }
 
 .quote__label {

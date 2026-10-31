@@ -1,6 +1,9 @@
 {
-  "app.title": "Flare: report a problem",
   "app.airport": "Craiova International Airport",
+  "page.compose": "Send a message",
+  "page.bounced": "Your message needs a change",
+  "page.confirmation": "Message sent",
+  "page.emergency": "Emergency: call 112",
   "emergency.strip": "Emergency?",
   "emergency.strip.call": "Call 112",
   "emergency.strip.note": "This is not an emergency line.",

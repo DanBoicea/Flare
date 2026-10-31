@@ -33,7 +33,7 @@ The target is **WCAG 2.2 level AA** for the passenger web page and the same inte
 
 ## Beyond the minimum (because of who our users are)
 
-- **Typeface chosen for legibility.** Atkinson Hyperlegible Next separates I/l/1 and O/0 clearly. This matters for "Ia cu tine" and for Location codes like `ARR-WC-02`. In the explorations, the system font rendered "Ia" so that it read as "la".
+- **Typeface and look-alike letters.** Instrument Sans (ADR-0021) draws capital I and lowercase l identically, and O and 0 almost identically (checked on 2026-10-31). So in Passenger copy and the Knowledge base, avoid words where the confusion changes meaning, above all a sentence starting with "Ia" (it reads as "la"): write "Adu cu tine…" instead of "Ia cu tine…". Location codes like `ARR-WC-02` appear only in the Staff app; B01 decides whether codes there need a distinct face or style.
 - **Plain language.** Short sentences, everyday words, one instruction per screen. See [content](content.md).
 - **Calm emergency.** The 112 strip is clear but not alarming. Fear makes elderly users abandon a page.
 - **Colour-vision checks.** Every Staff screen is reviewed with deuteranopia and achromatopsia simulations (`render.mjs` produces them). Severity must be readable from icon shape and word alone.
