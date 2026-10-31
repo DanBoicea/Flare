@@ -1,7 +1,7 @@
 # D02: Labelled RO/EN test set and grouping pairs
 
-Status: TODO
-Owner:
+Status: IN PROGRESS
+Owner: Luciano
 Reviewer: Track C owner (and the team's Romanian speaker for the RO texts)
 Track: D (OpenCode) · Phases 1-2 · Estimate: 1 h · Agent-friendly: yes
 Depends on: none (Location labels from D01 help but aren't required)

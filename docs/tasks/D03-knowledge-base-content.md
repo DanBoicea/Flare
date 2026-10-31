@@ -1,7 +1,7 @@
 # D03: Simulated Knowledge base, RO + EN
 
-Status: TODO
-Owner:
+Status: IN PROGRESS
+Owner: Luciano
 Reviewer: Track C owner
 Track: D (OpenCode) · Phase 1 · Estimate: 1 h · Agent-friendly: yes
 Depends on: D01 (to use the same simulated place names)

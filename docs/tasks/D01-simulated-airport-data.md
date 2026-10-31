@@ -1,11 +1,14 @@
 # D01: Simulated Areas, Locations, QR codes, staff seed, reset script
 
-Status: TODO
-Owner:
+Status: IN PROGRESS
+Owner: Luciano
 Reviewer: Track A owner
 Track: D (OpenCode) · Phase 1 · Estimate: 45 min · Agent-friendly: yes
 Depends on: A02 (table shapes)
 Unblocks: A03 (seeded staff), D06, D07, G1
+
+## Progress note
+Split in two so D02 and D03 can use the real Location labels now: **part 1** (steps 1-4, `data/airport/airport.json`) is done first, without waiting for A02. **Part 2** (steps 5-6, the SQL seed and reset script) waits for A02's table shapes.
 
 ## Goal
 A believable but clearly **simulated** airport layout to demo with. Nothing claims to be the real Craiova Airport layout ([CLAUDE.md](../../CLAUDE.md): never invent airport facts).
