@@ -26,6 +26,9 @@ The deterministic safety net ([decisions round 4](../decisions.md)) and the ment
 8. **Wire them** into `MessageIntakeService` in place of A06's no-ops, in the exact step order. **Emergencies skip every limit.**
 9. **Network address:** use `request.getRemoteAddr()`. Behind a proxy it is correct only with `server.forward-headers-strategy=framework`, which is enabled only in the `demo` profile and documented in A11.
 
+## Seams from A06
+A06 already calls these interfaces in the pipeline order: `safety.BotCheck`, `ratelimit.RateLimitService` (returns `RATE_LIMIT` or `QR_CODE_STRICT_MODE`, counting every non-Emergency message) and `ratelimit.BounceTracker`. Replace the placeholder classes `NoBotCheck`, `NoRateLimits` and `NoBounceTracker` with the real implementations; `MessageIntakeService` needs no change.
+
 ## Notes from D06 (for the A07 owner)
 Found while writing the demo scenarios. Nothing in A07 is changed; these are for you to decide.
 1. **Running every demo scenario from one laptop trips the network limit.** Every simulated Passenger shares the laptop's network: 30 messages per 10 minutes, while `run-scenario.mjs all` sends about 45. D06 works around it (spam wave last, restart the back end before a full run). Suggestion: raise only the network limit in `application-local.yml`, for example `flare.limits.network.per-10-min: 200`. The device and QR code limits stay real, so the spam wave still shows Quarantine and Strict mode, and the `demo` profile keeps 30.

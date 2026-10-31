@@ -150,6 +150,12 @@ Mentor feedback, verbatim: "De adresat partea de impersonare qr code; Marketingu
 - **Config:** `FLARE_LLM_BASE_URL` and `FLARE_LLM_API_KEY` replace `ANTHROPIC_API_KEY`. Per task: model alias, `temperature`, `max-tokens`, timeout (ADR-0016, rewritten). Model files (`*.gguf`) are git-ignored.
 - **Tasks:** S04 becomes "llama-server and first model"; C01 becomes the `llama-server` client; new S10 runs `llama-server` on the demo machine. The `claude` back-end packages are renamed `llm`.
 
+### Round 10: intake built (A06, 2026-10-31)
+
+- **Send to staff from a flagged QR code:** a Question from a muted or unknown QR code is still answered, but sending it to staff makes a Quarantined Report (duty manager only). The 30-minute window is config (`flare.questions.send-to-staff-window`).
+- **Unusable classifier output counts as a failure:** a missing kind, a Question without an answer or garbage without a reason falls back to Unclassified, so a bad LLM answer never reaches a Passenger or a list.
+- **A07 seams:** `BotCheck`, `RateLimitService` and `BounceTracker` are interfaces with pass-through placeholders until A07. Until then, nothing is rate limited and "Send anyway" is never offered.
+
 ## Open questions
 
 ### Waiting for the team's answer

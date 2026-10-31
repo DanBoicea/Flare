@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import org.springframework.stereotype.Service;
 
+import com.fsociety.flarebackend.report.QuarantineReason;
+
 /**
  * Resolves the QR code ID a Passenger scanned (pipeline.md step 3, ADR-0017). A malformed, retired or
  * missing ID is UNKNOWN, never an error: the message is still stored, just Quarantined.
@@ -34,6 +36,15 @@ public class QrCodeService {
 
 		static Resolution unknown() {
 			return new Resolution(Status.UNKNOWN, Optional.empty());
+		}
+
+		/** Why a Report from this QR code is Quarantined (pipeline.md step 3), or empty for an active one. */
+		public Optional<QuarantineReason> quarantineReason() {
+			return switch (status) {
+				case ACTIVE -> Optional.empty();
+				case MUTED -> Optional.of(QuarantineReason.MUTED_QR_CODE);
+				case UNKNOWN -> Optional.of(QuarantineReason.UNKNOWN_QR_CODE);
+			};
 		}
 	}
 
