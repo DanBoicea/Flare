@@ -103,6 +103,8 @@ Mentor feedback, verbatim: "De adresat partea de impersonare qr code; Marketingu
 - **Main class keeps the skeleton name** `FlareBackendApplication` (backend.md said `FlareApplication`).
 - **Request bodies over 16 KB, or chunked bodies without a Content-Length, get `413` with code `INVALID_REQUEST`** (A01). Browsers always send a Content-Length for `fetch` bodies.
 - **`POST /api/public/messages` is a validating stub that returns `501`** until A06.
+- **Contract `Me` uses `roles`** (an array of `StaffRole`) instead of `role`, matching the many-to-many roles (fixed before B01 generates types).
+- **Staff-member check is central** (A03): an interceptor on `/api/staff/**` rejects valid tokens without an active `staff_member` row with `403 NOT_A_STAFF_MEMBER`, so individual endpoints can't forget it.
 
 ### Round 7: passenger contact and design (2026-10-31)
 

@@ -11,12 +11,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fsociety.flarebackend.config.CorsConfig;
 import com.fsociety.flarebackend.config.FlareProperties;
 import com.fsociety.flarebackend.config.SecurityConfig;
+import com.fsociety.flarebackend.config.SupabaseJwtConfig;
+import com.fsociety.flarebackend.staff.CurrentStaff;
+import com.fsociety.flarebackend.staff.StaffMemberRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -26,7 +30,7 @@ import org.springframework.test.web.servlet.ResultActions;
 		"SUPABASE_JWKS_URI=http://localhost/jwks.json",
 		"SUPABASE_JWT_ISSUER=http://localhost/auth/v1"
 })
-@Import({ SecurityConfig.class, CorsConfig.class })
+@Import({ SecurityConfig.class, CorsConfig.class, SupabaseJwtConfig.class, CurrentStaff.class })
 @EnableConfigurationProperties(FlareProperties.class)
 class PublicApiErrorsTest {
 
@@ -34,6 +38,9 @@ class PublicApiErrorsTest {
 
 	@Autowired
 	private MockMvc mvc;
+
+	@MockitoBean
+	private StaffMemberRepository staffMembers;
 
 	@Test
 	void blankTextIsTextEmpty() throws Exception {

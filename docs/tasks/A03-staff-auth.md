@@ -1,7 +1,7 @@
 # A03: Supabase JWT verification, `CurrentStaff`, `/me`, `/teams`, access policy
 
-Status: TODO
-Owner:
+Status: DONE
+Owner: Florin Cristi
 Track: A · Phase 1 · Estimate: 1 h · Agent-friendly: no (security-critical; main session)
 Depends on: A02 (and S03 notes on the JWT method)
 Unblocks: A04, B02
@@ -33,7 +33,13 @@ Only real, active staff members reach `/api/staff/**`, and the server knows thei
    DTOs match the contract.
 5. **Manual test:** get a token by signing in through B02, or with the Supabase Auth REST password grant from your terminal (never commit the command with credentials). Call `/me` for each demo account.
 
+## Notes
+- `config/SupabaseJwtConfig` builds the `JwtDecoder` explicitly: JWKS from `SUPABASE_JWKS_URI`, ES256 (what flare-dev uses) or RS256, and the expiry, issuer and `authenticated` audience checks in one tested `validator()`. No HS256 secret is needed (S03).
+- `staff/StaffOnlyConfig` runs `CurrentStaff.require()` before every `/api/staff/**` handler, so a new staff endpoint can't forget the staff-member check. `CurrentStaff` caches the member for the request.
+- 401 responses are Problem Details with `WWW-Authenticate: Bearer` and never say why a token failed.
+- The `/teams` item DTO is `TeamResponse` (contract schema `Team`), because `Team` is the entity.
+
 ## Done when
-- [ ] `/me` works for all four demo accounts once D01's seed is loaded. Before that, insert one `staff_member` by hand.
-- [ ] No token, an expired or invalid token, or a valid token for a user with no `staff_member` row each give 401 or 403.
-- [ ] The policy unit tests pass.
+- [x] `/me` works for all four demo accounts once D01's seed is loaded. Before that, insert one `staff_member` by hand. (Checked in Bruno with real Supabase tokens, 2026-10-31.)
+- [x] No token, an expired or invalid token, or a valid token for a user with no `staff_member` row each give 401 or 403.
+- [x] The policy unit tests pass.
