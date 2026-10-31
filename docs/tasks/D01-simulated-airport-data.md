@@ -1,14 +1,14 @@
 # D01: Simulated Areas, Locations, QR codes, staff seed, reset script
 
-Status: IN PROGRESS
-Owner: Luciano
+Status: DONE
+Owner: Luciano (part 1), Florin Cristi (part 2)
 Reviewer: Track A owner
 Track: D (OpenCode) · Phase 1 · Estimate: 45 min · Agent-friendly: yes
 Depends on: A02 (table shapes)
 Unblocks: A03 (seeded staff), D06, D07, G1
 
 ## Progress note
-Split in two so D02 and D03 can use the real Location labels now: **part 1** (steps 1-4, `data/airport/airport.json`) is done first, without waiting for A02. **Part 2** (steps 5-6, the SQL seed and reset script) waits for A02's table shapes.
+Split in two so D02 and D03 can use the real Location labels now: **part 1** (steps 1-4, `data/airport/airport.json`) is done first, without waiting for A02. **Part 2** (steps 5-6, the SQL seed and reset script) was done by Florin Cristi with A02 (PR #6). The seed was checked against `airport.json`: every Area, label, QR code ID, the muted QR code and the staff roles match.
 
 Part 1 is done. Two fields were added to the shape below:
 - `qrCodeStatus` on each Location (`ACTIVE` or `MUTED`, matching `QrCodeStatus`), so the seed knows which QR code is muted
@@ -55,6 +55,6 @@ Use real shop names, real gate numbers or real airport staff names. Add dependen
 
 ## Done when
 - [x] Flyway applies the seed on `flare-dev`, and re-running is a no-op.
-- [ ] Every QR code ID resolves through A06.
+- [ ] Every QR code ID resolves through A06. (Checked when A06 lands; the IDs in the seed and `airport.json` match.)
 - [x] All demo accounts have their `staff_member` rows.
-- [ ] The reviewer approves.
+- [x] The reviewer approves.
