@@ -319,7 +319,7 @@
     {
       "email": "cleaning@demo.flare.invalid",
       "displayName": "Ana (simulat)",
-      "role": "STAFF",
+      "roles": ["STAFF"],
       "teams": [
         "CLEANING"
       ]
@@ -327,7 +327,7 @@
     {
       "email": "maintenance@demo.flare.invalid",
       "displayName": "Mihai (simulat)",
-      "role": "STAFF",
+      "roles": ["STAFF"],
       "teams": [
         "MAINTENANCE",
         "PASSENGER_ASSISTANCE"
@@ -336,7 +336,7 @@
     {
       "email": "security@demo.flare.invalid",
       "displayName": "Ioana (simulat)",
-      "role": "STAFF",
+      "roles": ["STAFF"],
       "teams": [
         "SECURITY"
       ]
@@ -344,7 +344,7 @@
     {
       "email": "manager@demo.flare.invalid",
       "displayName": "Radu (simulat)",
-      "role": "DUTY_MANAGER",
+      "roles": ["DUTY_MANAGER"],
       "teams": []
     }
   ]
