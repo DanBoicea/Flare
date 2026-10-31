@@ -10,6 +10,12 @@ Unblocks: A03 (seeded staff), D06, D07, G1
 ## Progress note
 Split in two so D02 and D03 can use the real Location labels now: **part 1** (steps 1-4, `data/airport/airport.json`) is done first, without waiting for A02. **Part 2** (steps 5-6, the SQL seed and reset script) waits for A02's table shapes.
 
+Part 1 is done. Two fields were added to the shape below:
+- `qrCodeStatus` on each Location (`ACTIVE` or `MUTED`, matching `QrCodeStatus`), so the seed knows which QR code is muted
+- a top-level `_comment` carrying the "SIMULATED DEMO DATA" header, since JSON has no comments
+
+The muted QR code is at `LND-ENT-03`.
+
 ## Goal
 A believable but clearly **simulated** airport layout to demo with. Nothing claims to be the real Craiova Airport layout ([CLAUDE.md](../../CLAUDE.md): never invent airport facts).
 
