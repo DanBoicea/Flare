@@ -7,7 +7,7 @@ Depends on: A02 (and S03 notes on the JWT method)
 Unblocks: A04, B02
 
 ## Goal
-Only real, active staff members reach `/api/staff/**`, and the server knows their Teams and role.
+Only real, active staff members reach `/api/staff/**`, and the server knows their Teams and roles.
 
 ## Read first
 [auth and security](../architecture/auth-and-security.md) · [ADR-0008](../adr/0008-individual-staff-accounts-team-routing.md) · [ADR-0010](../adr/0010-supabase-postgres-and-auth-only.md).
@@ -18,12 +18,13 @@ Only real, active staff members reach `/api/staff/**`, and the server knows thei
    - with legacy HS256, `NimbusJwtDecoder.withSecretKey` from a new env var (add it to `.env.example`)
    
    Validate the issuer and the `authenticated` audience.
-2. **`staff/CurrentStaff`:** turns the JWT `sub` into a `StaffMember` with Teams. A missing or inactive member gets `403 NOT_A_STAFF_MEMBER`. Never read the role or Teams from JWT claims.
+2. **`staff/CurrentStaff`:** turns the JWT `sub` into a `StaffMember` with Teams and roles. A missing or inactive member gets `403 NOT_A_STAFF_MEMBER`. Never read roles or Teams from JWT claims.
 3. **`staff/StaffAccessPolicy`** (pure, **test first**): `canSee`, `canAct`, `canReview`, exactly as in auth-and-security.md. Tests cover:
    - a staff member in several Teams
    - an unrouted Issue
    - Critical plus Security
    - the duty manager
+   - a member with both `STAFF` and `DUTY_MANAGER`, and a member with no roles (ordinary staff access)
    - an Issue from another Team
 4. **Endpoints:**
    - `GET /api/staff/me` (`MeController`)

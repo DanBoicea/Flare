@@ -95,7 +95,7 @@ Compose ──send──▶ Sending ──┬─ REPORTED  ─▶ Confirmation �
 **Routes:**
 - `src/app/_layout.tsx`: session gate. No session sends you to `sign-in`. Loads `/me` and holds it in context.
 - `src/app/sign-in.tsx`: email and password, errors, a "simulated demo accounts" note.
-- `src/app/(tabs)/_layout.tsx`: tabs Active, Resolved, and Needs review only if `role == DUTY_MANAGER`. The header shows the staff member's name, their Teams, a language toggle and sign-out.
+- `src/app/(tabs)/_layout.tsx`: tabs Active, Resolved, and Needs review only if `roles` includes `DUTY_MANAGER`. The header shows the staff member's name, their Teams, a language toggle and sign-out.
 - `src/app/(tabs)/index.tsx`: Active list.
 - `src/app/(tabs)/resolved.tsx`: Resolved list (fetched when opened, no polling).
 - `src/app/(tabs)/review.tsx`: Quarantined Reports and alerts, with release (optional Team) and dismiss.

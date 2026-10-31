@@ -22,7 +22,7 @@ Staff sign in with their own account and see tabs that match their role ([ADR-00
    - the note "Demo accounts with simulated data"
    - in mock mode, a role picker instead
 5. **`src/app/(tabs)/_layout.tsx`:**
-   - tabs Active and Resolved, plus Needs review only for `DUTY_MANAGER`
+   - tabs Active and Resolved, plus Needs review only when `/me` `roles` includes `DUTY_MANAGER`
    - a header with the display name, Team chips, a language toggle and sign-out
 
 ## Done when

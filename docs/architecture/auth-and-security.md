@@ -8,7 +8,7 @@ The technical side of [security and abuse](../security-and-abuse.md).
 2. Every call to Spring Boot carries `Authorization: Bearer <access_token>`.
 3. Spring Security (OAuth2 resource server) checks the JWT's signature, expiry, issuer `https://<project-ref>.supabase.co/auth/v1`, and audience `authenticated`.
    - **Check the project's JWT signing method** in the Supabase dashboard. With asymmetric signing keys, configure the JWKS URI `https://<project-ref>.supabase.co/auth/v1/.well-known/jwks.json`. With the legacy shared secret (HS256), configure a `NimbusJwtDecoder.withSecretKey(...)` from an env var instead. S03 records which one applies.
-4. `CurrentStaff` maps the JWT `sub` to `staff_member.id`. If the row is missing or inactive, the call gets `403 NOT_A_STAFF_MEMBER`. Teams and role are loaded from our tables, **never from JWT claims**.
+4. `CurrentStaff` maps the JWT `sub` to `staff_member.id`. If the row is missing or inactive, the call gets `403 NOT_A_STAFF_MEMBER`. Teams and roles are loaded from our tables (`staff_member_team`, `staff_member_role`), **never from JWT claims**.
 5. Sign-out goes through `supabase-js`. A disabled account stops working at its next token refresh, within the token lifetime.
 
 Accounts are created by hand in the Supabase dashboard for the demo (S03) and linked by the seed. There is no sign-up screen and no password reset flow, because both are out of scope.
@@ -17,12 +17,12 @@ Accounts are created by hand in the Supabase dashboard for the demo (S03) and li
 
 ```
 canSee(member, issue) =
-     member.role == DUTY_MANAGER
+     DUTY_MANAGER ∈ member.roles
   || (issue.team != null && issue.team ∈ member.teams)
   || (issue.severity == CRITICAL && SECURITY ∈ member.teams)
 
 canAct(member, issue)       = canSee(member, issue)          // acknowledge, take, resolve, reopen, override, hand over
-canReview(member)           = member.role == DUTY_MANAGER     // Needs review list, release, dismiss
+canReview(member)           = DUTY_MANAGER ∈ member.roles     // Needs review list, release, dismiss
 ```
 
 - Unrouted Issues (`team == null`) are visible only to the duty manager.
