@@ -16,6 +16,7 @@ import com.fsociety.flarebackend.common.ClassificationSource;
 import com.fsociety.flarebackend.common.Severity;
 import com.fsociety.flarebackend.report.Report;
 import com.fsociety.flarebackend.report.ReportRepository;
+import com.fsociety.flarebackend.staff.StaffMember;
 import com.fsociety.flarebackend.staff.TeamId;
 
 /** Creating an Issue from a Report: routing by category, or the Team the duty manager chose on release. */
@@ -44,6 +45,22 @@ class IssueServiceTest {
 
 		assertThat(issue.getTeam()).isEqualTo(TeamId.SECURITY);
 		assertThat(issue.isUnclassified()).isTrue();
+	}
+
+	@Test
+	void aMatchingReportReopensAResolvedIssueAsTheSystem() {
+		Issue issue = new Issue();
+		issue.setStatus(IssueStatus.RESOLVED);
+		issue.setResolvedAt(Instant.parse("2026-10-31T11:50:00Z"));
+		issue.setTakenBy(new StaffMember());
+		issue.setReopenedCount(1);
+
+		service.reopenByReport(issue, report(Category.TOILET, ClassificationSource.LLM, null));
+
+		assertThat(issue.getStatus()).isEqualTo(IssueStatus.NEW);
+		assertThat(issue.getReopenedCount()).isEqualTo(2);
+		assertThat(issue.getTakenBy()).isNull();
+		assertThat(issue.getResolvedAt()).isNull();
 	}
 
 	private static Report report(Category category, ClassificationSource source, TeamId teamOverride) {

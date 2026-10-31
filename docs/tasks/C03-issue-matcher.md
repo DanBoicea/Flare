@@ -26,6 +26,9 @@ The LLM tells "same problem" from "different problem at the same place" ([ADR-00
    - logs the reason length, never the text
 3. **Tests:** a unit test with a fake `LlmClient` for ID validation. Real-model checks go in C05's grouping pairs.
 
+## Notes from A08
+The seam is ready: implement `IssueMatcher` and mark the bean `@Primary`; the fallback stays registered and the worker already catches every exception (a failure means no match, so a new Issue). The worker also rejects an ID that is not a candidate, so checking it in the implementation too is defence in depth.
+
 ## Done when
 - [ ] With the LLM on, the "toilet paper ×3 plus dirty toilet" scenario gives two Issues, the first with "3 people reported".
 - [ ] "Lift broken" at two different Areas gives two Issues.

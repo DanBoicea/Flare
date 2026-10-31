@@ -85,6 +85,18 @@ public class IssueService {
 		audit(issue, report, AuditAction.REPORT_ADDED);
 	}
 
+	/**
+	 * A matching Report on an Issue resolved within the grouping window reopens it (pipeline.md section 5): back to
+	 * NEW, counted as reopened, nobody holding it. Recorded as done by the system.
+	 */
+	public void reopenByReport(Issue issue, Report report) {
+		issue.setStatus(IssueStatus.NEW);
+		issue.setReopenedCount(issue.getReopenedCount() + 1);
+		issue.setTakenBy(null);
+		issue.setResolvedAt(null);
+		audit(issue, report, AuditAction.REOPENED);
+	}
+
 	/** CRITICAL is declared first, so a lower ordinal is more severe. */
 	private static boolean isMoreSevere(Severity candidate, Severity current) {
 		return candidate != null && candidate.ordinal() < current.ordinal();

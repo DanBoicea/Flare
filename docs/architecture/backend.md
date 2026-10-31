@@ -21,12 +21,13 @@ com.fsociety.flarebackend
 ├── llm/               [C] LlmClient (interface), LlamaServerClient (llama.cpp over HTTP), LlmTask enum, PromptLoader,
 │                          LlmFailure exception, LlmUsageCounter (daily cap, token logging)
 ├── grouping/          [A] GroupingWorker (single thread + queue + startup recovery), CandidateSelector (pure),
-│                          IssueMatcher (interface), NoMatchIssueMatcher (fallback)
+│                          ReportGrouper (the steps), IssueMatcher (interface), NoMatchIssueMatcher (fallback),
+│                          NewReportView, CandidateIssueView, GroupingConfig
 │   └── llm/           [C] LlmIssueMatcher
 ├── issue/             [A] Issue entity + repository, IssueService (create/merge/reopen), IssueActionService,
 │                          IssueQueryService (list and detail), IssueCards (DTO mapping), IssueTransitions (pure),
 │                          PriorityCalculator (pure), IssueConfig, StaffIssueController, dto/
-│   └── summary/       [A] IssueSummarizer (interface), FallbackIssueSummarizer
+│   └── summary/       [A] IssueSummarizer (interface), FallbackIssueSummarizer, IssueSummaryView, ReportTextView
 │       └── llm/       [C] LlmIssueSummarizer
 ├── review/            [A] ReviewController, ReviewService (Quarantined list, Strict mode alerts, release, dismiss)
 ├── staff/             [A] StaffMember, Team, entities + repositories, CurrentStaff (JWT → staff member),
@@ -62,7 +63,7 @@ public interface IssueMatcher {
 
 // issue.summary
 public interface IssueSummarizer {
-    LocalizedText summarize(IssueView issue, List<ReportTextView> newestReports);            // throws on failure
+    LocalizedText summarize(IssueSummaryView issue, List<ReportTextView> newestReports);     // throws on failure
 }
 ```
 
