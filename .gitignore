@@ -78,3 +78,7 @@ hs_err_pid*
 .classpath
 .project
 .settings/
+
+# --- Design exploration screenshots (regenerate with docs/design/explorations/render.mjs) ---
+docs/design/explorations/shots/
+docs/design/reference/shots/

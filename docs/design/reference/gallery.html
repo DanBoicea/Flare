@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flare: all reference screens</title>
+<style>
+  body { margin: 0; padding: 24px; background: #E9EBEE; font: 16px/1.5 system-ui, sans-serif; color: #1A1C1F; }
+  h1 { margin: 0 0 4px; font-size: 24px; }
+  p { margin: 0 0 20px; color: #4A4F57; max-width: 70ch; }
+  h2 { margin: 28px 0 12px; font-size: 18px; }
+  .row { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }
+  figure { margin: 0; }
+  figcaption { margin-top: 8px; font-weight: 700; font-size: 14px; }
+  figcaption a { color: inherit; }
+  .phone { width: 390px; height: 844px; zoom: 0.72; border: 0; border-radius: 28px; background: #fff; box-shadow: 0 0 0 10px #1A1C1F; }
+  .sheet { width: 595px; height: 842px; zoom: 0.72; border: 0; background: #fff; box-shadow: 0 2px 12px rgba(0, 0, 0, .2); }
+</style>
+</head>
+<body>
+<h1>Flare: reference design (simulated data)</h1>
+<p>Every screen of the chosen direction, as it should look on a phone. Click a caption to open the screen on its own; in Chrome, press F12 and turn on device mode to see it at real phone size. The apps are built to match these screens (tasks W02-W04 and B01-B06).</p>
+
+<h2>Passenger web app</h2>
+<div class="row" id="passenger"></div>
+<h2>Staff app</h2>
+<div class="row" id="staff"></div>
+<h2>QR poster and palette</h2>
+<div class="row" id="print"></div>
+
+<script>
+  const groups = {
+    passenger: [['compose', 'Scrie mesajul'], ['compose-open', 'Cu număr de telefon'], ['sending', 'Se trimite'], ['answer', 'Răspuns automat'],
+      ['bounced', 'Mesaj neînțeles'], ['confirm', 'Trimis'], ['emergency', 'Urgență']],
+    staff: [['staff-list', 'Lista de probleme'], ['staff-detail', 'O problemă']],
+    print: [['poster', 'Afiș QR (A4)', 'sheet'], ['palette', 'Culori și litere']],
+  }
+  for (const [group, screens] of Object.entries(groups)) {
+    document.getElementById(group).innerHTML = screens.map(([id, label, kind]) => {
+      const width = kind === 'sheet' ? 595 : 390
+      const src = `index.html?screen=${id}&w=${width}`
+      return `<figure><iframe class="${kind || 'phone'}" src="${src}" title="${label}" loading="lazy"></iframe>` +
+        `<figcaption><a href="${src}">${label}</a></figcaption></figure>`
+    }).join('')
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+/* Direction B: "Serviciu public" (civic calm).
+   Modelled on proven public-service design (GOV.UK, NHS): institutional blue, pressable buttons with a solid
+   bottom edge, the yellow-and-black focus style, pill chips. Native system fonts, nothing to download.
+   Deliberately plain: trust through familiarity. */
+:root {
+  --theme-name: "Serviciu public (civic calm)";
+  --font-name: "System UI (SF Pro on iPhone, Roboto on Android)";
+  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-display: var(--font-body);
+  --title-size: 1.75rem; --title-weight: 700; --title-tracking: 0; --title-leading: 1.2;
+  --body-size: 1.125rem; --lead-size: 1.1875rem; --small-size: 1rem; --btn-size: 1.125rem; --row-title-size: 1.0625rem;
+
+  --bg: #FFFFFF; --surface-2: #F0F4F5; --field-bg: #FFFFFF;
+  --text: #212B32; --text-2: #4C6272; --border-strong: #4C6272; --divider: #D8DDE0; --divider-strong: #768692;
+
+  --primary-bg: #0B5CAD; --primary-text: #FFFFFF; --primary-border: #0B5CAD; --primary-shadow: 0 3px 0 #00396B;
+  --secondary-bg: #F0F4F5; --secondary-text: #0B5CAD; --secondary-border: #F0F4F5; --secondary-shadow: 0 3px 0 #D8DDE0;
+
+  --strip-bg: #B10E1E; --strip-text: #FFFFFF; --strip-call-bg: #FFFFFF; --strip-call-text: #B10E1E; --strip-call-border: #FFFFFF;
+  --emergency-bg: #B10E1E; --emergency-text: #FFFFFF; --call-bg: #FFFFFF; --call-text: #B10E1E;
+  --success-bg: #007F3B; --success-text: #FFFFFF;
+
+  --answer-border: #0B5CAD; --answer-border-w: 0; --answer-bg: #F0F4F5;
+  --answer-head-bg: transparent; --answer-head-text: #0B5CAD;
+  --notice-bg: #FFF7EB; --notice-text: #212B32; --notice-border: #C96A00; --notice-border-w: 0;
+
+  --plate-bg: #E8EDEE; --plate-text: #212B32; --plate-border: transparent; --plate-border-w: 0;
+
+  --sev-critical: #D5281B; --sev-critical-badge-bg: #D5281B; --sev-critical-badge-text: #FFFFFF;
+  --sev-high: #C96A00; --sev-high-tint: #FFF1DB; --sev-high-text: #8A4E00;
+  --sev-medium: #005EB8; --sev-medium-tint: #E6F0FA; --sev-medium-text: #004A93;
+  --sev-low: #768692; --sev-low-tint: #EEF1F3; --sev-low-text: #425563;
+  --row-bg: #FFFFFF; --row-critical-bg: #FDF0EE;
+  --new-dot: #005EB8;
+
+  --s-head-bg: #0B5CAD; --s-head-text: #FFFFFF; --s-who-text: #E6F0FA; --chip-bg: #E6F0FA; --chip-text: #004A93;
+  --tab-bg: #FFFFFF; --tab-text: #4C6272; --tab-active: #0B5CAD; --count-bg: #D5281B; --count-text: #FFFFFF;
+  --brand-outer: #0B5CAD; --brand-inner: #FFFFFF;
+  --beacon: #0B5CAD;
+
+  --r-plate: 4px; --r-btn: 6px; --r-field: 6px; --r-card: 8px; --r-chip: 999px;
+  --btn-border-w: 2px; --field-border-w: 2px; --btn-height: 3.25rem; --pad-x: 20px; --gap: 20px;
+}
+
+/* Signature details */
+.answer { border-left: 8px solid #0B5CAD; }
+.notice { border-left: 8px solid #C96A00; }
+.s-head .brand__mark { background: #FFFFFF; }
+.s-head .brand__mark::after { background: #0B5CAD; }
+.s-head .lang { background: transparent; color: #FFFFFF; border-color: #FFFFFF; }
+.s-head .chip { background: rgba(255, 255, 255, 0.16); color: #FFFFFF; }
+.tab.is-current::before { content: ""; position: absolute; top: 0; left: 20%; right: 20%; height: 3px; background: #0B5CAD; }
+.btn--primary, .btn--secondary { margin-bottom: 3px; }

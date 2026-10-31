@@ -12,6 +12,8 @@ One-tap handling of an Issue, with the full context one tap away and never hidde
 ## Read first
 [api: Issue actions](../architecture/api.md#issue-actions) · [frontends: Staff app](../architecture/frontends.md#staff-app-appsflare-mobile-expo-router).
 
+**Design:** [docs/design](../design/README.md): [foundations](../design/foundations.md), [components](../design/components.md), [screens](../design/screens.md), [mobile](../design/mobile.md), [reference screens](../design/reference/README.md).
+
 ## Do
 1. **`src/app/issue/[id].tsx`:** the card header, then the action bar, the original Reports, and the history.
    - **Reports:** text, time, language, plus contact and flight number when present (label them "provided by passenger").

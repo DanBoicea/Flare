@@ -38,6 +38,7 @@ Read the relevant file before working on that area, and update it when a decisio
 | [docs/code-rules.md](docs/code-rules.md) | Coding, security, contract, testing, git and docs rules for everyone, Claude included |
 | [docs/adr/](docs/adr/) | Architecture decision records, numbered |
 | [docs/architecture/](docs/architecture/README.md) | System design: repo structure, data model, API, pipeline and LLM calls, back end, frontends, auth and security, operations |
+| [docs/design/](docs/design/README.md) | Design system: airfield-signage visual language, tokens, components, screens, mobile rules, accessibility, copy, reference HTML screens, review results |
 | [docs/tasks/](docs/tasks/README.md) | Workplan: tracks, phases and gates, the task board, cut list, one file per task |
 | [docs/product.md](docs/product.md) | Problem, users, scope, core flow, passenger web app and Staff app requirements, resolution model, lost luggage, demo plan |
 | [docs/principles.md](docs/principles.md) | Product principles in priority order, privacy, honesty about limits |

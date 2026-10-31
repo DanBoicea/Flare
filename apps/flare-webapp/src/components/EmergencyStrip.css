@@ -1,0 +1,38 @@
+/* docs/design/components.md#emergency-strip: calm pink strip, red 112 button. Never a full red band. */
+.emergency-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s3);
+  padding: var(--s2) var(--s5);
+  padding-top: max(var(--s2), env(safe-area-inset-top));
+  background: var(--danger-soft);
+  color: var(--danger-ink);
+  border-bottom: 1px solid #f3c5cc;
+}
+
+.emergency-strip p {
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.emergency-strip__call {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--tap);
+  min-width: 96px;
+  padding: 0 var(--s4);
+  border-radius: var(--r-control);
+  background: var(--danger);
+  color: var(--paper);
+  font-size: var(--fs-lead);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  text-decoration: none;
+}
+
+.emergency-strip :focus-visible {
+  outline-color: var(--paper);
+  box-shadow: 0 0 0 2px var(--black);
+}
