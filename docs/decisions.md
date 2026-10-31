@@ -123,6 +123,7 @@ Mentor feedback, verbatim: "De adresat partea de impersonare qr code; Marketingu
 - **Open for B01:** distinct colours for High, Medium and Low severity in V1.
 - **Emergency strip reworded** for clarity: "Urgență?" on the left, a red pill button "Sună la 112" with a phone icon on the right (a bare "112" box read like a badge).
 - **Outcome screens (W03) follow V1 with three changes:** Confirmation keeps "Send another message" as a secondary button and keeps the copy-deck wording (V1's "the right team got it on their phone" is untrue for Quarantined "Send anyway" Reports); the Emergency title shows in both languages and keeps "tell the nearest staff member"; each Bounce reason gets a short title plus a body.
+- **W04 design pass:** shorter header, plain question above the answer card, field borders at 3:1 or more, a page title per screen, and no sentence-initial "Ia" in Passenger copy (Instrument Sans draws I and l alike).
 - **Answer not found:** the second button is "Send another message" ("That helped" makes no sense when nothing was found).
 
 ## Open questions

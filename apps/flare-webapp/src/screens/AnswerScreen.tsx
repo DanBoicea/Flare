@@ -19,7 +19,7 @@ export function AnswerScreen({ question, answer, onHelped, onSendToStaff }: Prop
 
   return (
     <div className="screen">
-      <Quote label={t('answer.youAsked')} text={question} />
+      <Quote label={t('answer.youAsked')} text={question} plain />
 
       <section className="answer" aria-labelledby="answer-label">
         <h1 id="answer-label" className="answer__label">

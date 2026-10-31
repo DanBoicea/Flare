@@ -1,6 +1,9 @@
 {
-  "app.title": "Flare: raportează o problemă",
   "app.airport": "Aeroportul Internațional Craiova",
+  "page.compose": "Trimite un mesaj",
+  "page.bounced": "Mesajul trebuie modificat",
+  "page.confirmation": "Mesaj trimis",
+  "page.emergency": "Urgență: sună la 112",
   "emergency.strip": "Urgență?",
   "emergency.strip.call": "Sună la 112",
   "emergency.strip.note": "Aceasta nu este o linie de urgență.",

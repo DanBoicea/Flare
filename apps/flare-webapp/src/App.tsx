@@ -4,6 +4,7 @@ import type { Answer, Bounce, ErrorCode } from './api/types'
 import { EmergencyStrip } from './components/EmergencyStrip'
 import { LanguageButton } from './components/LanguageButton'
 import { useI18n } from './i18n/context'
+import type { StringKey } from './i18n/strings'
 import { getDeviceId } from './lib/deviceId'
 import { elapsedMs } from './lib/elapsed'
 import { readQrCodeId } from './lib/qrCode'
@@ -23,6 +24,15 @@ type Screen =
   | { name: 'bounced'; bounce: Bounce }
   | { name: 'confirmation' }
   | { name: 'emergency' }
+
+const PAGE_TITLE = {
+  compose: 'page.compose',
+  sending: 'sending.checking',
+  answer: 'answer.label',
+  bounced: 'page.bounced',
+  confirmation: 'page.confirmation',
+  emergency: 'page.emergency',
+} as const satisfies Record<Screen['name'], StringKey>
 
 const qrCodeId = readQrCodeId()
 const showDemoLabel = import.meta.env.VITE_DEMO_LABEL !== 'false'
@@ -55,6 +65,11 @@ export default function App() {
     heading.tabIndex = -1
     heading.focus()
   }, [screen])
+
+  // A meaningful tab title per screen (WCAG 2.4.2), so the tab and screen readers say where the Passenger is.
+  useEffect(() => {
+    document.title = `${t(PAGE_TITLE[screen.name])} – Flare`
+  }, [screen.name, t])
 
   const fail = (error: unknown) =>
     setScreen({ name: 'compose', error: error instanceof ApiError ? error.code : 'NETWORK' })

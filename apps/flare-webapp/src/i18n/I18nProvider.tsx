@@ -27,10 +27,9 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
-  // Screen readers and hyphenation follow the document language.
+  // Screen readers and hyphenation follow the document language. The page title is set per screen in App.
   useEffect(() => {
     document.documentElement.lang = language
-    document.title = translate(language, 'app.title')
   }, [language])
 
   const value = useMemo<I18n>(
