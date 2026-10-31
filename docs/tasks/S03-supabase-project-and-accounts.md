@@ -1,7 +1,7 @@
 # S03: Supabase dev project, settings, demo staff accounts
 
-Status: TODO
-Owner:
+Status: DONE
+Owner: Florin Cristi
 Track: S (lead: A) · Phase 0 · Estimate: 30 min · Agent-friendly: no (dashboard work by a human)
 Depends on: none
 Unblocks: A02, A03, B02
@@ -32,10 +32,14 @@ A Supabase project the back end and Staff app can use today, set up safely ([ADR
 6. The service-role key is not needed by anything. Don't copy it anywhere.
 
 ## Notes
-- JWT signing method: _(fill in)_
-- JWKS URI or secret location: _(fill in, without the secret itself)_
+- Project: `flare-dev`, ref `nnyinitbozugulimhvvy`, region `eu-north-1` (Stockholm).
+- Session pooler: host `aws-0-eu-north-1.pooler.supabase.com`, port `5432`, user `postgres.nnyinitbozugulimhvvy`. The password is in the private team chat only.
+- Data API exposes only `public`; `flare` stays out. Public sign-ups are off; email and password sign-in is on.
+- Demo staff users created (auto-confirmed): `cleaning@`, `maintenance@`, `security@`, `manager@` (all `@demo.flare.invalid`).
+- JWT signing method: asymmetric signing keys (JWKS, one ES256 / P-256 key, checked 2026-10-31). A03 uses `SUPABASE_JWKS_URI`; no extra secret env var is needed.
+- JWKS URI: `https://nnyinitbozugulimhvvy.supabase.co/auth/v1/.well-known/jwks.json`. Issuer: `https://nnyinitbozugulimhvvy.supabase.co/auth/v1`.
 
 ## Done when
-- [ ] The back-end owner can connect with `psql` or an IDE using the session-mode string.
-- [ ] Each demo user can sign in (test with the Supabase dashboard's user list or B02).
-- [ ] The JWT method is recorded above.
+- [x] The back-end owner can connect with `psql` or an IDE using the session-mode string.
+- [x] Each demo user can sign in (test with the Supabase dashboard's user list or B02).
+- [x] The JWT method is recorded above.
