@@ -157,12 +157,12 @@ All interactive elements get a two-tone ring that is visible on every background
 - **Sizes:** 20-24 px next to text, 18 px inside badges.
 - **Meaning:** icons always sit next to a word, except the "Mai multe" (⋯) button, which has an accessible label.
 - **Web:** inline SVG symbols (see `reference/index.html`). No icon font and no library.
-- **Staff app:** the same SVG shapes need `react-native-svg` (Expo-supported, but a **new dependency**: B01 asks the team). The alternative is `expo-symbols`, which is already installed but iOS-first and looks different on Android.
+- **Staff app:** the same SVG shapes through `react-native-svg` (approved in B01, `src/components/Icon.tsx`).
 
 | Meaning | Icon |
 | --- | --- |
 | Call 112, call-back | `phone` |
-| Language | `globe` |
+| Language | the other language's flag plus its code ("RO" / "EN"); see below |
 | Never asks for payment | `lock` |
 | Information, automatic answer | `info` |
 | Edit, Bounce | `edit` (pencil) |
@@ -177,7 +177,9 @@ All interactive elements get a two-tone ring that is visible on every background
 | Active, Resolved, Needs review tabs | `list`, `check-circle`, `inbox` |
 | More actions | `more-horizontal` |
 
-**Never:** sparkles or robots for AI, emoji, flags for languages (flags are countries, not languages), or arrows appended to button text.
+**Never:** sparkles or robots for AI, emoji, or arrows appended to button text.
+
+**Flags (decided 2026-10-31, replacing "never flags for languages"):** the language button shows the *other* language's flag (Romania for Romanian, the United Kingdom for English) next to its code, so it is recognised at a glance. A flag never appears alone, because flags are countries, not languages; the accessible name says the language in full.
 
 ## Motion
 

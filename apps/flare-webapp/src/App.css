@@ -2,7 +2,27 @@
 .app {
   display: flex;
   flex-direction: column;
+  width: 100%;
+  max-width: var(--page-max);
   min-height: 100dvh;
+  margin: 0 auto;
+  background: var(--page);
+}
+
+/* Wide screens: the app is one centred column, framed like a phone screen, so the strip, header and
+   content line up instead of the bars stretching edge to edge around a narrow text column. */
+@media (min-width: 40rem) {
+  body {
+    background: var(--tint);
+  }
+
+  .app {
+    min-height: calc(100dvh - 2 * var(--s6));
+    margin: var(--s6) auto;
+    border: var(--hairline);
+    border-radius: var(--r-header);
+    overflow: hidden;
+  }
 }
 
 /* Navy header with rounded bottom corners: logo and airport on the left, language on the right. */
@@ -12,7 +32,7 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--s3);
-  padding: 18px var(--s5) 22px;
+  padding: var(--s3) var(--s5) var(--s4);
   border-radius: 0 0 var(--r-header) var(--r-header);
   background: var(--navy);
   color: var(--paper);
@@ -52,7 +72,7 @@
 .language-button {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--s2);
   min-height: var(--tap);
   padding: 0 14px;
   border: 1.5px solid var(--on-navy-line);
@@ -65,18 +85,20 @@
   cursor: pointer;
 }
 
+/* A thin light edge keeps the flag's dark blue visible on the navy header. */
+.flag {
+  flex: none;
+  border-radius: 3px;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.55);
+}
+
 .app__main {
   flex: 1;
   width: 100%;
-  max-width: var(--page-max);
-  margin: 0 auto;
-  padding: 22px var(--s5) var(--s8);
+  padding: var(--s5) var(--s5) var(--s8);
 }
 
 .app__footer {
-  width: 100%;
-  max-width: var(--page-max);
-  margin: 0 auto;
   padding: 10px var(--s5) max(var(--s4), env(safe-area-inset-bottom));
   font-size: var(--fs-caption);
   color: var(--ink-2);
@@ -151,7 +173,8 @@
   width: 100%;
   min-height: var(--tap-main);
   padding: 14px var(--s4);
-  border: 2px solid var(--line);
+  /* --ink-2, not --line: a field outline needs 3:1 (WCAG 1.4.11); --line is only 1.4:1. */
+  border: 2px solid var(--ink-2);
   border-radius: var(--r-control);
   background: var(--paper);
   font-size: var(--fs-lead);
@@ -325,6 +348,12 @@
   line-height: 1.4;
   text-align: left;
   white-space: pre-wrap;
+}
+
+.quote--plain {
+  padding: 0;
+  background: none;
+  font-weight: 500;
 }
 
 .quote__label {

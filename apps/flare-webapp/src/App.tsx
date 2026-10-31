@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { ApiError, sendMessage, sendQuestionToStaff } from './api/client'
-import type { Answer, Bounce, ErrorCode } from './api/types'
+import type { Answer, Bounce, ErrorCode, UiLanguage } from './api/types'
 import { EmergencyStrip } from './components/EmergencyStrip'
 import { LanguageButton } from './components/LanguageButton'
 import { useI18n } from './i18n/context'
+import type { StringKey } from './i18n/strings'
 import { getDeviceId } from './lib/deviceId'
 import { elapsedMs } from './lib/elapsed'
 import { readQrCodeId } from './lib/qrCode'
@@ -19,10 +20,19 @@ import './App.css'
 type Screen =
   | { name: 'compose'; error?: ErrorCode | 'NETWORK'; focusField?: boolean }
   | { name: 'sending' }
-  | { name: 'answer'; questionId: string; answer: Answer }
+  | { name: 'answer'; questionId: string; answer: Answer; answerLanguage: UiLanguage }
   | { name: 'bounced'; bounce: Bounce }
   | { name: 'confirmation' }
   | { name: 'emergency' }
+
+const PAGE_TITLE = {
+  compose: 'page.compose',
+  sending: 'sending.checking',
+  answer: 'answer.label',
+  bounced: 'page.bounced',
+  confirmation: 'page.confirmation',
+  emergency: 'page.emergency',
+} as const satisfies Record<Screen['name'], StringKey>
 
 const qrCodeId = readQrCodeId()
 const showDemoLabel = import.meta.env.VITE_DEMO_LABEL !== 'false'
@@ -56,6 +66,11 @@ export default function App() {
     heading.focus()
   }, [screen])
 
+  // A meaningful tab title per screen (WCAG 2.4.2), so the tab and screen readers say where the Passenger is.
+  useEffect(() => {
+    document.title = `${t(PAGE_TITLE[screen.name])} – Flare`
+  }, [screen.name, t])
+
   const fail = (error: unknown) =>
     setScreen({ name: 'compose', error: error instanceof ApiError ? error.code : 'NETWORK' })
 
@@ -76,7 +91,8 @@ export default function App() {
       switch (response.outcome) {
         case 'ANSWERED':
           if (response.questionId && response.answer) {
-            setScreen({ name: 'answer', questionId: response.questionId, answer: response.answer })
+            // The server answers in the language the message was sent in; remember it for the lang attribute.
+            setScreen({ name: 'answer', questionId: response.questionId, answer: response.answer, answerLanguage: language })
           } else {
             setScreen({ name: 'confirmation' })
           }
@@ -154,6 +170,7 @@ export default function App() {
           <AnswerScreen
             question={text.trim()}
             answer={screen.answer}
+            answerLanguage={screen.answerLanguage}
             onHelped={startOver}
             onSendToStaff={() => sendToStaff(screen.questionId)}
           />

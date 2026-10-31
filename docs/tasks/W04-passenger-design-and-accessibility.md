@@ -1,7 +1,7 @@
 # W04: Web design and accessibility pass, slow-network test
 
-Status: TODO
-Owner:
+Status: IN PROGRESS
+Owner: BoiceaDan
 Track: B (or C if B is behind) · Phase 3 · Estimate: 1 h · Agent-friendly: no (frontend-design skill in the main session)
 Depends on: W03
 
@@ -23,7 +23,16 @@ The passenger web app looks calm, trustworthy and clearly human-made, and works 
 4. **Throttling:** slow 3G gives a usable Compose in under 3 s.
 5. **Copy:** the team's Romanian speaker reads every RO string, and fixes go to `ro.json`.
 
+## Progress (2026-10-31)
+- **Design pass (frontend-design):** header 12 px shorter (more room for the field with the keyboard open); the question on Answer is plain text instead of a second card (V1 design 03); the rest already met the brief (56 px main buttons, one cobalt action per screen, one animation, reduced motion respected).
+- **Contrast, computed for every V1 pair in use:** all text passes AA, the lowest being white on cobalt and on red at 5.9:1. Fixed: the phone field's border was #CBD8EF (1.4:1 against the 3:1 needed for field outlines, WCAG 1.4.11), now `--ink-2` (7.2:1).
+- **`lang`:** switches with the language (I18nProvider). The Passenger's own text is marked `lang=""`.
+- **Page title per screen:** "<screen> – Flare", in both languages (`page.*` keys).
+- **Look-alike letters:** Instrument Sans draws "Ia" and "la" identically. The one Knowledge base sentence starting "Ia cu tine" now says "Adu cu tine"; the rule is in [accessibility](../design/accessibility.md).
+- **Fonts and images:** fonts are 30 KB (latin) and 11 KB (latin-ext); there are no images. Production transfer is about 0.4 KB HTML + 75 KB JS + 2.7 KB CSS (gzip) + the fonts.
+- **200% zoom:** checked at a 320 px width in W02 and W03.
+
 ## Done when
-- [ ] Lighthouse scores and screenshots in RO and EN are attached to the PR.
-- [ ] The accessibility checks pass.
-- [ ] The RO copy has been reviewed by the team's Romanian speaker.
+- [ ] Lighthouse scores and screenshots in RO and EN are attached to the PR. *By hand: Chrome DevTools, Lighthouse tab, Mobile, on `npm run build && npm run preview`.*
+- [ ] The accessibility checks pass. *Done: contrast, zoom, `lang`, titles. By hand: keyboard only, VoiceOver on iOS Safari, TalkBack on Android Chrome, slow-3G load of Compose under 3 s.*
+- [ ] The RO copy has been reviewed by the team's Romanian speaker (`apps/flare-webapp/src/i18n/ro.json`).

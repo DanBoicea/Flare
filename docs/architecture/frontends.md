@@ -37,7 +37,7 @@ Compose ──send──▶ Sending ──┬─ REPORTED  ─▶ Confirmation �
    └──── error/offline ─────┘ (Compose shows an inline error, text kept, "Try again")
 ```
 
-- **On every screen:** the `EmergencyStrip` at the top ("Emergency?" on the left, a red "Call 112" button with a phone icon on the right), and the `LanguageButton` at the top right.
+- **On every screen:** the `EmergencyStrip` at the top ("Emergency?" on the left, a red "Call 112" button with a phone icon on the right), and the `LanguageButton` at the top right (the other language's flag and code, "RO" or "EN"). On wide screens the whole app is one centred column.
 - **Compose:**
   - the title, which is the big text field's label, then the field with a dictation hint and a counter near the limit (from 800 of 1000 characters). Enter sends, Shift+Enter adds a new line
   - a "I would like a call back (optional)" checkbox; ticking it reveals the phone input and one line on retention. Unticked sends no contact ([ADR-0021](../adr/0021-design-v1-navy-cobalt-instrument-sans.md))

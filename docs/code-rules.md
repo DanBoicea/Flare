@@ -63,7 +63,7 @@ Items marked **(pending)** depend on a decision not made yet (see [technical](te
 
 - **Pure logic is written test-first:** emergency word detection, priority score, rate limiter, grouping candidate selection, and LLM output parsing and validation.
 - **Evaluation script.** It runs over the labelled Romanian and English test set and prints the metrics in [the AI pipeline doc](triage-and-dedup.md). Run it before and after any prompt change and record the result in the PR.
-- **No browser end-to-end tests** during the hackathon.
+- **Passenger web app tests** (decided 2026-10-31, replacing "no browser end-to-end tests"): Vitest and Testing Library for logic and screens (`npm test`), and Playwright for the whole flow in mock mode at 390 px, 320 px and desktop width, in RO and EN (`npm run test:e2e`). The e2e suite fails on mixed languages, horizontal scrolling, a missing 112 strip or lost focus. Run both before a web PR. No browser tests for the Staff app.
 - `main` must build and its tests must pass before anything is merged.
 
 ## 7. Git (GitHub Flow)

@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Tests (Playwright output and screenshots; never commit them)
+test-results
+playwright-report
+blob-report
+playwright/.cache

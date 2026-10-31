@@ -22,6 +22,8 @@ npm run dev                 # http://localhost:5173/q/test123
 
 - `npm run build`: type-check and build to `dist/`. Hosting must serve `index.html` for every path (SPA fallback), over HTTPS.
 - `npm run lint`
+- `npm test`: unit and component tests (Vitest, jsdom).
+- `npm run test:e2e`: browser tests of every screen in mock mode, RO and EN, at 390 px, 320 px and desktop width (Playwright). First time only: `npx playwright install chromium`. Screenshots of every screen go to `test-results/screens/` (ignored by git).
 - `npm run gen:api`: regenerate `src/api/schema.d.ts` from `contract/openapi.yaml` after every contract change, and commit the result. It runs `openapi-typescript` through `npx` instead of installing it, because the package's TypeScript peer range doesn't include our TypeScript 6 yet.
 
 ## Layout

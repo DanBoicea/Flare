@@ -1,56 +1,35 @@
-# Welcome to your Expo app 👋
+# Flare Staff app
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+The phone app staff use to see and act on Issues. Expo 58 + Expo Router + TypeScript, run in Expo Go (no native builds). Design: [docs/architecture/frontends.md](../../docs/architecture/frontends.md) and [docs/design](../../docs/design/README.md).
 
-## Get started
+## Run
 
-1. Install dependencies
+Prerequisites: Node 22 and **Expo Go** on your phone (iOS or Android).
 
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **src/app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```sh
+npm install
+cp .env.example .env        # Windows PowerShell: Copy-Item .env.example .env
+npx expo start              # scan the QR code in the terminal with Expo Go (iOS: the Camera app)
 ```
 
-This command will move the starter code to the **example** directory and create a blank **src/app** directory where you can start developing.
+- **Mock mode:** set `EXPO_PUBLIC_MOCK=true` in `.env` to run without the back end or Supabase. The Active tab lists simulated Issues from `src/fixtures/`, and actions change them in memory.
+- **Real back end:** `EXPO_PUBLIC_MOCK=false`, and `EXPO_PUBLIC_API_BASE_URL` set to your **laptop's LAN IP**, for example `http://192.168.1.23:8080`, not `localhost` (on the phone, `localhost` is the phone). The phone and the laptop must be on the same Wi-Fi. The Supabase values come from the private team chat.
+- `EXPO_PUBLIC_*` values are bundled into the app, so only public values go in `.env` (the Supabase publishable key is public; the service-role key never goes here).
+- After changing `.env`, restart with `npx expo start --clear`.
 
-### Other setup steps
+## Other commands
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+- `npx tsc --noEmit` (or `npm run typecheck`) and `npm run lint`: run both before opening a PR.
+- `npm run gen:api`: regenerate `src/api/schema.d.ts` from `contract/openapi.yaml` after every contract change, and commit the result. Same `npx` approach as the web app.
+- `npx expo install <package>`: always use this to add a package, so the version matches SDK 58. New dependencies need the team's OK ([ADR-0013](../../docs/adr/0013-tooling-and-dependencies.md)).
 
-## Learn more
+## Layout
 
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+| Path | Contents |
+| --- | --- |
+| `src/app/` | Routes (every file is a screen): `sign-in`, `(tabs)/index` (Active), `(tabs)/resolved`, `(tabs)/review`, `issue/[id]` |
+| `src/api/` | `schema.d.ts` (generated), `types.ts`, `client.ts` (typed fetch, bearer token, Problem Details errors), `mock.ts` |
+| `src/i18n/` | `ro.json`, `en.json` (same keys; Romanian is the source), `t()`, language context saved on the phone |
+| `src/constants/theme.ts` | Design tokens from [foundations](../../docs/design/foundations.md#tokens-in-code). Light theme only |
+| `src/components/` | `Icon` (react-native-svg), `SeverityBadge`, `Placeholder` |
+| `src/fixtures/` | Simulated staff and Issues for mock mode (D05 extends them) |

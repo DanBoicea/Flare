@@ -1,7 +1,7 @@
 # B01: Expo skeleton, theme, i18n, API client, mock mode
 
-Status: TODO
-Owner:
+Status: DONE
+Owner: Florin Cristi
 Track: B · Phase 1 · Estimate: 1 h · Agent-friendly: partly
 Depends on: S01, S02
 Unblocks: B02, D04, D05, S09
@@ -25,7 +25,13 @@ A running Staff app with routing, strings, typed API access and mock data, befor
    - `mock.ts`: the same functions served from `src/fixtures/` (D05) when `EXPO_PUBLIC_MOCK=true`, with in-memory mutation for actions
 6. Add `.env.example` (from operations.md). Fill in the README setup section for the Staff app.
 
+## Notes
+- Icons: `react-native-svg` (team OK, 2026-10-31). The font is deferred to B06.
+- Fixtures: `src/fixtures/` holds the four seeded personas and five simulated Issues so mock mode works now; D05 extends them.
+- `client.ts` covers `/me`, `/teams`, the Issue list and detail, and the four status actions; `mock.ts` applies the same visibility rule as the server. Hand-over, overrides and review come with B04 and B05.
+- `setAccessTokenProvider()` is the hook B02 uses to attach the Supabase token.
+
 ## Done when
-- [ ] `npx expo start` runs, and the app opens in Expo Go on an iPhone and an Android phone.
-- [ ] `npx tsc --noEmit` passes.
-- [ ] In mock mode, the placeholder Active screen lists fixture Issues.
+- [x] `npx expo start` runs, and the app opens in Expo Go on an iPhone and an Android phone. (Checked on a phone by the owner, 2026-10-31; bundles build for both platforms.)
+- [x] `npx tsc --noEmit` passes.
+- [x] In mock mode, the placeholder Active screen lists fixture Issues.

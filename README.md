@@ -79,15 +79,13 @@ Prerequisites: Java 21 (or newer), Node 22, and Expo Go on your phone. Maven com
 3. Check `http://localhost:8080/actuator/health` returns `{"status":"UP"}`.
 4. Tests: `./mvnw test` (no database or API key needed). The LLM evaluation is `./mvnw test -Dgroups=eval`; it calls the real Claude API and costs money.
 
-The Staff app section is added by B01.
 
 ### Passenger web app and Staff app
 
 Each app has its own setup notes. Environment variables and the overall local setup are in [docs/architecture/operations.md](docs/architecture/operations.md).
 
 - **Passenger web app:** [apps/flare-webapp/README.md](apps/flare-webapp/README.md). Runs on its own in mock mode (`VITE_MOCK=true`).
-- **Back end:** to be added by task A01.
-- **Staff app:** to be added by task B01.
+- **Staff app:** [apps/flare-mobile/README.md](apps/flare-mobile/README.md). Runs on its own in mock mode (`EXPO_PUBLIC_MOCK=true`), opened in Expo Go.
 
 ## Team
 

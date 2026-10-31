@@ -1,7 +1,7 @@
 # B02: Sign-in, session, `/me`, role-aware tabs
 
-Status: TODO
-Owner:
+Status: DONE
+Owner: Florin Cristi
 Track: B · Phase 1 · Estimate: 1 h · Agent-friendly: no
 Depends on: B01, S03 (and A03 for the real `/me`; use mock mode until then)
 Unblocks: B03
@@ -27,8 +27,14 @@ Staff sign in with their own account and see tabs that match their role ([ADR-00
    - tabs Active and Resolved, plus Needs review only when `/me` `roles` includes `DUTY_MANAGER`
    - a header with the display name, Team chips, a language toggle and sign-out
 
+## Notes
+- `src/auth/supabase.ts` follows Supabase's current Expo example (github.com/supabase/supabase, `examples/user-management/expo-user-management`): plain AsyncStorage, no URL polyfill. The official tutorial's encrypted `LargeSecureStore` was not used: it needs `aes-js`, `react-native-get-random-values` and `expo-secure-store`, which aren't approved. Token refresh runs only while the app is in the foreground (`AppState`).
+- The gate uses Expo Router's `Stack.Protected` and keeps the splash screen up while the saved session and `/me` load. If `/me` can't be reached with a saved session, a retry screen keeps the session instead of signing out.
+- `/me` decides: `403 NOT_A_STAFF_MEMBER` signs out with an explanation, `401` signs out as "session expired".
+- Checked on a phone against `flare-dev` and the local back end on 2026-10-31.
+
 ## Done when
-- [ ] Each of the four demo accounts signs in, and only `manager@` gets Needs review.
-- [ ] Sign-out returns to sign-in.
-- [ ] Killing and reopening the app keeps you signed in.
-- [ ] Wrong password and no-network states are readable in RO and EN.
+- [x] Each of the four demo accounts signs in, and only `manager@` gets Needs review.
+- [x] Sign-out returns to sign-in.
+- [x] Killing and reopening the app keeps you signed in.
+- [x] Wrong password and no-network states are readable in RO and EN.

@@ -1,10 +1,12 @@
-import type { Answer } from '../api/types'
+import type { Answer, UiLanguage } from '../api/types'
 import { useI18n } from '../i18n/context'
 import { Quote } from '../components/Quote'
 
 interface Props {
   question: string
   answer: Answer
+  /** The language the answer was written in; it stays so if the Passenger switches language afterwards. */
+  answerLanguage: UiLanguage
   onHelped: () => void
   onSendToStaff: () => void
 }
@@ -13,13 +15,13 @@ interface Props {
  * Answer (design 03). The answer is rendered as plain text (React escapes it; line breaks kept by CSS),
  * never as HTML, because it comes from an LLM. It is labelled as automatic and as possibly wrong.
  */
-export function AnswerScreen({ question, answer, onHelped, onSendToStaff }: Props) {
+export function AnswerScreen({ question, answer, answerLanguage, onHelped, onSendToStaff }: Props) {
   const { t } = useI18n()
   const found = answer.found
 
   return (
     <div className="screen">
-      <Quote label={t('answer.youAsked')} text={question} />
+      <Quote label={t('answer.youAsked')} text={question} plain />
 
       <section className="answer" aria-labelledby="answer-label">
         <h1 id="answer-label" className="answer__label">
@@ -27,7 +29,7 @@ export function AnswerScreen({ question, answer, onHelped, onSendToStaff }: Prop
         </h1>
         {found ? (
           <>
-            <p className="answer__text" lang="">
+            <p className="answer__text" lang={answerLanguage}>
               {answer.text}
             </p>
             <p className="answer__disclaimer">{t('answer.disclaimer')}</p>

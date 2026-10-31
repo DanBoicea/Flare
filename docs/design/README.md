@@ -42,6 +42,7 @@ Flare looks like **airfield signage**: the international sign families that airp
 
 ## Open decisions (team)
 
+- **Typeface files:** accept adding Atkinson Hyperlegible Next to both apps (ADR-0020).
 - **Severity colours** for High, Medium and Low in V1 (B01, ADR-0021).
 - **Staff app icons:** `react-native-svg`, a new dependency (B01).
 - **"tu" or "dumneavoastră"** when addressing Passengers ([reviews](reviews.md)).
