@@ -24,7 +24,7 @@ The visual source of truth is [flare-design-v1/](flare-design-v1/README.md). The
 - **Focus:** 3 px navy outline with a 2 px white halo; white outline inside the navy header.
 - **Motion:** the sending beacon is a cobalt dot with two rings; the outer ring pulses (2.4 s ease-out) unless reduced motion is on.
 - **Logo:** a cobalt rounded square with a white beacon mark, next to "Flare" (700) and the airport name.
-- **Severity (Staff app):** V1 only defines Critical (red). Until B01 decides High, Medium and Low, use the severity colours and icon shapes below.
+- **Severity (Staff app):** see the table under "Tokens in code" below (decided 2026-10-31).
 
 The sections below describe the superseded airfield-signage direction (ADR-0020). Their space, severity, icon and accessibility rules still apply; their colours, typeface, radii and logo do not.
 
@@ -200,32 +200,17 @@ All interactive elements get a two-tone ring that is visible on every background
 
 **Web** (`apps/flare-webapp/src/styles/tokens.css`) holds the Design V1 tokens above, plus the self-hosted Instrument Sans `@font-face` rules.
 
-**Staff app:** the block below is the superseded signage palette; B01 replaces it with the V1 tokens (keeping the severity entries until decided).
+**Staff app** (`apps/flare-mobile/src/constants/theme.ts`) holds the same V1 colours as React Native constants, plus:
+- **Font:** Instrument Sans as static files (`assets/fonts/InstrumentSans-Regular`, `-SemiBold`, `-Bold.ttf`, with `OFL.txt`), loaded with `expo-font` before the splash screen hides. React Native picks a weight by file, so styles set `fontFamily`, never `fontWeight`.
+- **Severity** (decided 2026-10-31, completing V1; each level has its own colour, icon shape and word):
 
-**Staff app** (`apps/flare-mobile/src/constants/theme.ts`, extends the template file):
+  | Severity | Badge (pill) | Icon | Card |
+  | --- | --- | --- | --- |
+  | Critical | red #C8102E, white text | filled octagon | pale red #FDECEE |
+  | High | navy #0B2545, white text | filled triangle | white |
+  | Medium | tint #DCE6FA, text #1B3E9E (7.5:1) | circle with a bar | white |
+  | Low | white, #44587A text and 1.5 px outline (7.2:1) | circle with a down arrow | white |
 
-```ts
-export const color = {
-  black: '#000000', ink: '#1A1C1F', ink2: '#4A4F57', ink3: '#646B74',
-  paper: '#FFFFFF', paper2: '#F2F4F5', line: '#D5D9DD', signal: '#FFC20E',
-  danger: '#C8102E', dangerInk: '#A0102A', dangerSoft: '#FDECEE',
-  warn: '#D9480F', warnInk: '#9C3B00', warnSoft: '#FFF0E6',
-  info: '#4A86DC', infoInk: '#1A4F91', infoSoft: '#E9F1FB',
-  quiet: '#8A9099', quietInk: '#474D55', quietSoft: '#EEF0F2',
-  ok: '#1E7B4A', okInk: '#17623B', okSoft: '#E7F4EC',
-  headerMuted: '#C4C8CE', live: '#3DD68C',
-} as const
-
-export const severity = {
-  CRITICAL: { bar: color.danger, badgeBg: color.danger, badgeText: color.paper, rowBg: color.dangerSoft, icon: 'octagon-filled' },
-  HIGH: { bar: color.warn, badgeBg: color.warnSoft, badgeText: color.warnInk, rowBg: color.paper, icon: 'triangle' },
-  MEDIUM: { bar: color.info, badgeBg: color.infoSoft, badgeText: color.infoInk, rowBg: color.paper, icon: 'circle-bar' },
-  LOW: { bar: color.quiet, badgeBg: color.quietSoft, badgeText: color.quietInk, rowBg: color.paper, icon: 'circle-down' },
-} as const
-
-export const font = { regular: 'AtkinsonHyperlegibleNext-Regular', bold: 'AtkinsonHyperlegibleNext-Bold', extraBold: 'AtkinsonHyperlegibleNext-ExtraBold' }
-export const size = { caption: 16, body: 17, lead: 18, rowTitle: 20, detailTitle: 24, title: 30 }
-export const space = { 1: 4, 2: 8, 3: 12, 4: 16, 5: 20, 6: 24, 8: 32 }
-export const radius = { sign: 3, control: 8, card: 12, sheet: 16 }
-export const tap = { min: 48, main: 56 }
-```
+  Critical, High and Medium come from `flare-design-v1/07-staff-list.html`; Low completes the set inside the V1 palette.
+- **Location codes** (`ARR-WC-02`) use Instrument Sans in a pill, as in the mock-ups: outlined in lists, navy in the detail. The letters-dash-digits format keeps O and 0 apart in practice.
+- **Shapes:** cards 20, controls 16, code pills 8, header bottom corners 28; staff main buttons 48 tall, header buttons 44.

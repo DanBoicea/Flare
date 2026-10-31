@@ -30,6 +30,7 @@ npx expo start              # scan the QR code in the terminal with Expo Go (iOS
 | `src/app/` | Routes (every file is a screen): `sign-in`, `(tabs)/index` (Active), `(tabs)/resolved`, `(tabs)/review`, `issue/[id]` |
 | `src/api/` | `schema.d.ts` (generated), `types.ts`, `client.ts` (typed fetch, bearer token, Problem Details errors), `mock.ts` |
 | `src/i18n/` | `ro.json`, `en.json` (same keys; Romanian is the source), `t()`, language context saved on the phone |
-| `src/constants/theme.ts` | Design tokens from [foundations](../../docs/design/foundations.md#tokens-in-code). Light theme only |
-| `src/components/` | `Icon` (react-native-svg), `SeverityBadge`, `Placeholder` |
+| `src/constants/theme.ts` | Design V1 tokens from [foundations](../../docs/design/foundations.md#tokens-in-code) (ADR-0021). Light theme only |
+| `assets/fonts/` | Instrument Sans Regular, SemiBold and Bold (`.ttf`, SIL OFL, licence in `OFL.txt`), loaded in `src/app/_layout.tsx` |
+| `src/components/` | `Icon` (react-native-svg), `SeverityBadge`, `StaffHeader`, `Placeholder` |
 | `src/fixtures/` | Simulated staff and Issues for mock mode (D05 extends them) |

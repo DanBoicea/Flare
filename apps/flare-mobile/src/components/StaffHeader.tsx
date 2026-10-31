@@ -3,7 +3,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import type { Me } from '@/api/types';
 import { Icon } from '@/components/Icon';
-import { color, radius, size, space, tap } from '@/constants/theme';
+import { color, font, radius, size, space, tap } from '@/constants/theme';
 import { useI18n } from '@/i18n/context';
 
 interface Props {
@@ -13,8 +13,9 @@ interface Props {
 }
 
 /**
- * The black Staff header (docs/design/components.md, Staff app "Header"). It makes a staff phone
- * easy to tell from a passenger phone at a glance.
+ * The navy Staff header from the V1 mock-ups (07-staff-list.html): logo, "Personal" pill, rounded
+ * bottom corners. The language button, identity row and sign-out are ours (B02), drawn in the
+ * header's outline style. It makes a staff phone easy to tell from a passenger phone at a glance.
  */
 export function StaffHeader({ me, onSignOut }: Props) {
   const { t, language, setLanguage } = useI18n();
@@ -23,21 +24,23 @@ export function StaffHeader({ me, onSignOut }: Props) {
   const roleWords = me?.roles.map((role) => t(`role.${role}`)).join(', ');
 
   return (
-    <View style={[styles.header, { paddingTop: insets.top + space[2] }]}>
+    <View style={[styles.header, { paddingTop: insets.top + space[3] }]}>
       <View style={styles.row}>
-        <View style={styles.plate}>
-          <Text style={styles.plateText}>Flare</Text>
+        <View style={styles.brand}>
+          <View style={styles.logo}>
+            <Icon name="beacon" size={20} color={color.paper} />
+          </View>
+          <Text style={styles.logoText}>Flare</Text>
+          <Text style={styles.staffPill}>{t('app.staff')}</Text>
         </View>
-        <Text style={styles.muted}>{t('app.staff')}</Text>
-        <View style={styles.spacer} />
         <Pressable
-          style={styles.headerButton}
+          style={styles.outlineButton}
           accessibilityRole="button"
           accessibilityLabel={t('language.switchLabel')}
           accessibilityLanguage={other}
           onPress={() => setLanguage(other)}>
-          <Icon name="globe" size={20} color={color.paper} />
-          <Text style={styles.headerButtonText}>{t('language.switch')}</Text>
+          <Icon name="globe" size={18} color={color.paper} />
+          <Text style={styles.outlineButtonText}>{t('language.switch')}</Text>
         </Pressable>
       </View>
 
@@ -47,7 +50,7 @@ export function StaffHeader({ me, onSignOut }: Props) {
             {/* From our back end; shown as plain text. */}
             <Text style={styles.name} accessibilityRole="header">
               {me.displayName}
-              {roleWords ? <Text style={styles.muted}>, {roleWords}</Text> : null}
+              {roleWords ? <Text style={styles.role}>, {roleWords}</Text> : null}
             </Text>
             {me.teams.length > 0 && (
               <View style={styles.chips}>
@@ -59,12 +62,12 @@ export function StaffHeader({ me, onSignOut }: Props) {
           </View>
           {onSignOut && (
             <Pressable
-              style={styles.headerButton}
+              style={styles.outlineButton}
               accessibilityRole="button"
               accessibilityLabel={t('header.signOutLabel')}
               onPress={onSignOut}>
-              <Icon name="log-out" size={20} color={color.paper} />
-              <Text style={styles.headerButtonText}>{t('header.signOut')}</Text>
+              <Icon name="log-out" size={18} color={color.paper} />
+              <Text style={styles.outlineButtonText}>{t('header.signOut')}</Text>
             </Pressable>
           )}
         </View>
@@ -74,33 +77,58 @@ export function StaffHeader({ me, onSignOut }: Props) {
 }
 
 const styles = StyleSheet.create({
-  header: { backgroundColor: color.black, paddingHorizontal: space[5], paddingBottom: space[3], gap: space[3] },
-  row: { flexDirection: 'row', alignItems: 'center', gap: space[3] },
-  spacer: { flex: 1 },
-  plate: { borderColor: color.signal, borderWidth: 2, borderRadius: radius.sign, paddingHorizontal: space[2], paddingVertical: 2 },
-  plateText: { color: color.signal, fontSize: size.lead, fontWeight: '800' },
-  muted: { color: color.headerMuted, fontSize: size.body, fontWeight: '400' },
-  headerButton: {
+  header: {
+    backgroundColor: color.navy,
+    borderBottomLeftRadius: radius.header,
+    borderBottomRightRadius: radius.header,
+    paddingHorizontal: space[5],
+    paddingBottom: space[4] + 2,
+    gap: space[3],
+  },
+  row: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: space[3] },
+  brand: { flexDirection: 'row', alignItems: 'center', gap: space[3] },
+  logo: {
+    width: 32,
+    height: 32,
+    borderRadius: radius.logo,
+    backgroundColor: color.cobalt,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  logoText: { color: color.paper, fontSize: size.logo, fontFamily: font.bold },
+  staffPill: {
+    color: color.paper,
+    backgroundColor: color.cobalt,
+    borderRadius: radius.pill,
+    overflow: 'hidden',
+    paddingHorizontal: space[4],
+    paddingVertical: 4,
+    fontSize: size.caption,
+    fontFamily: font.semiBold,
+  },
+  outlineButton: {
     minHeight: tap.min,
     flexDirection: 'row',
     alignItems: 'center',
     gap: space[2],
-    paddingHorizontal: space[3],
-    borderColor: color.quiet,
+    paddingHorizontal: space[4],
+    borderColor: color.onNavyLine,
     borderWidth: 1.5,
-    borderRadius: radius.control,
+    borderRadius: radius.pill,
   },
-  headerButtonText: { color: color.paper, fontSize: size.caption, fontWeight: '700' },
-  identity: { flex: 1, gap: space[2] },
-  name: { color: color.paper, fontSize: size.body, fontWeight: '700' },
+  outlineButtonText: { color: color.paper, fontSize: size.caption, fontFamily: font.semiBold },
+  identity: { flex: 1, minWidth: 160, gap: space[2] },
+  name: { color: color.paper, fontSize: size.body, fontFamily: font.bold },
+  role: { color: color.onNavy2, fontFamily: font.regular },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: space[2] },
   chip: {
-    color: color.paper,
+    color: color.onNavy2,
     fontSize: size.caption,
-    borderColor: color.headerMuted,
+    fontFamily: font.semiBold,
+    borderColor: color.onNavyLine,
     borderWidth: 1,
-    borderRadius: radius.sign,
-    paddingHorizontal: space[2],
+    borderRadius: radius.pill,
+    paddingHorizontal: space[3],
     paddingVertical: 2,
   },
 });

@@ -13,7 +13,7 @@ import {
 import { USE_MOCK } from '@/api/client';
 import { useSession } from '@/auth/session';
 import { StaffHeader } from '@/components/StaffHeader';
-import { color, radius, size, space, tap } from '@/constants/theme';
+import { color, font, radius, size, space, tap } from '@/constants/theme';
 import { fixtureStaff } from '@/fixtures/staff';
 import { useI18n } from '@/i18n/context';
 import type { StringKey } from '@/i18n/strings';
@@ -94,7 +94,7 @@ function SignInForm() {
       </View>
       {error && <Text style={styles.error} accessibilityRole="alert">{t(error)}</Text>}
       <Pressable
-        style={[styles.primary, busy && styles.busy]}
+        style={({ pressed }) => [styles.primary, pressed && styles.pressed, busy && styles.busy]}
         accessibilityRole="button"
         accessibilityState={{ busy, disabled: busy }}
         onPress={submit}>
@@ -127,42 +127,47 @@ function MockPicker() {
 
 const button = {
   minHeight: tap.main,
-  borderColor: color.black,
-  borderWidth: 2,
   borderRadius: radius.control,
   alignItems: 'center',
   justifyContent: 'center',
-  paddingHorizontal: space[4],
+  paddingHorizontal: space[5],
 } as const;
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: color.paper },
+  screen: { flex: 1, backgroundColor: color.page },
   body: { padding: space[5], gap: space[5] },
-  title: { fontSize: size.title, fontWeight: '800', color: color.ink },
+  title: { fontSize: size.title, fontFamily: font.bold, color: color.ink },
   form: { gap: space[4] },
   field: { gap: space[2] },
-  label: { fontSize: size.body, fontWeight: '700', color: color.ink },
+  label: { fontSize: size.body, fontFamily: font.semiBold, color: color.ink },
   input: {
-    minHeight: tap.main,
-    borderColor: color.black,
+    minHeight: 56,
+    borderColor: color.cobalt,
     borderWidth: 2,
     borderRadius: radius.control,
     paddingHorizontal: space[4],
     fontSize: size.lead,
+    fontFamily: font.regular,
     color: color.ink,
     backgroundColor: color.paper,
   },
+  // V1 inline error: tint with a navy bar on the left.
   error: {
     fontSize: size.body,
-    color: color.dangerInk,
-    backgroundColor: color.dangerSoft,
+    fontFamily: font.regular,
+    color: color.ink,
+    backgroundColor: color.tint,
+    borderLeftColor: color.navy,
+    borderLeftWidth: 4,
     borderRadius: radius.control,
-    padding: space[3],
+    paddingVertical: space[3],
+    paddingHorizontal: space[4],
   },
-  primary: { ...button, backgroundColor: color.signal },
+  primary: { ...button, backgroundColor: color.cobalt },
+  pressed: { backgroundColor: color.cobaltPress },
   busy: { opacity: 0.6 },
-  primaryText: { fontSize: size.lead, fontWeight: '800', color: color.black },
-  secondary: { ...button, backgroundColor: color.paper },
-  secondaryText: { fontSize: size.lead, fontWeight: '700', color: color.ink },
-  note: { fontSize: size.caption, color: color.ink2 },
+  primaryText: { fontSize: size.lead, fontFamily: font.semiBold, color: color.paper },
+  secondary: { ...button, backgroundColor: color.paper, borderColor: color.navy, borderWidth: 2 },
+  secondaryText: { fontSize: size.lead, fontFamily: font.semiBold, color: color.ink },
+  note: { fontSize: size.caption, fontFamily: font.regular, color: color.ink2 },
 });

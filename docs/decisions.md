@@ -109,6 +109,9 @@ Mentor feedback, verbatim: "De adresat partea de impersonare qr code; Marketingu
 - **Staff app icons use `react-native-svg`** (B01), so both apps share the design's icon shapes. The Atkinson font is deferred to B06, as W01 deferred it to W04; both apps use the system font until ADR-0020 is accepted.
 - **Staff app is light theme only** (design foundations, colour rule 6), so the template's colour-scheme hooks were removed.
 - **Staff session storage is plain AsyncStorage** (B02), as in Supabase's current Expo example. The encrypted variant from Supabase's tutorial needs three unapproved packages; it can come later if a real deployment needs it.
+- **Staff app follows Design V1** (ADR-0021): navy header, pale blue page, white cards, cobalt main action, Instrument Sans self-hosted as static `.ttf` files from the official repository (SIL OFL), loaded with `expo-font`.
+- **V1 severity colours completed:** Critical red, High navy, Medium tint with blue text (from the staff mock-up), Low white with a grey outline; each keeps its own icon shape and word. See [foundations](design/foundations.md#tokens-in-code).
+- **Location codes keep Instrument Sans in a pill,** as in the mock-ups, rather than a monospace face.
 
 ### Round 7: passenger contact and design (2026-10-31)
 
