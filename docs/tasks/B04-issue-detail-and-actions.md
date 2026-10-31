@@ -1,7 +1,7 @@
 # B04: Issue detail, actions, hand over, overrides, conflicts
 
-Status: TODO
-Owner:
+Status: IN PROGRESS
+Owner: Luciano
 Track: B · Phase 2 · Estimate: 2 h · Agent-friendly: partly
 Depends on: B03 (real actions need A05)
 Unblocks: B05
@@ -29,6 +29,13 @@ One-tap handling of an Issue, with the full context one tap away and never hidde
    - on `409 VERSION_CONFLICT`, refetch and show a toast ("{name} already took this" when `takenBy` changed, otherwise "This Issue changed, check again")
    - on `404`, go back with "No longer available"
 4. **Confirmations** only for Resolve and Hand over: one extra tap, to avoid accidents.
+
+## Notes
+- **Built:** `app/issue/[id].tsx` (the card, category and Team, a "More actions" section, the Passengers' Reports with contact and flight number labelled "provided by the passenger", the history with from → to for changes), `hooks/use-issue.ts`, `hooks/use-action.ts` (busy while sending; on 409 it reloads and says "{name} already took this" or "This issue changed"; on 404 "No longer available" and back), `components/PickerSheet.tsx` (React Native `Modal`, no new library; Android back closes it), `components/Toast.tsx`, and `issues/transitions.ts`, the same rules as the back end's `IssueTransitions`, so only valid actions are shown.
+- **Layout:** the status actions (I'm on it or Resolve, Acknowledge, Reopen) sit in the bottom bar within thumb reach; Hand over and Change category or Severity, used less often, sit in "More actions" in the page, so the bottom bar stays short. Resolve and Hand over ask for confirmation.
+- **API:** `client.ts` gained `overrideIssue`, `handOverIssue`; a `200` with an empty body is no longer a network error. Mock mode follows the server's transitions and writes history lines.
+- **Checked:** `npm run typecheck` and `npx eslint .` are clean, `node scripts/check-i18n.mjs` passes (including the new `category`, `history` and `reviewReason` families), and `npx expo export --platform android` bundles. **Not yet checked:** on a real phone in Expo Go, in mock mode and against the back end (the "Done when" items below).
+- B03, B04 and B05 were built together and go in one PR (decisions.md, Round 15).
 
 ## Done when
 - [ ] Every action works against the real back end and updates the list on the next poll.

@@ -17,6 +17,20 @@ export type Category = Schemas['Category'];
 export type ErrorCode = Schemas['ErrorCode'];
 export type UiLanguage = Schemas['UiLanguage'];
 export type Problem = Schemas['Problem'];
+export type ReportView = Schemas['ReportView'];
+export type HistoryEntry = Schemas['HistoryEntry'];
+export type PriorityReason = Schemas['PriorityReason'];
+export type QuarantineReason = Schemas['QuarantineReason'];
+export type ReviewList = Schemas['ReviewList'];
+export type ReviewItem = Schemas['ReviewItem'];
+export type ReviewAlert = Schemas['ReviewAlert'];
+export type Language = Schemas['Language'];
 
 /** The one-tap status actions; each sends the version the staff member saw. */
 export type IssueAction = 'acknowledge' | 'take' | 'resolve' | 'reopen';
+
+/** Staff overrides (PATCH): at least one of the two. */
+export interface IssueOverride {
+  category?: Category;
+  severity?: Severity;
+}

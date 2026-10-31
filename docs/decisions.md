@@ -186,6 +186,13 @@ Mentor feedback, verbatim: "De adresat partea de impersonare qr code; Marketingu
 - **Nothing is ever stuck:** after a failed retry, a Report becomes its own Unclassified Issue for the duty manager.
 - **The summariser's input is `IssueSummaryView`,** because `IssueView` already names the ACTIVE/RESOLVED list choice.
 
+### Round 15: Staff app screens (B03-B05, 2026-10-31)
+
+- **One PR for B03, B04 and B05** instead of one per task, to save time; each task file lists its part.
+- **Detail layout:** the status actions sit in the bottom bar; Hand over and the category or Severity change sit in "More actions" in the page, so the bar stays within thumb reach.
+- **The app mirrors the server's transition rules** (`issues/transitions.ts` = `IssueTransitions`) to show only valid actions; the server still decides, and the app handles 409 and 404.
+- **No new libraries:** the pickers use React Native's `Modal`, confirmations use `Alert`, and the toast is a small component.
+
 ## Open questions
 
 ### Waiting for the team's answer
