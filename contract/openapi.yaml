@@ -1,0 +1,554 @@
+openapi: 3.1.0
+info:
+  title: Flare API
+  version: 1.0.0
+  description: >
+    Contract between the passenger web app, the Staff app and the Spring Boot back end.
+    Source of truth (ADR-0012). Prose version: docs/architecture/api.md.
+    All example data is simulated.
+servers:
+  - url: http://localhost:8080
+    description: Local back end
+
+tags:
+  - name: public
+    description: Passenger web app, no authentication
+  - name: staff
+    description: Staff app, Supabase access token required
+  - name: review
+    description: Needs review, duty manager only
+
+paths:
+  /api/public/messages:
+    post:
+      tags: [public]
+      operationId: sendMessage
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/MessageRequest' }
+            example:
+              text: Nu mai e hârtie în toaleta de lângă banda 2
+              uiLanguage: ro
+              qrCodeId: k7f3m9q2xd
+              deviceId: 3f0e8f8e-2c4b-4d6c-9a51-6f1f3f0c2b7a
+              contact: null
+              sendAnyway: false
+              website: ''
+              elapsedMs: 8400
+      responses:
+        '200':
+          description: Outcome of the message. Quarantined and fallback messages also return REPORTED.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/MessageResponse' }
+              example:
+                outcome: ANSWERED
+                questionId: 7d1f0b2a-1c3e-4b5f-9a6d-2e8c4f1a0b3c
+                answer: { text: Biroul de bagaje se află în zona de sosiri, lângă banda 2 (simulat)., found: true }
+                bounce: null
+        '400': { $ref: '#/components/responses/Problem' }
+
+  /api/public/questions/{questionId}/send-to-staff:
+    post:
+      tags: [public]
+      operationId: sendQuestionToStaff
+      security: []
+      parameters:
+        - { name: questionId, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/SendToStaffRequest' }
+      responses:
+        '200':
+          description: Report created (idempotent)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SendToStaffResponse' }
+              example: { outcome: REPORTED }
+        '404': { $ref: '#/components/responses/Problem' }
+
+  /api/staff/me:
+    get:
+      tags: [staff]
+      operationId: getMe
+      responses:
+        '200':
+          description: The signed-in staff member
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Me' }
+              example: { id: 5b8e1c2d-0a4f-4e6b-8c7d-1f2a3b4c5d6e, displayName: Ana (simulat), role: STAFF, teams: [CLEANING] }
+        '401': { $ref: '#/components/responses/Problem' }
+        '403': { $ref: '#/components/responses/Problem' }
+
+  /api/staff/teams:
+    get:
+      tags: [staff]
+      operationId: listTeams
+      responses:
+        '200':
+          description: All Teams
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: '#/components/schemas/Team' } }
+              example: [ { id: CLEANING, name: { ro: Curățenie, en: Cleaning } } ]
+        '401': { $ref: '#/components/responses/Problem' }
+
+  /api/staff/issues:
+    get:
+      tags: [staff]
+      operationId: listIssues
+      parameters:
+        - { name: view, in: query, required: true, schema: { $ref: '#/components/schemas/IssueView' } }
+      responses:
+        '200':
+          description: Issues visible to the caller. ACTIVE sorted by priority; RESOLVED last 24 h, newest first, max 50.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/IssueList' }
+        '401': { $ref: '#/components/responses/Problem' }
+        '403': { $ref: '#/components/responses/Problem' }
+
+  /api/staff/issues/{id}:
+    parameters:
+      - $ref: '#/components/parameters/IssueId'
+    get:
+      tags: [staff]
+      operationId: getIssue
+      responses:
+        '200': { $ref: '#/components/responses/IssueDetail' }
+        '404': { $ref: '#/components/responses/Problem' }
+    patch:
+      tags: [staff]
+      operationId: overrideIssue
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/OverrideRequest' }
+      responses:
+        '200': { $ref: '#/components/responses/IssueDetail' }
+        '400': { $ref: '#/components/responses/Problem' }
+        '404': { $ref: '#/components/responses/Problem' }
+        '409': { $ref: '#/components/responses/Problem' }
+
+  /api/staff/issues/{id}/acknowledge:
+    parameters: [ { $ref: '#/components/parameters/IssueId' } ]
+    post:
+      tags: [staff]
+      operationId: acknowledgeIssue
+      requestBody: { $ref: '#/components/requestBodies/Version' }
+      responses:
+        '200': { $ref: '#/components/responses/IssueDetail' }
+        '404': { $ref: '#/components/responses/Problem' }
+        '409': { $ref: '#/components/responses/Problem' }
+
+  /api/staff/issues/{id}/take:
+    parameters: [ { $ref: '#/components/parameters/IssueId' } ]
+    post:
+      tags: [staff]
+      operationId: takeIssue
+      requestBody: { $ref: '#/components/requestBodies/Version' }
+      responses:
+        '200': { $ref: '#/components/responses/IssueDetail' }
+        '404': { $ref: '#/components/responses/Problem' }
+        '409': { $ref: '#/components/responses/Problem' }
+
+  /api/staff/issues/{id}/resolve:
+    parameters: [ { $ref: '#/components/parameters/IssueId' } ]
+    post:
+      tags: [staff]
+      operationId: resolveIssue
+      requestBody: { $ref: '#/components/requestBodies/Version' }
+      responses:
+        '200': { $ref: '#/components/responses/IssueDetail' }
+        '404': { $ref: '#/components/responses/Problem' }
+        '409': { $ref: '#/components/responses/Problem' }
+
+  /api/staff/issues/{id}/reopen:
+    parameters: [ { $ref: '#/components/parameters/IssueId' } ]
+    post:
+      tags: [staff]
+      operationId: reopenIssue
+      requestBody: { $ref: '#/components/requestBodies/Version' }
+      responses:
+        '200': { $ref: '#/components/responses/IssueDetail' }
+        '404': { $ref: '#/components/responses/Problem' }
+        '409': { $ref: '#/components/responses/Problem' }
+
+  /api/staff/issues/{id}/hand-over:
+    parameters: [ { $ref: '#/components/parameters/IssueId' } ]
+    post:
+      tags: [staff]
+      operationId: handOverIssue
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/HandOverRequest' }
+      responses:
+        '200': { $ref: '#/components/responses/IssueDetail' }
+        '400': { $ref: '#/components/responses/Problem' }
+        '404': { $ref: '#/components/responses/Problem' }
+        '409': { $ref: '#/components/responses/Problem' }
+
+  /api/staff/review:
+    get:
+      tags: [review]
+      operationId: getReview
+      responses:
+        '200':
+          description: Quarantined Reports and QR code alerts
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ReviewList' }
+        '403': { $ref: '#/components/responses/Problem' }
+
+  /api/staff/review/{reportId}/release:
+    parameters: [ { $ref: '#/components/parameters/ReportId' } ]
+    post:
+      tags: [review]
+      operationId: releaseReport
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ReleaseRequest' }
+      responses:
+        '200': { description: Released }
+        '403': { $ref: '#/components/responses/Problem' }
+        '404': { $ref: '#/components/responses/Problem' }
+
+  /api/staff/review/{reportId}/dismiss:
+    parameters: [ { $ref: '#/components/parameters/ReportId' } ]
+    post:
+      tags: [review]
+      operationId: dismissReport
+      responses:
+        '200': { description: Dismissed }
+        '403': { $ref: '#/components/responses/Problem' }
+        '404': { $ref: '#/components/responses/Problem' }
+
+  /actuator/health:
+    get:
+      tags: [public]
+      operationId: health
+      security: []
+      responses:
+        '200':
+          description: Health
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [status]
+                properties: { status: { type: string, example: UP } }
+
+security:
+  - bearerAuth: []
+
+components:
+  securitySchemes:
+    bearerAuth: { type: http, scheme: bearer, bearerFormat: JWT, description: Supabase Auth access token }
+
+  parameters:
+    IssueId: { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+    ReportId: { name: reportId, in: path, required: true, schema: { type: string, format: uuid } }
+
+  requestBodies:
+    Version:
+      required: true
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/VersionRequest' }
+
+  responses:
+    IssueDetail:
+      description: The Issue after the action
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/IssueDetail' }
+    Problem:
+      description: RFC 9457 Problem Details
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+          example: { type: about:blank, title: Conflict, status: 409, detail: The Issue was changed by someone else., code: VERSION_CONFLICT }
+
+  schemas:
+    # ---------- enums ----------
+    Category:
+      type: string
+      enum: [CLEANING_OR_SPILL, TOILET, LIFT_OR_ESCALATOR, BROKEN_OR_MAINTENANCE, SIGN_OR_INFORMATION, ASSISTANCE_NEEDED, LOST_ITEM_OR_PERSON, SAFETY_OR_SECURITY, OTHER]
+    Severity: { type: string, enum: [CRITICAL, HIGH, MEDIUM, LOW] }
+    TeamId: { type: string, enum: [CLEANING, MAINTENANCE, SECURITY, PASSENGER_ASSISTANCE] }
+    StaffRole: { type: string, enum: [STAFF, DUTY_MANAGER] }
+    IssueStatus: { type: string, enum: [NEW, ACKNOWLEDGED, IN_PROGRESS, RESOLVED] }
+    IssueView: { type: string, enum: [ACTIVE, RESOLVED] }
+    Outcome: { type: string, enum: [REPORTED, ANSWERED, BOUNCED, EMERGENCY] }
+    BounceReason: { type: string, enum: [NOT_AIRPORT_RELATED, JOKE_OR_NONSENSE, SPAM_OR_ADVERTISING, ABUSIVE, TOO_UNCLEAR] }
+    QuarantineReason: { type: string, enum: [RATE_LIMIT, QR_CODE_STRICT_MODE, UNKNOWN_QR_CODE, MUTED_QR_CODE, BOT_CHECK, SEND_ANYWAY] }
+    Language: { type: string, enum: [ro, en, other] }
+    UiLanguage: { type: string, enum: [ro, en] }
+    ClassificationSource: { type: string, enum: [LLM, FALLBACK] }
+    PriorityReasonCode: { type: string, enum: [SEVERITY, REPORTERS, WAITING, CRITICAL_LOCATION, EMERGENCY, REOPENED] }
+    HistoryAction:
+      type: string
+      enum: [ISSUE_CREATED, REPORT_ADDED, ACKNOWLEDGED, TAKEN, RESOLVED, REOPENED, CATEGORY_CHANGED, SEVERITY_CHANGED, HANDED_OVER, REPORT_RELEASED, REPORT_DISMISSED]
+    ErrorCode:
+      type: string
+      enum: [TEXT_EMPTY, TEXT_TOO_LONG, INVALID_REQUEST, NOT_FOUND, FORBIDDEN, UNAUTHORIZED, NOT_A_STAFF_MEMBER, VERSION_CONFLICT, INVALID_TRANSITION, INTERNAL_ERROR]
+
+    # ---------- shared ----------
+    LocalizedText:
+      type: object
+      additionalProperties: false
+      required: [ro, en]
+      properties: { ro: { type: string }, en: { type: string } }
+    LocationRef:
+      type: object
+      additionalProperties: false
+      required: [id, label, name]
+      properties:
+        id: { type: string, format: uuid }
+        label: { type: string, example: ARR-WC-02 }
+        name: { $ref: '#/components/schemas/LocalizedText' }
+    StaffRef:
+      type: object
+      additionalProperties: false
+      required: [id, displayName]
+      properties:
+        id: { type: string, format: uuid }
+        displayName: { type: string }
+    Problem:
+      type: object
+      required: [title, status, code]
+      properties:
+        type: { type: string }
+        title: { type: string }
+        status: { type: integer }
+        detail: { type: string }
+        code: { $ref: '#/components/schemas/ErrorCode' }
+
+    # ---------- public ----------
+    MessageRequest:
+      type: object
+      additionalProperties: false
+      required: [text, uiLanguage, deviceId]
+      properties:
+        text: { type: string, minLength: 1, maxLength: 1000 }
+        uiLanguage: { $ref: '#/components/schemas/UiLanguage' }
+        qrCodeId: { type: [string, 'null'], maxLength: 32, description: 'Expected [a-z0-9]; anything else is treated as unknown' }
+        deviceId: { type: string, format: uuid }
+        contact: { type: [string, 'null'], maxLength: 120 }
+        sendAnyway: { type: boolean, default: false }
+        website: { type: string, maxLength: 200, description: Honeypot, must be empty (ADR-0019) }
+        elapsedMs: { type: integer, minimum: 0, description: Milliseconds since the page opened (ADR-0019) }
+    Answer:
+      type: object
+      additionalProperties: false
+      required: [text, found]
+      properties:
+        text: { type: string, maxLength: 600 }
+        found: { type: boolean }
+    Bounce:
+      type: object
+      additionalProperties: false
+      required: [reason, sendAnywayAvailable]
+      properties:
+        reason: { $ref: '#/components/schemas/BounceReason' }
+        sendAnywayAvailable: { type: boolean }
+    MessageResponse:
+      type: object
+      additionalProperties: false
+      required: [outcome, questionId, answer, bounce]
+      properties:
+        outcome: { $ref: '#/components/schemas/Outcome' }
+        questionId: { type: [string, 'null'], format: uuid, description: Set when outcome is ANSWERED }
+        answer: { oneOf: [ { $ref: '#/components/schemas/Answer' }, { type: 'null' } ], description: Set when outcome is ANSWERED }
+        bounce: { oneOf: [ { $ref: '#/components/schemas/Bounce' }, { type: 'null' } ], description: Set when outcome is BOUNCED }
+    SendToStaffRequest:
+      type: object
+      additionalProperties: false
+      required: [deviceId]
+      properties: { deviceId: { type: string, format: uuid } }
+    SendToStaffResponse:
+      type: object
+      additionalProperties: false
+      required: [outcome]
+      properties: { outcome: { type: string, enum: [REPORTED] } }
+
+    # ---------- staff ----------
+    Me:
+      type: object
+      additionalProperties: false
+      required: [id, displayName, role, teams]
+      properties:
+        id: { type: string, format: uuid }
+        displayName: { type: string }
+        role: { $ref: '#/components/schemas/StaffRole' }
+        teams: { type: array, items: { $ref: '#/components/schemas/TeamId' } }
+    Team:
+      type: object
+      additionalProperties: false
+      required: [id, name]
+      properties:
+        id: { $ref: '#/components/schemas/TeamId' }
+        name: { $ref: '#/components/schemas/LocalizedText' }
+    PriorityReason:
+      type: object
+      additionalProperties: false
+      required: [code]
+      properties:
+        code: { $ref: '#/components/schemas/PriorityReasonCode' }
+        severity: { $ref: '#/components/schemas/Severity' }
+        count: { type: integer, description: REPORTERS only }
+        minutes: { type: integer, description: REPORTERS (first to last report) and WAITING }
+    Priority:
+      type: object
+      additionalProperties: false
+      required: [score, reasons]
+      properties:
+        score: { type: integer }
+        reasons: { type: array, items: { $ref: '#/components/schemas/PriorityReason' } }
+    IssueCard:
+      type: object
+      required: [id, version, status, severity, category, team, location, mentionedPlace, summary, summarySource, reportCount, reporterCount, firstReportedAt, lastReportedAt, takenBy, emergency, unclassified, reopened, priority]
+      properties:
+        id: { type: string, format: uuid }
+        version: { type: integer, format: int64 }
+        status: { $ref: '#/components/schemas/IssueStatus' }
+        severity: { $ref: '#/components/schemas/Severity' }
+        category: { $ref: '#/components/schemas/Category' }
+        team: { oneOf: [ { $ref: '#/components/schemas/TeamId' }, { type: 'null' } ], description: null = unrouted (duty manager only) }
+        location: { oneOf: [ { $ref: '#/components/schemas/LocationRef' }, { type: 'null' } ] }
+        mentionedPlace: { type: [string, 'null'], maxLength: 80 }
+        summary: { $ref: '#/components/schemas/LocalizedText' }
+        summarySource: { $ref: '#/components/schemas/ClassificationSource' }
+        reportCount: { type: integer }
+        reporterCount: { type: integer }
+        firstReportedAt: { type: string, format: date-time }
+        lastReportedAt: { type: string, format: date-time }
+        takenBy: { oneOf: [ { $ref: '#/components/schemas/StaffRef' }, { type: 'null' } ] }
+        emergency: { type: boolean }
+        unclassified: { type: boolean }
+        reopened: { type: boolean }
+        priority: { $ref: '#/components/schemas/Priority' }
+      example:
+        id: 9c2b7e1a-3d4f-4a5b-8c6d-7e8f9a0b1c2d
+        version: 3
+        status: NEW
+        severity: MEDIUM
+        category: TOILET
+        team: CLEANING
+        location: { id: 1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d, label: ARR-WC-02, name: { ro: Toalete sosiri, lângă banda 2, en: Arrivals toilets near belt 2 } }
+        mentionedPlace: null
+        summary: { ro: Lipsește hârtia igienică în toaleta de lângă banda 2., en: No toilet paper in the toilets near belt 2. }
+        summarySource: LLM
+        reportCount: 3
+        reporterCount: 3
+        firstReportedAt: '2026-10-31T10:02:00Z'
+        lastReportedAt: '2026-10-31T10:10:00Z'
+        takenBy: null
+        emergency: false
+        unclassified: false
+        reopened: false
+        priority: { score: 383, reasons: [ { code: SEVERITY, severity: MEDIUM }, { code: REPORTERS, count: 3, minutes: 8 } ] }
+    IssueList:
+      type: object
+      additionalProperties: false
+      required: [serverTime, issues]
+      properties:
+        serverTime: { type: string, format: date-time }
+        issues: { type: array, items: { $ref: '#/components/schemas/IssueCard' } }
+    ReportView:
+      type: object
+      additionalProperties: false
+      required: [id, text, language, createdAt, contact, flightNumber, mentionedPlace, classificationSource]
+      properties:
+        id: { type: string, format: uuid }
+        text: { type: string, description: Untrusted passenger text. Render as plain text only. }
+        language: { $ref: '#/components/schemas/Language' }
+        createdAt: { type: string, format: date-time }
+        contact: { type: [string, 'null'] }
+        flightNumber: { type: [string, 'null'] }
+        mentionedPlace: { type: [string, 'null'] }
+        classificationSource: { $ref: '#/components/schemas/ClassificationSource' }
+    HistoryEntry:
+      type: object
+      additionalProperties: false
+      required: [action, staffDisplayName, at, details]
+      properties:
+        action: { $ref: '#/components/schemas/HistoryAction' }
+        staffDisplayName: { type: [string, 'null'], description: null = done by the system }
+        at: { type: string, format: date-time }
+        details: { type: object, additionalProperties: true, description: 'e.g. { from: MEDIUM, to: HIGH }. Never contains passenger text.' }
+    IssueDetail:
+      allOf:
+        - $ref: '#/components/schemas/IssueCard'
+        - type: object
+          required: [reports, history]
+          properties:
+            reports: { type: array, maxItems: 50, items: { $ref: '#/components/schemas/ReportView' } }
+            history: { type: array, items: { $ref: '#/components/schemas/HistoryEntry' } }
+    VersionRequest:
+      type: object
+      additionalProperties: false
+      required: [version]
+      properties: { version: { type: integer, format: int64 } }
+    OverrideRequest:
+      type: object
+      additionalProperties: false
+      required: [version]
+      properties:
+        version: { type: integer, format: int64 }
+        category: { $ref: '#/components/schemas/Category' }
+        severity: { $ref: '#/components/schemas/Severity' }
+    HandOverRequest:
+      type: object
+      additionalProperties: false
+      required: [version, team]
+      properties:
+        version: { type: integer, format: int64 }
+        team: { $ref: '#/components/schemas/TeamId' }
+
+    # ---------- review ----------
+    ReviewItem:
+      type: object
+      additionalProperties: false
+      required: [reportId, text, createdAt, reason, scannedQrCodeId, location]
+      properties:
+        reportId: { type: string, format: uuid }
+        text: { type: string, description: Untrusted passenger text. Render as plain text only. }
+        createdAt: { type: string, format: date-time }
+        reason: { $ref: '#/components/schemas/QuarantineReason' }
+        scannedQrCodeId: { type: [string, 'null'] }
+        location: { oneOf: [ { $ref: '#/components/schemas/LocationRef' }, { type: 'null' } ] }
+    ReviewAlert:
+      type: object
+      additionalProperties: false
+      required: [qrCodeId, location, kind, since, messageCount]
+      properties:
+        qrCodeId: { type: string }
+        location: { oneOf: [ { $ref: '#/components/schemas/LocationRef' }, { type: 'null' } ] }
+        kind: { type: string, enum: [STRICT_MODE] }
+        since: { type: string, format: date-time }
+        messageCount: { type: integer }
+    ReviewList:
+      type: object
+      additionalProperties: false
+      required: [items, alerts]
+      properties:
+        items: { type: array, items: { $ref: '#/components/schemas/ReviewItem' } }
+        alerts: { type: array, items: { $ref: '#/components/schemas/ReviewAlert' } }
+    ReleaseRequest:
+      type: object
+      additionalProperties: false
+      required: [team]
+      properties:
+        team: { oneOf: [ { $ref: '#/components/schemas/TeamId' }, { type: 'null' } ], description: null = route normally }
