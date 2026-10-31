@@ -1,6 +1,8 @@
 import { ApiError } from './errors';
 import { mockApi } from './mock';
-import type { ErrorCode, IssueAction, IssueDetail, IssueList, IssueView, Me, Problem, Team } from './types';
+import type {
+  ErrorCode, IssueAction, IssueDetail, IssueList, IssueOverride, IssueView, Me, Problem, ReviewList, Team, TeamId,
+} from './types';
 
 export { ApiError } from './errors';
 
@@ -15,7 +17,7 @@ export function setAccessTokenProvider(provider: () => Promise<string | null>) {
   getAccessToken = provider;
 }
 
-async function request<T>(method: 'GET' | 'POST', path: string, body?: unknown): Promise<T> {
+async function request<T>(method: 'GET' | 'POST' | 'PATCH', path: string, body?: unknown): Promise<T> {
   const token = await getAccessToken();
   const controller = new AbortController();
   // The timeout covers the whole exchange, including reading the body.
@@ -49,7 +51,9 @@ async function request<T>(method: 'GET' | 'POST', path: string, body?: unknown):
     }
 
     try {
-      return (await response.json()) as T;
+      // Release and dismiss answer 200 with no body.
+      const text = await response.text();
+      return (text ? JSON.parse(text) : undefined) as T;
     } catch {
       // Body cut off, aborted mid-read, or not JSON.
       throw new ApiError(response.status, 'NETWORK');
@@ -82,4 +86,31 @@ export function getIssue(id: string): Promise<IssueDetail> {
 export function issueAction(id: string, action: IssueAction, version: number): Promise<IssueDetail> {
   if (USE_MOCK) return mockApi.issueAction(id, action, version);
   return request<IssueDetail>('POST', `/api/staff/issues/${encodeURIComponent(id)}/${action}`, { version });
+}
+
+export function overrideIssue(id: string, version: number, change: IssueOverride): Promise<IssueDetail> {
+  if (USE_MOCK) return mockApi.overrideIssue(id, version, change);
+  return request<IssueDetail>('PATCH', `/api/staff/issues/${encodeURIComponent(id)}`, { version, ...change });
+}
+
+export function handOverIssue(id: string, version: number, team: TeamId): Promise<IssueDetail> {
+  if (USE_MOCK) return mockApi.handOverIssue(id, version, team);
+  return request<IssueDetail>('POST', `/api/staff/issues/${encodeURIComponent(id)}/hand-over`, { version, team });
+}
+
+/** Needs review: the duty manager only (403 for everyone else). */
+export function getReview(): Promise<ReviewList> {
+  if (USE_MOCK) return mockApi.getReview();
+  return request<ReviewList>('GET', '/api/staff/review');
+}
+
+/** `team` null means "route normally". */
+export function releaseReport(reportId: string, team: TeamId | null): Promise<void> {
+  if (USE_MOCK) return mockApi.releaseReport(reportId, team);
+  return request<void>('POST', `/api/staff/review/${encodeURIComponent(reportId)}/release`, { team });
+}
+
+export function dismissReport(reportId: string): Promise<void> {
+  if (USE_MOCK) return mockApi.dismissReport(reportId);
+  return request<void>('POST', `/api/staff/review/${encodeURIComponent(reportId)}/dismiss`);
 }
