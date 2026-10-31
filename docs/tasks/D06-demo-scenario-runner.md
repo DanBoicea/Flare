@@ -45,7 +45,7 @@ One command replays each demo scenario against any back end, so rehearsals and t
 - Device labels are per scenario, so one simulated phone never hits the per-device limit across scenarios.
 - Scenario 6 also covers the muted QR code (`LND-ENT-03`), which D01 created for the demo.
 - The runner was tested against a local fake server (all 11 scenarios, the `501` stub, and no server). The real check is G2, once A06, A07 and A08 exist.
-- **Rate limits:** see "Notes from D06" in [A07](A07-safety-and-limits.md). Running `all` from one laptop can trip the network limit, and "Send anyway" ends as `RATE_LIMIT`. The README tells the team to restart the back end before a full run.
+- **Rate limits:** resolved in [A07](A07-safety-and-limits.md). For a full run, start the back end with `FLARE_LIMITS_NETWORK_PER10MIN=200` for that run only (README); "Send anyway" now shows `SEND_ANYWAY`.
 
 ## Done when
 - [ ] `node scripts/demo/run-scenario.mjs all` runs against the local back end, and every outcome matches the expectations at G2.

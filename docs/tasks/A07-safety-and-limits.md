@@ -1,7 +1,7 @@
 # A07: Emergency words, bot check, rate limits, Strict mode, Bounce tracker
 
-Status: TODO
-Owner:
+Status: IN PROGRESS
+Owner: Dan (TextNormalizer, EmergencyDetector), Luciano (bot check, limits, Strict mode, Bounces)
 Track: A · Phase 2 · Estimate: 1.5 h · Agent-friendly: yes for the pure classes with their tests (OpenCode), wiring by the main session
 Depends on: A06
 Unblocks: A09
@@ -29,11 +29,19 @@ The deterministic safety net ([decisions round 4](../decisions.md)) and the ment
 ## Seams from A06
 A06 already calls these interfaces in the pipeline order: `safety.BotCheck`, `ratelimit.RateLimitService` (returns `RATE_LIMIT` or `QR_CODE_STRICT_MODE`, counting every non-Emergency message) and `ratelimit.BounceTracker`. Replace the placeholder classes `NoBotCheck`, `NoRateLimits` and `NoBounceTracker` with the real implementations; `MessageIntakeService` needs no change.
 
-## Notes from D06 (for the A07 owner)
-Found while writing the demo scenarios. Nothing in A07 is changed; these are for you to decide.
-1. **Running every demo scenario from one laptop trips the network limit.** Every simulated Passenger shares the laptop's network: 30 messages per 10 minutes, while `run-scenario.mjs all` sends about 45. D06 works around it (spam wave last, restart the back end before a full run). Suggestion: raise only the network limit in `application-local.yml`, for example `flare.limits.network.per-10-min: 200`. The device and QR code limits stay real, so the spam wave still shows Quarantine and Strict mode, and the `demo` profile keeps 30.
-2. **"Three Bounces, then Send anyway" ends as `RATE_LIMIT`, not `SEND_ANYWAY`.** Bounced messages count towards the device limit (3 per 10 minutes), and the rate-limit step (6) runs before the send-anyway step (7). So the fourth message is always over the limit. The Passenger sees the same result, but Needs review shows the wrong reason. Options: don't count Bounced messages towards the device limit, check send-anyway before the rate limits, or accept it.
+## Notes from D06 (resolved in A07)
+Found while writing the demo scenarios. Both are now resolved; the decisions are at the end of each point.
+1. **Running every demo scenario from one laptop trips the network limit.** Every simulated Passenger shares the laptop's network: 30 messages per 10 minutes, while `run-scenario.mjs all` sends about 45. D06 works around it (spam wave last, restart the back end before a full run). Suggestion: raise only the network limit in `application-local.yml`, for example `flare.limits.network.per-10-min: 200`. The device and QR code limits stay real, so the spam wave still shows Quarantine and Strict mode, and the `demo` profile keeps 30. **Decided:** no file change. For a full demo run, start the back end with `FLARE_LIMITS_NETWORK_PER10MIN=200` for that run only; restart without it to test the real limits (`data/demo-scenarios/README.md`).
+2. **"Three Bounces, then Send anyway" ends as `RATE_LIMIT`, not `SEND_ANYWAY`.** Bounced messages count towards the device limit (3 per 10 minutes), and the rate-limit step (6) runs before the send-anyway step (7). So the fourth message is always over the limit. The Passenger sees the same result, but Needs review shows the wrong reason. Options: don't count Bounced messages towards the device limit, check send-anyway before the rate limits, or accept it. **Decided:** every message is still counted, but an eligible "Send anyway" (3 to 5 Bounces) is labelled `SEND_ANYWAY` even when over the device limit. Strict mode and the 6-Bounce block keep their reason (`MessageIntakeService` step 7, tested in `SpamWaveTest`).
+
+## Notes
+- **Built:** `safety/HoneypotBotCheck`, `ratelimit/SlidingWindowCounter`, `ratelimit/InMemoryRateLimitService`, `ratelimit/QrCodeFloodGuard`, `ratelimit/InMemoryBounceTracker`, all pure with an injected `Clock`, and wired by `RateLimitConfig` and `BotCheckConfig`. A06's placeholders (`NoBotCheck`, `NoRateLimits`, `NoBounceTracker`) are deleted; `MessageIntakeService` is unchanged. Items 1-2 (`TextNormalizer`, `EmergencyDetector`) came with A06's branch.
+- **Counting:** every attempt is recorded, also one over the limit, so a flood stays blocked while it lasts. An event exactly a window old no longer counts. Idle keys are swept every 5 minutes.
+- **Precedence:** Strict mode wins over `RATE_LIMIT`, so Needs review shows the attack on the QR code.
+- **Bot check:** a missing `elapsedMs` counts as a bot, since the passenger web app always sends it.
+- **Strict mode alert:** `QrCodeFloodGuard.activeAlerts()` gives the QR code ID, since, until and the number of messages since Strict mode began (for A09).
+- **Tests:** `SlidingWindowCounterTest` (window edges, sweep), `HoneypotBotCheckTest`, `QrCodeFloodGuardTest`, `InMemoryBounceTrackerTest`, `InMemoryRateLimitServiceTest`, and `SpamWaveTest` (the loop below, through the real intake flow). The whole suite passes (242 tests).
 
 ## Done when
-- [ ] Unit tests cover every class, including the window edges and the emergency false-positive guards.
-- [ ] A loop of 25 messages from one device to one QR code shows: the first 3 accepted, then `RATE_LIMIT` Quarantined, then Strict mode on that QR code, and an Emergency phrase still returns `EMERGENCY`.
+- [x] Unit tests cover every class, including the window edges and the emergency false-positive guards.
+- [x] A loop of 25 messages from one device to one QR code shows: the first 3 accepted, then `RATE_LIMIT` Quarantined, then Strict mode on that QR code, and an Emergency phrase still returns `EMERGENCY`. (`SpamWaveTest`)

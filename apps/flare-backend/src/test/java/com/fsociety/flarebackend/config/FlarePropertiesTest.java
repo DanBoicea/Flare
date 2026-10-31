@@ -13,6 +13,8 @@ import org.springframework.boot.context.properties.source.ConfigurationPropertyS
 import org.springframework.boot.env.YamlPropertySourceLoader;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.MutablePropertySources;
+import org.springframework.core.env.StandardEnvironment;
+import org.springframework.core.env.SystemEnvironmentPropertySource;
 import org.springframework.core.io.ClassPathResource;
 
 /** Binds the real application.yml without starting Spring, so a typo in a key fails the build. */
@@ -51,6 +53,25 @@ class FlarePropertiesTest {
 
 		assertThat(flare.getCors().getAllowedOrigins())
 				.containsExactly("http://localhost:5173", "https://flare.example.invalid");
+	}
+
+	/** A demo run from one laptop can raise only the network limit for that run (data/demo-scenarios/README.md). */
+	@Test
+	void theNetworkLimitCanBeRaisedFromAnEnvironmentVariableForOneRun() throws IOException {
+		MutablePropertySources sources = new MutablePropertySources();
+		sources.addFirst(new SystemEnvironmentPropertySource(StandardEnvironment.SYSTEM_ENVIRONMENT_PROPERTY_SOURCE_NAME,
+				Map.of("FLARE_HASH_SECRET", "test-secret", "FLARE_LIMITS_NETWORK_PER10MIN", "200")));
+		new YamlPropertySourceLoader()
+				.load("application.yml", new ClassPathResource("application.yml"))
+				.forEach(sources::addLast);
+		Binder binder = new Binder(ConfigurationPropertySources.from(sources),
+				new PropertySourcesPlaceholdersResolver(sources));
+
+		FlareProperties flare = binder.bind("flare", FlareProperties.class).get();
+
+		assertThat(flare.getLimits().getNetwork().getPer10Min()).isEqualTo(200);
+		assertThat(flare.getLimits().getDevice().getPer10Min()).isEqualTo(3);
+		assertThat(flare.getLimits().getQrCode().getPer10Min()).isEqualTo(20);
 	}
 
 	private static FlareProperties bind(Map<String, Object> environment) throws IOException {

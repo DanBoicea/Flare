@@ -78,14 +78,20 @@ public class MessageIntakeService {
 		// Step 6: rate limits and QR code Strict mode. They count every message from here on, including
 		// Questions and Bounced ones.
 		Optional<QuarantineReason> limited = rateLimits.check(in.deviceHash, in.networkHash, in.qrCodeId);
+
+		// Step 7: "Send anyway" after enough Bounces goes to the duty manager unclassified. Bounces count towards
+		// the device limit, so this message is usually over it; it is Quarantined either way, and SEND_ANYWAY tells
+		// the duty manager why. Strict mode, and a device blocked for too many Bounces, keep their own reason.
+		int sendAnywayAfter = properties.getLimits().getBounce().getSendAnywayAfter();
+		int bounceCount = request.isSendAnyway() ? bounces.bounceCount(in.deviceHash) : 0;
+		boolean sendAnyway = request.isSendAnyway() && bounceCount >= sendAnywayAfter
+				&& bounceCount < properties.getLimits().getBounce().getBlockAfter()
+				&& limited.filter(reason -> reason == QuarantineReason.QR_CODE_STRICT_MODE).isEmpty();
+		if (sendAnyway) {
+			return storeReport(newReport(in, ReportStatus.QUARANTINED, QuarantineReason.SEND_ANYWAY), MessageResponse.reported(), start);
+		}
 		if (limited.isPresent()) {
 			return storeReport(newReport(in, ReportStatus.QUARANTINED, limited.get()), MessageResponse.reported(), start);
-		}
-
-		// Step 7: "Send anyway" after enough Bounces goes to the duty manager unclassified.
-		int sendAnywayAfter = properties.getLimits().getBounce().getSendAnywayAfter();
-		if (request.isSendAnyway() && bounces.bounceCount(in.deviceHash) >= sendAnywayAfter) {
-			return storeReport(newReport(in, ReportStatus.QUARANTINED, QuarantineReason.SEND_ANYWAY), MessageResponse.reported(), start);
 		}
 
 		// Steps 8 and 9: classify, then act on the result.

@@ -2,7 +2,7 @@ package com.fsociety.flarebackend.safety;
 
 /**
  * Pipeline step 5 (ADR-0019): does the request look automated? A filled honeypot field, or a page submitted
- * faster than a person can type, means yes. A07 provides the real check; until then {@link NoBotCheck}.
+ * faster than a person can type, means yes. Implemented by {@link HoneypotBotCheck}.
  */
 public interface BotCheck {
 

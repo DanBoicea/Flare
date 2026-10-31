@@ -6,8 +6,8 @@ import com.fsociety.flarebackend.report.QuarantineReason;
 
 /**
  * Pipeline step 6 (section 3): counts this message against the device, network and QR code limits, and says
- * whether it is over one. Emergencies never reach it, so they are never counted. A07 provides the real limits;
- * until then {@link NoRateLimits}.
+ * whether it is over one. Emergencies never reach it, so they are never counted. Implemented by
+ * {@link InMemoryRateLimitService}.
  */
 public interface RateLimitService {
 

@@ -28,7 +28,7 @@ Unblocks: A07, A08, C02, W02 (real back end), D06
 
 ## Notes
 - **Built:** `MessageIntakeService` follows pipeline.md section 1 step by step and is deliberately not transactional, so each Report is committed before it is queued. `PublicMessageController` (no longer a `501` stub) and `PublicQuestionController` (send to staff). `question/QuestionService` does send-to-staff in one transaction.
-- **Seams for A07:** the interfaces `safety.BotCheck`, `ratelimit.RateLimitService` and `ratelimit.BounceTracker`, with pass-through placeholders `NoBotCheck`, `NoRateLimits` and `NoBounceTracker`. A07 replaces the placeholders; the step order is already wired. Until then "Send anyway" is never offered, because nothing counts Bounces.
+- **Seams for A07:** the interfaces `safety.BotCheck`, `ratelimit.RateLimitService` and `ratelimit.BounceTracker`, with pass-through placeholders `NoBotCheck`, `NoRateLimits` and `NoBounceTracker`. A07 replaced the placeholders with the real implementations; the step order did not change.
 - **`report.ReportClassifications`** copies a classification onto a Report, the same way at intake and in `ReportGrouper` (an Emergency always stays a CRITICAL Emergency).
 - **Classifier output is checked before use:** a missing kind, a Question without an answer, or garbage without a reason falls back to Unclassified, like an exception.
 - **Send to staff:** the window is config (`flare.questions.send-to-staff-window`, 30 minutes). The QR code is resolved again, so a Question from a muted or unknown QR code becomes a Quarantined Report. `ReportGrouper` tells the classifier the Passenger insisted for these Reports.

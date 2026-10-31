@@ -37,5 +37,5 @@
       "sendAnyway": true
     }
   ],
-  "expect": "BOUNCED, BOUNCED, BOUNCED with sendAnywayAvailable=true, then REPORTED. The last one is Quarantined: only manager@ (Radu) sees it in Needs review. Known quirk: with the default device limit (3 per 10 min, Bounces count), the reason shows RATE_LIMIT instead of SEND_ANYWAY (raised with the A07 owner)."
+  "expect": "BOUNCED, BOUNCED, BOUNCED with sendAnywayAvailable=true, then REPORTED. The last one is Quarantined with reason SEND_ANYWAY: only manager@ (Radu) sees it in Needs review."
 }
