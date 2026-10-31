@@ -38,7 +38,9 @@ public class IssueService {
 		issue.setLocation(report.getLocation());
 		issue.setCategory(report.getCategory());
 		issue.setSeverity(report.getSeverity());
-		issue.setTeam(routing.teamFor(report.getCategory(), report.getClassificationSource(), confidence(report)).orElse(null));
+		// A Team chosen by the duty manager on release beats routing by category (A09).
+		issue.setTeam(report.getTeamOverride() != null ? report.getTeamOverride()
+				: routing.teamFor(report.getCategory(), report.getClassificationSource(), confidence(report)).orElse(null));
 		issue.setStatus(IssueStatus.NEW);
 		String fallbackSummary = TextLimits.summary(report.getText(), TextLimits.FALLBACK_SUMMARY);
 		issue.setSummaryRo(report.getStaffSummaryRo() != null ? report.getStaffSummaryRo() : fallbackSummary);

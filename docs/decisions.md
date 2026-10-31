@@ -173,6 +173,12 @@ Mentor feedback, verbatim: "De adresat partea de impersonare qr code; Marketingu
 - **"Send anyway" keeps its label:** an eligible "Send anyway" (3 to 5 Bounces) is Quarantined as `SEND_ANYWAY` even when the device is over its limit, since Bounces count towards it. Every message is still counted.
 - **Full demo runs from one laptop** raise only the network limit, for that run, with `FLARE_LIMITS_NETWORK_PER10MIN=200`. No config file changes; the real limits apply on every normal start.
 
+### Round 13: Needs review (A09, 2026-10-31)
+
+- **Release to a chosen Team** creates a new Issue for that Team, skipping matching, and keeps the quarantine reason on the Report for the history.
+- **Only Quarantined Reports** can be released or dismissed; anything else is `404`.
+- **A released "Send anyway"** is classified as a Report the Passenger insisted on.
+
 ## Open questions
 
 ### Waiting for the team's answer

@@ -138,8 +138,8 @@ Errors:
 
 | Endpoint | Body | Effect |
 | --- | --- | --- |
-| `POST /api/staff/review/{reportId}/release` | `{ "team": TeamId \| null }` | Becomes `ACCEPTED`, goes to the worker. A given Team overrides routing |
-| `POST /api/staff/review/{reportId}/dismiss` | none | Becomes `DISMISSED` |
+| `POST /api/staff/review/{reportId}/release` | `{ "team": TeamId \| null }` | Becomes `ACCEPTED`, goes to the worker. A given Team overrides routing and gets its own new Issue. `404` if the Report is not Quarantined |
+| `POST /api/staff/review/{reportId}/dismiss` | none | Becomes `DISMISSED`. `404` if the Report is not Quarantined |
 
 ## Health
 `GET /actuator/health` returns `{ "status": "UP" }`, without authentication. No other actuator endpoint is exposed.

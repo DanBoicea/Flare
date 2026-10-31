@@ -106,7 +106,8 @@ User turn: the Issue's category, Location, and up to 20 newest Report texts. Out
 
 One thread takes report IDs from a queue. On startup, it enqueues every `ACCEPTED` Report with no Issue.
 
-1. **Classify if needed.** If `classification_source` is null (the Emergency path or "send anyway"), call classify. Emergency Reports keep `CRITICAL` and `emergency=true` whatever the LLM says.
+1. **Classify if needed.** If `classification_source` is null (the Emergency path, "send anyway", or a Report released from Needs review before it was classified), call classify. For "send anyway" and a Question sent to staff, `passengerInsisted` is true. Emergency Reports keep `CRITICAL` and `emergency=true` whatever the LLM says.
+   - **Released to a chosen Team** (`team_override` set): skip steps 2-4 and create a new Issue for that Team.
 2. **Emergency shortcut.** If `emergency`: merge into an open Emergency Issue at the same Location, or create one. Skip the LLM matcher, because speed matters more than precision here.
 3. **Candidates** (`grouping.CandidateSelector`, pure): Issues in the same Area (every Location has an Area) that are either not resolved, or resolved within the last 30 min. Take at most 10, most recently updated first. If there is no Location or no candidate, create a new Issue.
 4. **Match** with the LLM. If there is a match: attach the Report, recompute `report_count` and `reporter_count` (distinct device hashes), set Severity to the highest of the Reports unless overridden, update `last_reported_at` and `mentioned_place`, and if the Issue was resolved, reopen it (`REOPENED`). Otherwise, create a new Issue from the Report: Team from the category-to-Team table, or no Team if Unclassified, `OTHER`, or low confidence.
