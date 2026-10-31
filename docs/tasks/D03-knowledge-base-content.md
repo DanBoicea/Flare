@@ -34,6 +34,12 @@ The facts the LLM may use to answer Questions ([ADR-0005](../adr/0005-knowledge-
 3. **Write for answers:** plain words and concrete places from D01's simulated Locations. No opening hours, prices, phone numbers or company names, unless clearly marked fictional.
 4. **Size:** keep the whole folder under about 15k words. C02 logs the size.
 
+## Notes
+- **For C02:** the folder has 22 topic files (`01-…` to `22-…`), about 2,300 words in total. The loader must skip `README.md`.
+- Places come from `data/airport/airport.json` (D01). Details not in that file (the baggage services desk near belt 2, Wi-Fi name, smoking area, water fountains, trolley spots, family room equipment) are invented and marked "(simulat)" / "(simulated)" in the text.
+- Deliberately not covered, for D02's "not covered" Questions: flight status, shops, restaurants, currency exchange, pharmacy, lounges, prayer room, car rental, pets, visas and customs. This list is also in the folder README.
+- General rules that are not airport-specific are stated generically: the 48-hour advance request for assistance (an EU rule for air passengers) and the indoor smoking ban (a Romanian national rule).
+
 ## Done when
 - [ ] Every Question in D02 marked "covered" can be answered from these files, and the uncovered ones really can't.
 - [ ] Every file has both RO and EN sections.
