@@ -1,0 +1,24 @@
+{
+  "name": "unknown-and-muted-qr-code",
+  "simulated": true,
+  "description": "A message from a QR code ID that was never issued, and one from the muted QR code.",
+  "steps": [
+    {
+      "qrCodeId": "zzzzzzzzzz",
+      "location": null,
+      "text": "Toaleta e murdară",
+      "uiLanguage": "ro",
+      "device": "d1",
+      "waitMs": 1500
+    },
+    {
+      "qrCodeId": "9wa6zzsz5d",
+      "location": "LND-ENT-03",
+      "text": "Ușa de serviciu e blocată și nu pot ieși spre taxi",
+      "uiLanguage": "ro",
+      "device": "d2",
+      "waitMs": 1500
+    }
+  ],
+  "expect": "2 x REPORTED (the Passenger cannot tell). Both Quarantined: in manager@'s (Radu) Needs review with reasons UNKNOWN_QR_CODE and MUTED_QR_CODE. No Team sees them."
+}

@@ -1,0 +1,34 @@
+{
+  "name": "spam-wave",
+  "simulated": true,
+  "description": "A flood of fake Reports at one QR code: first from one phone, then from many. An Emergency still gets through. Run last.",
+  "steps": [
+    {
+      "qrCodeId": "xw9fwv52ua",
+      "location": "DEP-WC-02",
+      "text": "Toaleta e murdara",
+      "uiLanguage": "ro",
+      "device": "spammer",
+      "waitMs": 200,
+      "repeat": 5
+    },
+    {
+      "qrCodeId": "xw9fwv52ua",
+      "location": "DEP-WC-02",
+      "text": "Toaleta e murdara",
+      "uiLanguage": "ro",
+      "device": "bot-{n}",
+      "waitMs": 200,
+      "repeat": 20
+    },
+    {
+      "qrCodeId": "xw9fwv52ua",
+      "location": "DEP-WC-02",
+      "text": "Iese fum din tavan la toalete",
+      "uiLanguage": "ro",
+      "device": "real-passenger",
+      "waitMs": 1500
+    }
+  ],
+  "expect": "Every message returns REPORTED except the last, which returns EMERGENCY. Behind the scenes: the spammer's first 3 are accepted, then RATE_LIMIT Quarantined; around the 20th message the QR code enters Strict mode, and a Strict mode alert appears in manager@'s (Radu) Needs review. The smoke Emergency is CRITICAL for Security despite Strict mode. If the network limit (30 per 10 min) was already used up by earlier scenarios, later messages show RATE_LIMIT instead (see README)."
+}

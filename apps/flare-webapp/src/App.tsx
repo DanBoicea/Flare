@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { ApiError, sendMessage, sendQuestionToStaff } from './api/client'
-import type { Answer, Bounce, ErrorCode } from './api/types'
+import type { Answer, Bounce, ErrorCode, UiLanguage } from './api/types'
 import { EmergencyStrip } from './components/EmergencyStrip'
 import { LanguageButton } from './components/LanguageButton'
 import { useI18n } from './i18n/context'
@@ -20,7 +20,7 @@ import './App.css'
 type Screen =
   | { name: 'compose'; error?: ErrorCode | 'NETWORK'; focusField?: boolean }
   | { name: 'sending' }
-  | { name: 'answer'; questionId: string; answer: Answer }
+  | { name: 'answer'; questionId: string; answer: Answer; answerLanguage: UiLanguage }
   | { name: 'bounced'; bounce: Bounce }
   | { name: 'confirmation' }
   | { name: 'emergency' }
@@ -91,7 +91,8 @@ export default function App() {
       switch (response.outcome) {
         case 'ANSWERED':
           if (response.questionId && response.answer) {
-            setScreen({ name: 'answer', questionId: response.questionId, answer: response.answer })
+            // The server answers in the language the message was sent in; remember it for the lang attribute.
+            setScreen({ name: 'answer', questionId: response.questionId, answer: response.answer, answerLanguage: language })
           } else {
             setScreen({ name: 'confirmation' })
           }
@@ -169,6 +170,7 @@ export default function App() {
           <AnswerScreen
             question={text.trim()}
             answer={screen.answer}
+            answerLanguage={screen.answerLanguage}
             onHelped={startOver}
             onSendToStaff={() => sendToStaff(screen.questionId)}
           />

@@ -83,7 +83,7 @@ Write names in `Owner:` when you claim a task. The track split is a recommendati
 | [C06](C06-prompt-tuning.md) | Prompt tuning from eval results, model choice | C | 3 | C05 |
 | [D01](D01-simulated-airport-data.md) | Simulated Areas, Locations, QR codes, staff seed, reset script | D | 1 | A02 |
 | [D02](D02-labelled-test-set.md) | Labelled RO/EN test set and grouping pairs | D | 1-2 | none |
-| [D03](D03-knowledge-base-content.md) | Simulated Knowledge base, RO + EN | D | 1 | none |
+| [D03](D03-knowledge-base-content.md) | Simulated Knowledge base, RO + EN | D | 1 | D01 |
 | [D04](D04-string-files.md) | RO/EN string files for both apps, i18n check script | D | 1 | W01, B01 |
 | [D05](D05-mock-fixtures.md) | Mock fixtures for both apps | D | 1 | S02 |
 | [D06](D06-demo-scenario-runner.md) | Demo scenario files and runner script | D | 2 | S02, D01 |

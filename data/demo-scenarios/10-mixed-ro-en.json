@@ -1,0 +1,24 @@
+{
+  "name": "mixed-ro-en",
+  "simulated": true,
+  "description": "The same problem reported in Romanian and in English.",
+  "steps": [
+    {
+      "qrCodeId": "8hf2c2ty55",
+      "location": "CHK-LIFT-01",
+      "text": "Liftul nu vine de 10 minute",
+      "uiLanguage": "ro",
+      "device": "d1",
+      "waitMs": 1500
+    },
+    {
+      "qrCodeId": "8hf2c2ty55",
+      "location": "CHK-LIFT-01",
+      "text": "The lift isn't coming, I've been waiting ages",
+      "uiLanguage": "en",
+      "device": "d2",
+      "waitMs": 1500
+    }
+  ],
+  "expect": "2 x REPORTED. One LIFT_OR_ESCALATOR Issue at CHK-LIFT-01 with '2 people reported', Team Maintenance (Mihai). The summary is available in both languages."
+}

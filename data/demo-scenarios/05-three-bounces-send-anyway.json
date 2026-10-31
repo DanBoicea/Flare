@@ -1,0 +1,41 @@
+{
+  "name": "three-bounces-send-anyway",
+  "simulated": true,
+  "description": "Three Bounces in a row, then the Passenger insists with 'Send anyway'.",
+  "steps": [
+    {
+      "qrCodeId": "vgdfdvghwy",
+      "location": "ARR-SEAT-01",
+      "text": "knock knock",
+      "uiLanguage": "en",
+      "device": "d1",
+      "waitMs": 1500
+    },
+    {
+      "qrCodeId": "vgdfdvghwy",
+      "location": "ARR-SEAT-01",
+      "text": "asdfghjkl",
+      "uiLanguage": "en",
+      "device": "d1",
+      "waitMs": 1500
+    },
+    {
+      "qrCodeId": "vgdfdvghwy",
+      "location": "ARR-SEAT-01",
+      "text": "lol",
+      "uiLanguage": "en",
+      "device": "d1",
+      "waitMs": 1500
+    },
+    {
+      "qrCodeId": "vgdfdvghwy",
+      "location": "ARR-SEAT-01",
+      "text": "lol",
+      "uiLanguage": "en",
+      "device": "d1",
+      "waitMs": 1500,
+      "sendAnyway": true
+    }
+  ],
+  "expect": "BOUNCED, BOUNCED, BOUNCED with sendAnywayAvailable=true, then REPORTED. The last one is Quarantined: only manager@ (Radu) sees it in Needs review. Known quirk: with the default device limit (3 per 10 min, Bounces count), the reason shows RATE_LIMIT instead of SEND_ANYWAY (raised with the A07 owner)."
+}

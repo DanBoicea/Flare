@@ -1,0 +1,40 @@
+{
+  "name": "toilet-paper-burst",
+  "simulated": true,
+  "description": "Three Passengers report no toilet paper at the same toilet; a fourth says it is dirty.",
+  "steps": [
+    {
+      "qrCodeId": "skp4fq3r5e",
+      "location": "ARR-WC-02",
+      "text": "Nu mai e hârtie igienică",
+      "uiLanguage": "ro",
+      "device": "d1",
+      "waitMs": 1500
+    },
+    {
+      "qrCodeId": "skp4fq3r5e",
+      "location": "ARR-WC-02",
+      "text": "No toilet paper in cubicle 2",
+      "uiLanguage": "en",
+      "device": "d2",
+      "waitMs": 1500
+    },
+    {
+      "qrCodeId": "skp4fq3r5e",
+      "location": "ARR-WC-02",
+      "text": "Toaleta de lângă banda 2 nu mai are hârtie",
+      "uiLanguage": "ro",
+      "device": "d3",
+      "waitMs": 1500
+    },
+    {
+      "qrCodeId": "skp4fq3r5e",
+      "location": "ARR-WC-02",
+      "text": "Toaleta e foarte murdară",
+      "uiLanguage": "ro",
+      "device": "d4",
+      "waitMs": 1500
+    }
+  ],
+  "expect": "4 x REPORTED. One TOILET Issue at ARR-WC-02 with '3 people reported', and a separate 'dirty' Issue at the same toilet. Both Team Cleaning: visible to cleaning@ (Ana)."
+}

@@ -24,6 +24,7 @@ The tooling and the complete list of libraries we expect to need. Anything not o
 | Back end (test) | `spring-boot-starter-webmvc-test`, `spring-boot-starter-security-test` (in the skeleton) | JUnit 5, AssertJ, Mockito, MockMvc web-slice tests |
 | Passenger web app | `react`, `react-dom`, `vite`, `typescript`, `@vitejs/plugin-react` | Vite template defaults |
 | Passenger web app (dev) | `openapi-typescript` | Types from the contract |
+| Passenger web app (test, added 2026-10-31) | `vitest`, `jsdom`, `@testing-library/react`, `@testing-library/user-event`, `@testing-library/jest-dom`, `@playwright/test` | Unit and component tests; browser tests of the flow in mock mode (Playwright downloads its own Chromium, about 150 MB, with `npx playwright install chromium`) |
 | Staff app | Expo default template packages | App framework and navigation |
 | Staff app | `@supabase/supabase-js`, `@react-native-async-storage/async-storage` | Staff sign-in and keeping the session ([ADR-0010](0010-supabase-postgres-and-auth-only.md)); set up as in Supabase's current Expo example: AsyncStorage storage, no URL polyfill needed (B02) |
 | Staff app | `expo-localization` | Device language for the default UI language |

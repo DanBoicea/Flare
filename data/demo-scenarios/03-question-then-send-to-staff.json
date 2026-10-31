@@ -1,0 +1,21 @@
+{
+  "name": "question-then-send-to-staff",
+  "simulated": true,
+  "description": "A Question gets an automatic Knowledge base answer, then the Passenger sends it to staff anyway.",
+  "steps": [
+    {
+      "qrCodeId": "zb8mt6agr3",
+      "location": "CHK-INFO-01",
+      "text": "Cum cer asistență pentru scaun cu rotile?",
+      "uiLanguage": "ro",
+      "device": "d1",
+      "waitMs": 1500
+    },
+    {
+      "sendToStaff": true,
+      "device": "d1",
+      "waitMs": 1500
+    }
+  ],
+  "expect": "ANSWERED with found=true (from 08-reduced-mobility-assistance), then REPORTED. A Report appears for Passenger assistance at CHK-INFO-01: visible to maintenance@ (Mihai, who is in Passenger assistance)."
+}

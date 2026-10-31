@@ -12,17 +12,19 @@ export async function mockSendMessage(request: MessageRequest): Promise<MessageR
   await wait()
   const text = request.text.toLowerCase()
 
-  if (/(fire|foc|incendiu|112)/.test(text)) return mockResponses.emergency
+  if (/(fire|foc|incendiu|112)/.test(text)) return mockResponses.emergency()
   // "Send anyway" always ends as a (Quarantined) Report on the real server.
-  if (request.sendAnyway) return mockResponses.reported
+  if (request.sendAnyway) return mockResponses.reported()
   if (/(joke|glum|spam|test)/.test(text)) {
     bounceCount += 1
     return mockResponses.bounced(bounceCount >= 3)
   }
   if (text.includes('?')) {
-    return text.includes('wifi') ? mockResponses.answeredNotFound : mockResponses.answered
+    return text.includes('wifi')
+      ? mockResponses.answeredNotFound(request.uiLanguage)
+      : mockResponses.answered(request.uiLanguage)
   }
-  return mockResponses.reported
+  return mockResponses.reported()
 }
 
 export async function mockSendQuestionToStaff(): Promise<SendToStaffResponse> {

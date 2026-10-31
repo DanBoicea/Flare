@@ -1,0 +1,24 @@
+{
+  "name": "emergency-ro-en",
+  "simulated": true,
+  "description": "A medical Emergency in Romanian and one in English.",
+  "steps": [
+    {
+      "qrCodeId": "z2adejw8y9",
+      "location": "DEP-SEAT-01",
+      "text": "Un om a căzut și nu mai respiră lângă porțile nord",
+      "uiLanguage": "ro",
+      "device": "d1",
+      "waitMs": 1500
+    },
+    {
+      "qrCodeId": "5m34p7yevg",
+      "location": "ARR-BELT-02",
+      "text": "A man collapsed near belt 2 and isn't moving",
+      "uiLanguage": "en",
+      "device": "d2",
+      "waitMs": 1500
+    }
+  ],
+  "expect": "2 x EMERGENCY (the web app shows the 112 screen). Two CRITICAL Issues at the top of the list for security@ (Ioana) and manager@ (Radu)."
+}

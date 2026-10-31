@@ -22,7 +22,7 @@ Unblocks: everything
 
 ## Notes
 - Track owners: A: Cristi · B: Cristi · C: Dan · D (OpenCode): Luciano
-- Machine gaps: _
+- Machine gaps: Luciano had Java 25 and Node 25; Java 21 and Node 22 are now installed (fixed).
 - ADR objections: _
 
 ## Done when

@@ -26,6 +26,11 @@ The deterministic safety net ([decisions round 4](../decisions.md)) and the ment
 8. **Wire them** into `MessageIntakeService` in place of A06's no-ops, in the exact step order. **Emergencies skip every limit.**
 9. **Network address:** use `request.getRemoteAddr()`. Behind a proxy it is correct only with `server.forward-headers-strategy=framework`, which is enabled only in the `demo` profile and documented in A11.
 
+## Notes from D06 (for the A07 owner)
+Found while writing the demo scenarios. Nothing in A07 is changed; these are for you to decide.
+1. **Running every demo scenario from one laptop trips the network limit.** Every simulated Passenger shares the laptop's network: 30 messages per 10 minutes, while `run-scenario.mjs all` sends about 45. D06 works around it (spam wave last, restart the back end before a full run). Suggestion: raise only the network limit in `application-local.yml`, for example `flare.limits.network.per-10-min: 200`. The device and QR code limits stay real, so the spam wave still shows Quarantine and Strict mode, and the `demo` profile keeps 30.
+2. **"Three Bounces, then Send anyway" ends as `RATE_LIMIT`, not `SEND_ANYWAY`.** Bounced messages count towards the device limit (3 per 10 minutes), and the rate-limit step (6) runs before the send-anyway step (7). So the fourth message is always over the limit. The Passenger sees the same result, but Needs review shows the wrong reason. Options: don't count Bounced messages towards the device limit, check send-anyway before the rate limits, or accept it.
+
 ## Done when
 - [ ] Unit tests cover every class, including the window edges and the emergency false-positive guards.
 - [ ] A loop of 25 messages from one device to one QR code shows: the first 3 accepted, then `RATE_LIMIT` Quarantined, then Strict mode on that QR code, and an Emergency phrase still returns `EMERGENCY`.
