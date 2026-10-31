@@ -140,6 +140,7 @@ Mentor feedback, verbatim: "De adresat partea de impersonare qr code; Marketingu
 - **Knowledge base places:** places come from `airport.json`. Details not in it (the baggage services desk near belt 2, the Wi-Fi name, the smoking area, water fountains, trolley spots) are invented and marked "(simulat)" / "(simulated)" in the text. Some topics are left out on purpose so the demo can show an honest "I don't know" (listed in `data/knowledge-base/README.md`).
 - **Test set: category of an Emergency (assumption, to be confirmed by the Track C owner):** medical → `ASSISTANCE_NEEDED`, missing child → `LOST_ITEM_OR_PERSON`, fire, smoke or threat → `SAFETY_OR_SECURITY`. Routing does not depend on it. The test set also adds `expected.language`.
 - **Demo scenarios run the spam wave last,** and a full run needs a back-end restart first, because every simulated Passenger shares one laptop's network limit. Raising the network limit in the `local` profile is suggested to the A07 owner (see A07's notes).
+- **Competitor check (D08):** Aerosimple's Vigil module already offers QR code reporting in airports with AI triage, routing and clustering. Flare's pitch positions on Romanian first, no-training UX, the fake QR code and spam stance, and instant Knowledge base answers, with no "first" or "only" claims. See [research/competitors.md](research/competitors.md).
 
 ## Open questions
 
