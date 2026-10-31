@@ -16,7 +16,7 @@ Every accepted Report ends up in exactly one Issue, quickly, even with no LLM.
 1. **Seams:**
    - `grouping/IssueMatcher` with `NoMatchIssueMatcher`
    - `issue/summary/IssueSummarizer` with `FallbackIssueSummarizer`
-   - view records as in [backend](../architecture/backend.md)
+   - view classes as in [backend](../architecture/backend.md)
 2. **`grouping/GroupingWorker`:**
    - a single-thread executor and a `LinkedBlockingQueue<UUID>`
    - `enqueue(reportId)`

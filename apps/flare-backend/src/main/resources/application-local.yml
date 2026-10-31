@@ -1,0 +1,4 @@
+# 'local' profile: also loads the simulated demo seed (db/seed/R__demo_seed.sql, task D01).
+spring:
+  flyway:
+    locations: classpath:db/migration,classpath:db/seed
