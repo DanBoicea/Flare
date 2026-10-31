@@ -24,7 +24,8 @@ com.fsociety.flarebackend
 │                          IssueMatcher (interface), NoMatchIssueMatcher (fallback)
 │   └── llm/           [C] LlmIssueMatcher
 ├── issue/             [A] Issue entity + repository, IssueService (create/merge/reopen), IssueActionService,
-│                          PriorityCalculator (pure), StaffIssueController, dto/
+│                          IssueQueryService (list and detail), IssueCards (DTO mapping), PriorityCalculator (pure),
+│                          IssueConfig, StaffIssueController, dto/
 │   └── summary/       [A] IssueSummarizer (interface), FallbackIssueSummarizer
 │       └── llm/       [C] LlmIssueSummarizer
 ├── review/            [A] ReviewController, ReviewService (Quarantined list, Strict mode alerts, release, dismiss)
