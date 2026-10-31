@@ -1,0 +1,16 @@
+{
+  "name": "single-report",
+  "simulated": true,
+  "description": "One Passenger reports a broken seat. It is classified and routed to the right Team.",
+  "steps": [
+    {
+      "qrCodeId": "dkvunmjbq2",
+      "location": "DEP-SEAT-02",
+      "text": "Un scaun e rupt, spătarul atârnă",
+      "uiLanguage": "ro",
+      "device": "d1",
+      "waitMs": 1500
+    }
+  ],
+  "expect": "REPORTED. One Issue at DEP-SEAT-02: BROKEN_OR_MAINTENANCE, MEDIUM, Team Maintenance. Visible to maintenance@ (Mihai) and manager@ (Radu), not to cleaning@ (Ana)."
+}

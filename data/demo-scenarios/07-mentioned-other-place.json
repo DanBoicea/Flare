@@ -1,0 +1,16 @@
+{
+  "name": "mentioned-other-place",
+  "simulated": true,
+  "description": "Scanned at a toilet, but the message is about the departures lift.",
+  "steps": [
+    {
+      "qrCodeId": "kc7m2th6qc",
+      "location": "DEP-WC-01",
+      "text": "Sunt la toaletă, dar voiam să zic că liftul de la plecări nu merge",
+      "uiLanguage": "ro",
+      "device": "d1",
+      "waitMs": 1500
+    }
+  ],
+  "expect": "REPORTED. One LIFT_OR_ESCALATOR Issue, HIGH, Team Maintenance (Mihai). The Issue shows 'Scanned at' DEP-WC-01 and 'Mentioned' the departures lift."
+}
