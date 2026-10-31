@@ -52,7 +52,7 @@ EXPO_PUBLIC_MOCK=false
 ## Running locally (for the README "Setup" section, filled in by S01 and the skeleton tasks)
 
 1. **Prerequisites:** Java 21, Node 22, and Expo Go on your phone. Maven and Expo come with the projects (wrapper and npx).
-2. **LLM (optional):** start `llama-server` as described in S04 (`--port 8081 --alias flare-llm`), then set `FLARE_LLM_ENABLED=true`. Without it, the back end runs on the fallbacks.
+2. **LLM (optional):** install llama.cpp, put the model file in the git-ignored `models/` folder (S04 lists the file and link), and run `node scripts/llm/start-llama-server.mjs` (settings at the top of the script). When `http://127.0.0.1:8081/health` returns `{"status":"ok"}`, set `FLARE_LLM_ENABLED=true` for the back end. Without it, the back end runs on the fallbacks.
 3. **Back end:** set the env vars, then `cd apps/flare-backend && ./mvnw spring-boot:run -Dspring-boot.run.profiles=local` (on Windows `mvnw.cmd`). Flyway migrates and seeds on start. Check that `GET http://localhost:8080/actuator/health` returns UP.
 4. **Web:** `cd apps/flare-webapp && npm install && npm run dev`, then open `http://localhost:5173/q/<a seeded qrCodeId>`.
 5. **Staff:** `cd apps/flare-mobile && npm install && npx expo start`, scan the terminal QR with Expo Go, and sign in with a simulated demo account.
