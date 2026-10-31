@@ -108,6 +108,7 @@ Mentor feedback, verbatim: "De adresat partea de impersonare qr code; Marketingu
 - **Staff-member check is central** (A03): an interceptor on `/api/staff/**` rejects valid tokens without an active `staff_member` row with `403 NOT_A_STAFF_MEMBER`, so individual endpoints can't forget it.
 - **Staff app icons use `react-native-svg`** (B01), so both apps share the design's icon shapes. The Atkinson font is deferred to B06, as W01 deferred it to W04; both apps use the system font until ADR-0020 is accepted.
 - **Staff app is light theme only** (design foundations, colour rule 6), so the template's colour-scheme hooks were removed.
+- **Staff session storage is plain AsyncStorage** (B02), as in Supabase's current Expo example. The encrypted variant from Supabase's tutorial needs three unapproved packages; it can come later if a real deployment needs it.
 
 ### Round 7: passenger contact and design (2026-10-31)
 
