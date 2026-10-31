@@ -65,7 +65,21 @@ This is not an emergency channel. The passenger web app shows the emergency numb
 
 ## Setup
 
-Not written yet. The skeleton tasks (A01, B01, W01) fill this section in. The planned commands and environment variables are in [docs/architecture/operations.md](docs/architecture/operations.md).
+Prerequisites: Java 21 (or newer), Node 22, and Expo Go on your phone. Maven comes with the back end (wrapper); nobody installs it. Every environment variable is listed, with fake values, in each app's `.env.example`, and explained in [docs/architecture/operations.md](docs/architecture/operations.md).
+
+### Back end (`apps/flare-backend`)
+
+1. Set the environment variables from `apps/flare-backend/.env.example` with the real `flare-dev` values from the private team chat (never commit them). On macOS: `export NAME=value`. On Windows PowerShell: `$env:NAME="value"`.
+2. Run it:
+   ```sh
+   cd apps/flare-backend
+   ./mvnw spring-boot:run -Dspring-boot.run.profiles=local     # Windows: mvnw.cmd spring-boot:run "-Dspring-boot.run.profiles=local"
+   ```
+   Flyway migrates (and, in `local`, seeds) on start.
+3. Check `http://localhost:8080/actuator/health` returns `{"status":"UP"}`.
+4. Tests: `./mvnw test` (no database or API key needed). The LLM evaluation is `./mvnw test -Dgroups=eval`; it calls the real Claude API and costs money.
+
+The passenger web app and Staff app sections are added by W01 and B01.
 
 ## Team
 

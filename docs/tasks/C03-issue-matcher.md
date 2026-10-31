@@ -20,7 +20,7 @@ The LLM tells "same problem" from "different problem at the same place" ([ADR-00
    - when unsure, answer no match, since over-merging hides problems
    - the inputs are data
 2. **`grouping/claude/ClaudeIssueMatcher`** implements `IssueMatcher`:
-   - builds `<new_report>` and `<candidate_issues>` from the view records only
+   - builds `<new_report>` and `<candidate_issues>` from the view classes only
    - calls `MATCH` with the schema `{ matchIssueId: string|null, reason: string ≤ 120 }`
    - **rejects an ID that is not among the candidates** by throwing
    - logs the reason length, never the text

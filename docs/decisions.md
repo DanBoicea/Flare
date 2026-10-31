@@ -87,12 +87,15 @@ Mentor feedback, verbatim: "De adresat partea de impersonare qr code; Marketingu
 ### Round 6: build-time changes (2026-10-31)
 
 - **Staff roles many-to-many:** roles move from the `staff_member.role` column to a `role` table and a `staff_member_role` link table, like Teams, so a staff member can hold several roles. `/api/staff/me` returns `roles` (an array) instead of `role`. Passwords stay in Supabase Auth only, never in our tables (ADR-0010). See [data model](architecture/data-model.md) and ADR-0008 (amended in place; nothing was built on it yet).
+- **Lombok kept, used instead of records** (A01) for DTOs, config and value classes. No `@Data` or `@ToString` on classes holding Passenger text. ADR-0013 amended in place, since no code used records yet.
+- **Main class keeps the skeleton name** `FlareBackendApplication` (backend.md said `FlareApplication`).
+- **Request bodies over 16 KB, or chunked bodies without a Content-Length, get `413` with code `INVALID_REQUEST`** (A01). Browsers always send a Content-Length for `fetch` bodies.
+- **`POST /api/public/messages` is a validating stub that returns `501`** until A06.
 
 ## Open questions
 
 ### Waiting for the team's answer
 
-- **Lombok:** the skeleton includes it, but ADR-0013 planned Java records instead. Keep it or remove it (S05).
 - **Track owners:** who takes Track A, B and C, and who runs the OpenCode agents (see [tasks](tasks/README.md)).
 
 ### Also open

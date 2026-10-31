@@ -4,9 +4,9 @@ Java 21, Maven wrapper, Spring Boot ([ADR-0013](../adr/0013-tooling-and-dependen
 
 ```
 com.fsociety.flarebackend
-├── FlareApplication
+├── FlareBackendApplication
 ├── common/            [A] ProblemDetail error handling, ErrorCode enum, LocalizedText, Clock bean, text limits
-├── config/            [A] FlareProperties (typed @ConfigurationProperties records), SecurityConfig, CorsConfig, WorkerConfig
+├── config/            [A] FlareProperties (typed @ConfigurationProperties, Lombok @Value classes), SecurityConfig, CorsConfig, WorkerConfig
 ├── location/          [A] Area, Location, QrCode (entities + repositories), QrCodeService (resolve ID → ACTIVE/MUTED/UNKNOWN + Location)
 ├── safety/            [A] TextNormalizer, EmergencyDetector (+ emergency-terms.yml), BotCheck            — pure
 ├── ratelimit/         [A] SlidingWindowCounter, RateLimitService, QrCodeFloodGuard (Strict mode), BounceTracker, ClientFingerprint (HMAC)
@@ -42,13 +42,16 @@ Track A owns the interfaces and the fallbacks, and wires the Claude implementati
 public interface MessageClassifier {
     Classification classify(ClassificationInput input);       // throws LlmFailure (or any RuntimeException) on failure
 }
-public record ClassificationInput(String text, Language uiLanguage,
-                                  Optional<LocationInfo> scannedLocation, boolean passengerInsisted) {}
-public record Classification(Kind kind, boolean emergency, Category category, Severity severity,
-                             Language language, double confidence, LocalizedText staffSummary,
-                             String mentionedPlace, String flightNumber,
-                             String answer, boolean answerFound, BounceReason bounceReason,
-                             ClassificationSource source) {}
+@Value public class ClassificationInput {          // Lombok @Value: immutable, getters, all-args constructor
+    String text; Language uiLanguage; Optional<LocationInfo> scannedLocation; boolean passengerInsisted;
+}
+@Value public class Classification {
+    Kind kind; boolean emergency; Category category; Severity severity;
+    Language language; double confidence; LocalizedText staffSummary;
+    String mentionedPlace; String flightNumber;
+    String answer; boolean answerFound; BounceReason bounceReason;
+    ClassificationSource source;
+}
 
 // grouping
 public interface IssueMatcher {
@@ -62,7 +65,7 @@ public interface IssueSummarizer {
 ```
 
 - The callers (`MessageIntakeService`, `GroupingWorker`) catch every exception from an LLM-backed implementation and use the fallback. Track C implementations never need to know the fallback exists.
-- The `*View` records hold only what the LLM needs: text, category, Location name, summary. Never contact details, hashes or IDs beyond the candidate Issue IDs.
+- The `*View` classes hold only what the LLM needs: text, category, Location name, summary. Never contact details, hashes or IDs beyond the candidate Issue IDs.
 - **Fallbacks:**
   - `FallbackClassifier`: `REPORT`, category `OTHER`, Severity `MEDIUM`, emergency from the word list, `source=FALLBACK`, summary = text cut to 140 characters for both languages.
   - `NoMatchIssueMatcher`: always empty.
@@ -128,7 +131,9 @@ The `local` and `demo` profiles add `classpath:db/seed` to `spring.flyway.locati
 
 ## Conventions specific to the back end
 
-- **Controllers** return DTO records (`dto/` subpackages) whose names match the contract schemas (`IssueCard`, `IssueDetail`, `MessageResponse`, …).
+- **Controllers** return DTO classes (`dto/` subpackages) whose names match the contract schemas (`IssueCard`, `IssueDetail`, `MessageResponse`, …).
+- **Lombok instead of records** ([ADR-0013](../adr/0013-tooling-and-dependencies.md)): `@Value` for immutable DTOs, config and value classes; `@Getter @Setter` for request bodies and entities. Never `@Data` or `@ToString` on a class that holds Passenger text or contact details, so they can't end up in logs.
+- **Errors:** throw `FlareException(ErrorCode)`. `common.ApiExceptionHandler` turns it, and Spring's own errors, into Problem Details with `code`. Bean Validation messages on DTOs name the code, for example `@NotBlank(message = "TEXT_EMPTY")`.
 - **Entities** use JPA with explicit column names, `@Version` on `Issue`, and enums as `@Enumerated(STRING)`.
 - **Transactions** live in services. The orchestrator commits the Report before enqueueing it (use `TransactionSynchronization.afterCommit`, or enqueue after the service call returns).
 - **Pure classes** (`safety`, `CandidateSelector`, `PriorityCalculator`, `StaffAccessPolicy`, `SlidingWindowCounter`, `ClassificationValidator`, `CategoryTeamRouting`) have no Spring annotations and are unit tested first ([code rules](../code-rules.md) section 6).
