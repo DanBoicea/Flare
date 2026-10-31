@@ -1,6 +1,6 @@
 # S02: API contract v1 (`contract/openapi.yaml`)
 
-Status: IN PROGRESS
+Status: DONE
 Owner: Dan
 Track: S (lead: A; B and C review) · Phase 0 · Estimate: 45 min · Agent-friendly: yes for the first draft, then human review (`Review: required` by one person from each of B and C)
 Depends on: none
