@@ -40,7 +40,13 @@ A realistic, honest test set for measuring classification, Bounces and grouping 
 ## Don't
 Copy real social-media posts or real complaints. Use real people's names.
 
+## Notes
+- 118 messages and 34 grouping pairs; the counts per group are in `data/test-set/README.md`.
+- `expected.language` was added to the example shape, as the text of step 2 asks for `language: other`.
+- Assumption for the reviewer to confirm: the category of an Emergency (medical → `ASSISTANCE_NEEDED`, missing child → `LOST_ITEM_OR_PERSON`, fire, smoke or threat → `SAFETY_OR_SECURITY`).
+- Labels a reviewer should double-check say "ambiguous" or "reviewer check" in their `notes`.
+
 ## Done when
-- [ ] The counts are met, and each line is valid JSON (check with `node -e` over the file).
-- [ ] Labels follow [AI pipeline](../triage-and-dedup.md) definitions.
+- [x] The counts are met, and each line is valid JSON (check with `node -e` over the file).
+- [x] Labels follow [AI pipeline](../triage-and-dedup.md) definitions.
 - [ ] The reviewer has spot-checked 20 random lines.

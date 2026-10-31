@@ -1,6 +1,6 @@
 # D03: Simulated Knowledge base, RO + EN
 
-Status: IN PROGRESS
+Status: DONE
 Owner: Luciano
 Reviewer: Track C owner
 Track: D (OpenCode) · Phase 1 · Estimate: 1 h · Agent-friendly: yes
@@ -41,6 +41,6 @@ The facts the LLM may use to answer Questions ([ADR-0005](../adr/0005-knowledge-
 - General rules that are not airport-specific are stated generically: the 48-hour advance request for assistance (an EU rule for air passengers) and the indoor smoking ban (a Romanian national rule).
 
 ## Done when
-- [ ] Every Question in D02 marked "covered" can be answered from these files, and the uncovered ones really can't.
-- [ ] Every file has both RO and EN sections.
-- [ ] The reviewer approves.
+- [x] Every Question in D02 marked "covered" can be answered from these files, and the uncovered ones really can't. (Checked in D02.)
+- [x] Every file has both RO and EN sections.
+- [x] The reviewer approves. (Merged in PR #7.)
