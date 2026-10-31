@@ -1,0 +1,24 @@
+{
+  "name": "joke-then-rewrite",
+  "simulated": true,
+  "description": "A joke is Bounced; the Passenger rewrites it as a real problem.",
+  "steps": [
+    {
+      "qrCodeId": "z2adejw8y9",
+      "location": "DEP-SEAT-01",
+      "text": "Pilotul a zis că avionul e făcut din ciocolată haha",
+      "uiLanguage": "ro",
+      "device": "d1",
+      "waitMs": 1500
+    },
+    {
+      "qrCodeId": "z2adejw8y9",
+      "location": "DEP-SEAT-01",
+      "text": "S-a vărsat cafea pe jos lângă scaune, e alunecos",
+      "uiLanguage": "ro",
+      "device": "d1",
+      "waitMs": 1500
+    }
+  ],
+  "expect": "BOUNCED (JOKE_OR_NONSENSE), then REPORTED. One CLEANING_OR_SPILL Issue, HIGH, at DEP-SEAT-01 for Cleaning (Ana). The joke is stored nowhere."
+}

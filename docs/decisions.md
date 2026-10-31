@@ -123,6 +123,13 @@ Mentor feedback, verbatim: "De adresat partea de impersonare qr code; Marketingu
 - **Outcome screens (W03) follow V1 with three changes:** Confirmation keeps "Send another message" as a secondary button and keeps the copy-deck wording (V1's "the right team got it on their phone" is untrue for Quarantined "Send anyway" Reports); the Emergency title shows in both languages and keeps "tell the nearest staff member"; each Bounce reason gets a short title plus a body.
 - **Answer not found:** the second button is "Send another message" ("That helped" makes no sense when nothing was found).
 
+### Round 8: simulated data and demo scenarios (2026-10-31)
+
+- **D01 split in two:** `data/airport/airport.json` was written first so D02 and D03 could use the real Location labels; the SQL seed followed with A02. `airport.json` adds `qrCodeStatus` per Location and a `_comment` header. The muted demo QR code is at `LND-ENT-03`.
+- **Knowledge base places:** places come from `airport.json`. Details not in it (the baggage services desk near belt 2, the Wi-Fi name, the smoking area, water fountains, trolley spots) are invented and marked "(simulat)" / "(simulated)" in the text. Some topics are left out on purpose so the demo can show an honest "I don't know" (listed in `data/knowledge-base/README.md`).
+- **Test set: category of an Emergency (assumption, to be confirmed by the Track C owner):** medical → `ASSISTANCE_NEEDED`, missing child → `LOST_ITEM_OR_PERSON`, fire, smoke or threat → `SAFETY_OR_SECURITY`. Routing does not depend on it. The test set also adds `expected.language`.
+- **Demo scenarios run the spam wave last,** and a full run needs a back-end restart first, because every simulated Passenger shares one laptop's network limit. Raising the network limit in the `local` profile is suggested to the A07 owner (see A07's notes).
+
 ## Open questions
 
 ### Waiting for the team's answer

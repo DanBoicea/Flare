@@ -1,0 +1,24 @@
+{
+  "name": "cleaning-vs-security",
+  "simulated": true,
+  "description": "A spill and an unattended bag: two Teams see different Issues.",
+  "steps": [
+    {
+      "qrCodeId": "5etmmcn8j4",
+      "location": "LND-ENT-02",
+      "text": "Wet floor near the entrance, no warning sign, someone almost fell",
+      "uiLanguage": "en",
+      "device": "d1",
+      "waitMs": 1500
+    },
+    {
+      "qrCodeId": "zb8mt6agr3",
+      "location": "CHK-INFO-01",
+      "text": "There's a bag left alone next to the info desk for 20 minutes, nobody around",
+      "uiLanguage": "en",
+      "device": "d2",
+      "waitMs": 1500
+    }
+  ],
+  "expect": "2 x REPORTED. cleaning@ (Ana) sees the wet floor but not the bag. security@ (Ioana) sees the bag but not the wet floor. manager@ (Radu) sees both."
+}
