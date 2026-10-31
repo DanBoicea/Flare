@@ -2,10 +2,10 @@ package com.fsociety.flarebackend.issue;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Map;
 
 import com.fsociety.flarebackend.audit.AuditAction;
-import com.fsociety.flarebackend.audit.AuditEvent;
-import com.fsociety.flarebackend.audit.AuditEventRepository;
+import com.fsociety.flarebackend.audit.AuditService;
 import com.fsociety.flarebackend.classification.CategoryTeamRouting;
 import com.fsociety.flarebackend.common.ClassificationSource;
 import com.fsociety.flarebackend.common.Severity;
@@ -29,7 +29,7 @@ public class IssueService {
 
 	private final IssueRepository issues;
 	private final ReportRepository reports;
-	private final AuditEventRepository auditEvents;
+	private final AuditService auditService;
 	private final CategoryTeamRouting routing;
 
 	/** A new Issue made from one classified, accepted Report. The Report is linked to it. */
@@ -93,11 +93,8 @@ public class IssueService {
 		return confidence == null ? 0 : confidence.doubleValue();
 	}
 
+	/** Done by the system (no staff member), with no details. */
 	private void audit(Issue issue, Report report, AuditAction action) {
-		AuditEvent event = new AuditEvent();
-		event.setIssue(issue);
-		event.setReport(report);
-		event.setAction(action);
-		auditEvents.save(event);
+		auditService.record(issue, report, null, action, Map.of());
 	}
 }

@@ -71,14 +71,22 @@ public class IssueQueryService {
 		Issue issue = issues.findById(issueId)
 				.filter(found -> StaffAccessPolicy.canSee(member, found))
 				.orElseThrow(() -> new FlareException(ErrorCode.NOT_FOUND));
+		return detailOf(issue);
+	}
+
+	/**
+	 * The detail of an Issue the caller was already allowed to see or act on. Used after an action, when a hand
+	 * over may have moved the Issue out of the caller's view. Runs in the caller's transaction.
+	 */
+	IssueDetail detailOf(Issue issue) {
 		Instant now = clock.instant();
 		List<ReportView> reportViews = reports
-				.findByIssueIdAndStatusOrderByCreatedAtDesc(issueId, ReportStatus.ACCEPTED, Limit.of(REPORTS_MAX)).stream()
+				.findByIssueIdAndStatusOrderByCreatedAtDesc(issue.getId(), ReportStatus.ACCEPTED, Limit.of(REPORTS_MAX)).stream()
 				.map(IssueCards::report)
 				.toList();
 		return new IssueDetail(
 				IssueCards.card(issue, priority.compute(issue, now)),
 				reportViews,
-				auditEvents.findByIssueIdOrderByCreatedAt(issueId).stream().map(IssueCards::history).toList());
+				auditEvents.findByIssueIdOrderByCreatedAt(issue.getId()).stream().map(IssueCards::history).toList());
 	}
 }

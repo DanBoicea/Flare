@@ -157,6 +157,12 @@ Mentor feedback, verbatim: "De adresat partea de impersonare qr code; Marketingu
 - **Unusable classifier output counts as a failure:** a missing kind, a Question without an answer or garbage without a reason falls back to Unclassified, so a bad LLM answer never reaches a Passenger or a list.
 - **A07 seams:** `BotCheck`, `RateLimitService` and `BounceTracker` are interfaces with pass-through placeholders until A07. Until then, nothing is rate limited and "Send anyway" is never offered.
 
+### Round 11: staff actions (A05, 2026-10-31)
+
+- **Take after a hand over:** an `IN_PROGRESS` Issue that nobody holds can be taken; one someone holds cannot (use hand over).
+- **Hand over** to the same Team, or of a resolved Issue, is refused (`INVALID_TRANSITION`). An overridden category does not move the Issue to another Team.
+- **Concurrent changes** that slip past the version check fail on the database version column and are answered `409 VERSION_CONFLICT`, like a stale version.
+
 ## Open questions
 
 ### Waiting for the team's answer

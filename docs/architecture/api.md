@@ -122,7 +122,8 @@ Every action takes `{ "version": <number from the card> }` plus the extra fields
 
 Errors:
 - `409 VERSION_CONFLICT`: someone else changed the Issue. The app reloads and shows who did what.
-- `409 INVALID_TRANSITION`: for example, reopening an Issue that is not resolved.
+- `409 INVALID_TRANSITION`: for example, reopening an Issue that is not resolved, taking one someone else holds, or handing over to the Team it already has.
+- `400 INVALID_REQUEST`: a missing `version`, an unknown Team or category, or an override with neither `category` nor `severity`.
 - `404`: the caller can't see the Issue.
 
 ### Needs review (duty manager only; `403 FORBIDDEN` for other roles)

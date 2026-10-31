@@ -170,8 +170,10 @@ Constraints beyond the column types (all in `V1__schema.sql`):
 ```
 
 - **Resolve** is allowed from any state except `RESOLVED`, so a quick fix needs one tap.
-- **Take** from `NEW` acknowledges implicitly.
-- **Hand over** keeps the status but clears `taken_by`, sets the new `team_id`, and records `HANDED_OVER`.
+- **Take** from `NEW` acknowledges implicitly. Take is also allowed on an `IN_PROGRESS` Issue that nobody holds (after a hand over); one that someone holds is refused.
+- **Acknowledge** only from `NEW`. **Reopen** only from `RESOLVED`. **Override** in any state.
+- **Hand over** keeps the status but clears `taken_by`, sets the new `team_id`, and records `HANDED_OVER`. It is refused for a resolved Issue and for the Team the Issue already has.
+- Refused actions are `409 INVALID_TRANSITION`. The rules live in `issue.IssueTransitions`.
 
 ## Report lifecycle
 

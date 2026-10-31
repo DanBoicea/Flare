@@ -2,7 +2,9 @@ package com.fsociety.flarebackend.common;
 
 import java.util.Objects;
 
+import jakarta.persistence.OptimisticLockException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
@@ -25,6 +27,15 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(FlareException.class)
 	public ProblemDetail handleFlareException(FlareException e) {
 		return problem(e.getCode());
+	}
+
+	/**
+	 * Two staff members changed the same Issue at once: both passed the version check, and the second write
+	 * failed on the {@code @Version} column. The app reloads and shows who did what (api.md).
+	 */
+	@ExceptionHandler({ OptimisticLockingFailureException.class, OptimisticLockException.class })
+	public ProblemDetail handleConcurrentChange(Exception e) {
+		return problem(ErrorCode.VERSION_CONFLICT);
 	}
 
 	@ExceptionHandler(Exception.class)

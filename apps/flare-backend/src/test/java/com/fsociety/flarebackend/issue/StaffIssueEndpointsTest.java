@@ -2,9 +2,12 @@ package com.fsociety.flarebackend.issue;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -47,8 +50,10 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 /** Web layer only (no database): the Issue endpoints' JSON shape against the contract, sign-in and errors. */
@@ -73,6 +78,9 @@ class StaffIssueEndpointsTest {
 
 	@MockitoBean
 	private IssueQueryService queries;
+
+	@MockitoBean
+	private IssueActionService actions;
 
 	@Test
 	void theListMatchesTheContractWithNullsSentNotLeftOut() throws Exception {
@@ -170,6 +178,110 @@ class StaffIssueEndpointsTest {
 		mvc.perform(get("/api/staff/issues").param("view", "ACTIVE").with(asAna()))
 				.andExpect(status().isForbidden())
 				.andExpect(jsonPath("$.code").value("NOT_A_STAFF_MEMBER"));
+	}
+
+	@Test
+	void takeReturnsTheNewDetail() throws Exception {
+		signedIn();
+		when(actions.take(any(), eq(ISSUE), eq(3L))).thenReturn(new IssueDetail(card(), List.of(), List.of()));
+
+		postAction("take", "{\"version\":3}")
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.id").value(ISSUE.toString()))
+				.andExpect(jsonPath("$.reports").isArray());
+	}
+
+	@Test
+	void everyVersionActionHasItsEndpoint() throws Exception {
+		signedIn();
+		IssueDetail detail = new IssueDetail(card(), List.of(), List.of());
+		when(actions.acknowledge(any(), eq(ISSUE), eq(3L))).thenReturn(detail);
+		when(actions.resolve(any(), eq(ISSUE), eq(3L))).thenReturn(detail);
+		when(actions.reopen(any(), eq(ISSUE), eq(3L))).thenReturn(detail);
+
+		postAction("acknowledge", "{\"version\":3}").andExpect(status().isOk());
+		postAction("resolve", "{\"version\":3}").andExpect(status().isOk());
+		postAction("reopen", "{\"version\":3}").andExpect(status().isOk());
+	}
+
+	@Test
+	void anActionWithoutAVersionIsInvalidRequest() throws Exception {
+		signedIn();
+
+		postAction("take", "{}")
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.code").value("INVALID_REQUEST"));
+	}
+
+	@Test
+	void aStaleVersionIs409VersionConflict() throws Exception {
+		signedIn();
+		when(actions.take(any(), eq(ISSUE), eq(2L))).thenThrow(new FlareException(ErrorCode.VERSION_CONFLICT));
+
+		postAction("take", "{\"version\":2}")
+				.andExpect(status().isConflict())
+				.andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+				.andExpect(jsonPath("$.code").value("VERSION_CONFLICT"));
+	}
+
+	@Test
+	void aSecondParallelTakeThatFailsOnTheVersionColumnIs409NotA500() throws Exception {
+		signedIn();
+		when(actions.take(any(), eq(ISSUE), eq(3L))).thenThrow(new ObjectOptimisticLockingFailureException(Issue.class, ISSUE));
+
+		postAction("take", "{\"version\":3}")
+				.andExpect(status().isConflict())
+				.andExpect(jsonPath("$.code").value("VERSION_CONFLICT"));
+	}
+
+	@Test
+	void aRefusedTransitionIs409InvalidTransition() throws Exception {
+		signedIn();
+		when(actions.reopen(any(), eq(ISSUE), eq(3L))).thenThrow(new FlareException(ErrorCode.INVALID_TRANSITION));
+
+		postAction("reopen", "{\"version\":3}")
+				.andExpect(status().isConflict())
+				.andExpect(jsonPath("$.code").value("INVALID_TRANSITION"));
+	}
+
+	@Test
+	void overrideSendsTheNewValues() throws Exception {
+		signedIn();
+		when(actions.override(any(), eq(ISSUE), eq(3L), eq(Category.CLEANING_OR_SPILL), eq(Severity.HIGH)))
+				.thenReturn(new IssueDetail(card(), List.of(), List.of()));
+
+		mvc.perform(patch("/api/staff/issues/" + ISSUE).with(asAna()).contentType(MediaType.APPLICATION_JSON)
+						.content("{\"version\":3,\"category\":\"CLEANING_OR_SPILL\",\"severity\":\"HIGH\"}"))
+				.andExpect(status().isOk());
+		verify(actions).override(any(), eq(ISSUE), eq(3L), eq(Category.CLEANING_OR_SPILL), eq(Severity.HIGH));
+	}
+
+	@Test
+	void handOverToATeamThatDoesNotExistIsInvalidRequest() throws Exception {
+		signedIn();
+
+		postAction("hand-over", "{\"version\":3,\"team\":\"CATERING\"}")
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.code").value("INVALID_REQUEST"));
+	}
+
+	@Test
+	void handOverPassesTheTeam() throws Exception {
+		signedIn();
+		when(actions.handOver(any(), eq(ISSUE), eq(3L), eq(TeamId.SECURITY))).thenReturn(new IssueDetail(card(), List.of(), List.of()));
+
+		postAction("hand-over", "{\"version\":3,\"team\":\"SECURITY\"}").andExpect(status().isOk());
+	}
+
+	@Test
+	void actionsNeedAToken() throws Exception {
+		mvc.perform(post("/api/staff/issues/" + ISSUE + "/take").contentType(MediaType.APPLICATION_JSON).content("{\"version\":3}"))
+				.andExpect(status().isUnauthorized());
+	}
+
+	private ResultActions postAction(String action, String json) throws Exception {
+		return mvc.perform(post("/api/staff/issues/" + ISSUE + "/" + action).with(asAna())
+				.contentType(MediaType.APPLICATION_JSON).content(json));
 	}
 
 	private void signedIn() {
