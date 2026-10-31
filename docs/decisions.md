@@ -149,6 +149,8 @@ Mentor feedback, verbatim: "De adresat partea de impersonare qr code; Marketingu
 - **No new back-end library:** the back end calls `llama-server`'s OpenAI-compatible API with Spring's `RestClient`; `anthropic-java` is dropped (ADR-0013). Output is constrained with `response_format` `json_schema` and validated again in our code.
 - **Config:** `FLARE_LLM_BASE_URL` and `FLARE_LLM_API_KEY` replace `ANTHROPIC_API_KEY`. Per task: model alias, `temperature`, `max-tokens`, timeout (ADR-0016, rewritten). Model files (`*.gguf`) are git-ignored.
 - **Passengers wait rather than get the fallback:** classify's timeout is 40 s (was 15 s), and the passenger web app waits 50 s (was 20 s). A busy `llama-server` queues requests instead of failing them. The fallback only answers when the server is unreachable or loading (fail fast), the daily cap is reached, the output is invalid, or 40 s pass (ADR-0016).
+- **First model: Gemma 4 12B Instruct, Q5_K_M** (S04, measured on the M4 Pro laptop): 19/20 on a test-set sample, about 9 s per message warm, about 10.3 GB in total (budget 14 GB). Qwen 3.5 9B is the faster alternative. Final choice by eval (C06).
+- **llama-server runs with one slot:** a second slot halves each request's speed and can lose the cached prompt; queued requests wait their turn instead (a burst of 3 finished at 8, 17 and 26 s, inside the 40 s timeout). Checkpoints and the RAM prompt cache are capped to stay inside the memory budget, and CORS is limited to localhost.
 - **Tasks:** S04 becomes "llama-server and first model"; C01 becomes the `llama-server` client; new S10 runs `llama-server` on the demo machine. The `claude` back-end packages are renamed `llm`.
 
 ### Round 10: intake built (A06, 2026-10-31)
