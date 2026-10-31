@@ -40,6 +40,9 @@ Every accepted Report ends up in exactly one Issue, quickly, even with no LLM.
    - a match on a resolved Issue reopens it
 5. **Expose** `enqueue` to intake, send-to-staff and review release.
 
+## Notes (state before A08 starts)
+Already built with A06 and A09: `GroupingWorker` (single thread, queue, startup re-queue, one retry), `ReportGrouper` (classify if needed with `passengerInsisted` for "send anyway" and Questions sent to staff, the Emergency shortcut, the `team_override` branch from A09), and the merge rules in `IssueService.attachReport`. **Still missing:** the `IssueMatcher` and `IssueSummarizer` seams with their fallbacks and view classes, `CandidateSelector`, wiring the matcher in (today every non-Emergency Report gets its own Issue), reopen on a match, the summary on merge, "after the retry, a new Unclassified Issue", and the tests in "Done when".
+
 ## Done when
 - [ ] `CandidateSelector` tests pass: same Area, the open and recently-resolved window, the limit of 10, no Location.
 - [ ] With fallbacks: three Reports at one Location become three separate Issues (no matcher), each visible to the duty manager.

@@ -14,6 +14,7 @@ import com.fsociety.flarebackend.issue.IssueRepository;
 import com.fsociety.flarebackend.issue.IssueService;
 import com.fsociety.flarebackend.issue.IssueStatus;
 import com.fsociety.flarebackend.question.QuestionRepository;
+import com.fsociety.flarebackend.report.QuarantineReason;
 import com.fsociety.flarebackend.report.Report;
 import com.fsociety.flarebackend.report.ReportClassifications;
 import com.fsociety.flarebackend.report.ReportRepository;
@@ -52,12 +53,15 @@ public class ReportGrouper {
 			classify(report);
 		}
 
-		Issue issue = emergencyIssueFor(report)
-				.map(open -> {
-					issueService.attachReport(open, report);
-					return open;
-				})
-				.orElseGet(() -> issueService.createFromReport(report));
+		// A Report released to a chosen Team skips matching and gets its own Issue for that Team (A09).
+		Issue issue = report.getTeamOverride() != null
+				? issueService.createFromReport(report)
+				: emergencyIssueFor(report)
+						.map(open -> {
+							issueService.attachReport(open, report);
+							return open;
+						})
+						.orElseGet(() -> issueService.createFromReport(report));
 		report.setGroupedAt(clock.instant());
 		log.info("Report {} grouped into Issue {}", report.getId(), issue.getId());
 	}
@@ -76,7 +80,9 @@ public class ReportGrouper {
 	 * Emergency whatever the classifier says; any classifier failure uses the fallback.
 	 */
 	private void classify(Report report) {
-		boolean passengerInsisted = questions.existsBySentToStaffReportId(report.getId());
+		// "Send anyway" (released from Needs review) or a Question sent to staff: the Passenger insisted.
+		boolean passengerInsisted = report.getQuarantineReason() == QuarantineReason.SEND_ANYWAY
+				|| questions.existsBySentToStaffReportId(report.getId());
 		ClassificationInput input = new ClassificationInput(report.getText(), report.getLanguage(),
 				Optional.ofNullable(report.getLocation()).map(l -> new LocationInfo(l.getNameRo(), l.getNameEn())),
 				passengerInsisted);
