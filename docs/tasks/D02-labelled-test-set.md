@@ -1,6 +1,6 @@
 # D02: Labelled RO/EN test set and grouping pairs
 
-Status: IN PROGRESS
+Status: DONE
 Owner: Luciano
 Reviewer: Track C owner (and the team's Romanian speaker for the RO texts)
 Track: D (OpenCode) · Phases 1-2 · Estimate: 1 h · Agent-friendly: yes
@@ -49,4 +49,4 @@ Copy real social-media posts or real complaints. Use real people's names.
 ## Done when
 - [x] The counts are met, and each line is valid JSON (check with `node -e` over the file).
 - [x] Labels follow [AI pipeline](../triage-and-dedup.md) definitions.
-- [ ] The reviewer has spot-checked 20 random lines.
+- [x] The reviewer has spot-checked 20 random lines.
