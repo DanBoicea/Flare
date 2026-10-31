@@ -30,7 +30,7 @@ Hackathon prototype. The architecture and the workplan are done, and the build i
 - **Staff app:** React Native
 - **Back end:** Spring Boot
 - **Data:** Supabase
-- **AI:** Claude, called only by the back end
+- **AI:** a self-hosted open-weight model served by llama.cpp, called only by the back end; passenger text never leaves our machines
 
 ## Scope
 
@@ -77,7 +77,7 @@ Prerequisites: Java 21 (or newer), Node 22, and Expo Go on your phone. Maven com
    ```
    Flyway migrates (and, in `local`, seeds) on start.
 3. Check `http://localhost:8080/actuator/health` returns `{"status":"UP"}`.
-4. Tests: `./mvnw test` (no database or API key needed). The LLM evaluation is `./mvnw test -Dgroups=eval`; it calls the real Claude API and costs money.
+4. Tests: `./mvnw test` (no database or API key needed). The LLM evaluation is `./mvnw test -Dgroups=eval`; it needs a running `llama-server` (see [docs/tasks/S04-llama-server-and-model.md](docs/tasks/S04-llama-server-and-model.md)).
 
 
 ### Passenger web app and Staff app

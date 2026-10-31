@@ -82,3 +82,7 @@ hs_err_pid*
 # --- Design exploration screenshots (regenerate with docs/design/explorations/render.mjs) ---
 docs/design/explorations/shots/
 docs/design/reference/shots/
+
+# --- Self-hosted LLM model files (large; downloaded per machine, ADR-0022) ---
+*.gguf
+/models/

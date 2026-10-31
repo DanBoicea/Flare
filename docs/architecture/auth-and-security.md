@@ -48,7 +48,7 @@ Also:
 
 | Secret | Where it lives | Who needs it |
 | --- | --- | --- |
-| `ANTHROPIC_API_KEY` | Back-end env only | Back end (C01). Never in the apps ([ADR-0003](../adr/0003-llm-only-behind-spring-boot.md)) |
+| `FLARE_LLM_API_KEY` | Back-end env, and `llama-server --api-key` on the LLM machine | Back end (C01). Required whenever `llama-server` listens beyond `127.0.0.1`. Never in the apps ([ADR-0022](../adr/0022-self-hosted-llm-llama-cpp.md)) |
 | `SPRING_DATASOURCE_PASSWORD` | Back-end env only | Back end |
 | `FLARE_HASH_SECRET` | Back-end env only (32+ random bytes) | Back end. Changing it resets all limits |
 | Supabase service-role key | Nobody | Not used anywhere. Never put it in an app or the back end |
@@ -64,7 +64,7 @@ Share secrets in a private chat, never in git, an issue or a PR. Rotate any secr
 - [ ] No Passenger text in back-end logs (grep the logs after running the demo scenarios).
 - [ ] Neither app renders HTML from data. There is no `dangerouslySetInnerHTML` and no `WebView`.
 - [ ] Prompt-injection messages from the test set are classified as data, not obeyed (C05).
-- [ ] The Anthropic key has a spend limit, and `flare.llm.daily-call-limit` is set.
+- [ ] `llama-server` listens only on `127.0.0.1`, or uses `--api-key` and is reachable only from the back end; `flare.llm.daily-call-limit` is set.
 
 ## Threat-to-mitigation map
 

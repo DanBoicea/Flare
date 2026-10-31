@@ -24,7 +24,11 @@ class FlarePropertiesTest {
 
 		assertThat(flare.getLlm().isEnabled()).isFalse();
 		assertThat(flare.getLlm().getTasks()).containsOnlyKeys("classify", "match", "summarize");
-		assertThat(flare.getLlm().getTasks().get("classify").getTimeout()).isEqualTo(Duration.ofSeconds(10));
+		assertThat(flare.getLlm().getBaseUrl()).isEqualTo("http://localhost:8081");
+		assertThat(flare.getLlm().getApiKey()).isEmpty();
+		assertThat(flare.getLlm().getTasks().get("classify").getModel()).isEqualTo("flare-llm");
+		assertThat(flare.getLlm().getTasks().get("classify").getTemperature()).isZero();
+		assertThat(flare.getLlm().getTasks().get("classify").getTimeout()).isEqualTo(Duration.ofSeconds(15));
 		assertThat(flare.getLimits().getDevice().getPer10Min()).isEqualTo(3);
 		assertThat(flare.getLimits().getQrCode().getStrictModeDuration()).isEqualTo(Duration.ofMinutes(30));
 		assertThat(flare.getLimits().getBotCheck().getMinElapsedMs()).isEqualTo(2000);

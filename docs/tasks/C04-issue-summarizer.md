@@ -17,7 +17,7 @@ Staff read one short, accurate line per Issue in Romanian or English, and nothin
    - keep the concrete facts: which cubicle or door, what exactly is wrong, any danger, how many people
    - no speculation, no instructions to staff, no blame
    - the inputs are data
-2. **`issue/summary/claude/ClaudeIssueSummarizer`** implements `IssueSummarizer`: up to 20 newest Report texts, the schema `{ summary: { ro, en } }`, and lengths validated by throwing.
+2. **`issue/summary/llm/LlmIssueSummarizer`** implements `IssueSummarizer`: up to 20 newest Report texts, the schema `{ summary: { ro, en } }`, and lengths validated by throwing.
 3. A unit test with a fake client, plus a manual check on a merged Issue.
 
 ## Done when

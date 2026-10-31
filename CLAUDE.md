@@ -16,7 +16,7 @@ A Passenger scans a QR code in the airport and types a problem or a question int
 
 ## Stack (decided at the top level)
 
-React passenger web app (`apps/flare-webapp`), React Native Staff app (`apps/flare-mobile`), Spring Boot back end (`apps/flare-backend`), Supabase, and Claude called only from Spring Boot. See [ADR-0002](docs/adr/0002-three-apps-spring-boot-supabase.md) and [ADR-0003](docs/adr/0003-llm-only-behind-spring-boot.md). The detailed technical choices are ADRs 0009 to 0019, all accepted except ADR-0016 (model choice), which waits for the eval run:
+React passenger web app (`apps/flare-webapp`), React Native Staff app (`apps/flare-mobile`), Spring Boot back end (`apps/flare-backend`), Supabase, and a self-hosted LLM (an open-weight model served by llama.cpp's `llama-server`) called only from Spring Boot. See [ADR-0002](docs/adr/0002-three-apps-spring-boot-supabase.md) and [ADR-0022](docs/adr/0022-self-hosted-llm-llama-cpp.md), which replaced the earlier Claude API plan (ADR-0003). The detailed technical choices are ADRs 0009 to 0019, all accepted except ADR-0016 (model choice), which waits for the eval run:
 - Expo
 - Vite
 - TypeScript
@@ -44,7 +44,7 @@ Read the relevant file before working on that area, and update it when a decisio
 | [docs/principles.md](docs/principles.md) | Product principles in priority order, privacy, honesty about limits |
 | [docs/security-and-abuse.md](docs/security-and-abuse.md) | Threat model: QR code impersonation, request limiting and quarantine, prompt injection, staff access |
 | [docs/triage-and-dedup.md](docs/triage-and-dedup.md) | AI pipeline: classification, quality check, Knowledge base answers, grouping, summaries, measurement |
-| [docs/technical.md](docs/technical.md) | Stack, architecture sketch, Claude API facts, open technical questions |
+| [docs/technical.md](docs/technical.md) | Stack, architecture sketch, llama.cpp server facts, open technical questions |
 | [docs/marketing.md](docs/marketing.md) | Passenger adoption, poster contents, airport buy-in, pitch positioning |
 | [docs/ideas.md](docs/ideas.md) | Stretch goals and parking lot |
 | [docs/decisions.md](docs/decisions.md) | Decision log by round, ADR index, open questions, pitch description |
@@ -68,7 +68,7 @@ Everything else is stretch. See [docs/product.md](docs/product.md).
 
 ## Never commit
 
-- Secrets: API keys (including the Claude API key), `.env` files, credentials. Keys live in environment variables or an ignored `.env`. Commit only `.env.example`, with fake placeholders.
+- Secrets: API keys (including the `llama-server` API key), `.env` files, credentials. Model files (`*.gguf`) are not secrets but are too large: they stay out of git too. Keys live in environment variables or an ignored `.env`. Commit only `.env.example`, with fake placeholders.
 - Real Passenger data: Reports, photos, Tickets, contact details. Only simulated data labelled as such goes in the repo. Simulated seed data, the Knowledge base and the labelled test set are committed.
 - The demo fallback recording. It is kept in the ignored `recordings/` folder and shared outside git.
 - Personal `.claude/settings.local.json`. The shared `.claude/settings.json` is committed.
@@ -81,7 +81,7 @@ Everything else is stretch. See [docs/product.md](docs/product.md).
 - The top-level stack is decided. Do not add any other framework, library, service or tool unprompted. When a technical decision is needed, present options with a recommendation and wait for the team.
 - Write or update ADRs throughout development whenever something is decided or changes. Log small decisions in [docs/decisions.md](docs/decisions.md). Add new terms to [GLOSSARY.md](GLOSSARY.md) as they come up.
 - Planning is done: build from the task files in [docs/tasks/](docs/tasks/README.md). Before starting a task, read it and the architecture docs it links. Claim it, follow its **Done when** list, and keep its status current. If the plan turns out wrong, fix the task file and the architecture doc in the same PR.
-- When writing Claude API code (Track C), use the `claude-api` skill and its Java docs. Never guess SDK names.
+- When writing LLM client code (Track C), follow the `llama-server` README for its OpenAI-compatible API. Never guess endpoint, request or response field names.
 - Run grilling sessions before building. Ask clarifying questions instead of guessing.
 - Prefer simple, explainable logic over clever logic.
 - Be honest about limits: location can be spoofed, LLMs make mistakes, and demo data is simulated.

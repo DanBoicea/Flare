@@ -1,7 +1,7 @@
 # D04: RO/EN string files for both apps, i18n check script
 
-Status: TODO
-Owner:
+Status: IN PROGRESS
+Owner: Luciano
 Reviewer: Track B owner (the team's Romanian speaker reviews the RO text)
 Track: D (OpenCode) · Phase 1 · Estimate: 45 min · Agent-friendly: yes
 Depends on: W01, B01 (where the files live and their key style)
@@ -21,7 +21,12 @@ Every UI string in both languages, plain and short, with a check that the two fi
 3. **`scripts/check-i18n.mjs`** (Node built-ins only): for each app, load both files and report keys missing in either one, and placeholders (`{name}`) that differ. It exits with code 1 on any problem.
 4. **Style:** plain words, short sentences, no jargon, polite second person (Romanian "tu" form is fine for the passenger app; keep it consistent). Correct Romanian diacritics (ș and ț with comma below).
 
+## Notes
+- **`scripts/check-i18n.mjs`** checks, for each app: the same keys in `ro.json` and `en.json`, the same `{placeholders}`, no empty strings, Romanian ș/ț with a comma below (not the cedilla ş/ţ), and complete server-value families. If an app has any `severity.*` key, it must have every `Severity` value from `contract/openapi.yaml`; the same goes for `category`, `team`, `role`, `status`, `reviewReason`, `history` and `bounce`. Only families an app already uses are checked, so screens that aren't built yet don't fail it.
+- The string files themselves were created by W01 and B01/B02. The passenger web app covers its copy deck (the doc's `error.network` is `error.NETWORK` in the app, matching the error code).
+- **Staff app keys still to add, with the screens that use them:** `action.ack`, `action.take`, `action.resolve`, `action.reopen`, `action.handOver` (B04), and `priority.*`, `card.mentioned` (B03). They are left to those tasks to avoid unused keys and conflicts with ongoing Staff app work; the checker then enforces both languages.
+
 ## Done when
-- [ ] `node scripts/check-i18n.mjs` passes.
+- [x] `node scripts/check-i18n.mjs` passes.
 - [ ] Neither app shows a raw key in any screen in mock mode.
 - [ ] The team's Romanian speaker has read the RO strings.

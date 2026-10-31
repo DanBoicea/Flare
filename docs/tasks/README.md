@@ -9,7 +9,7 @@ The workplan for three people plus OpenCode agents. Each task is one Markdown fi
 | **S, shared** | Kick-off, contract, accounts, integration, demo, pitch | Everyone. Each task names a lead |
 | **A, back-end platform** | Spring Boot skeleton, database, staff sign-in, Issues API, intake orchestration, limits, grouping worker, review, retention, deploy | **Cristi** |
 | **B, Staff app** | Expo app end to end, plus the shared visual design pass | **Cristi** |
-| **C, passenger web app and AI pipeline** | React web app first (it has no back-end dependency), then the Claude integration inside the back end | **Dan** |
+| **C, passenger web app and AI pipeline** | React web app first (it has no back-end dependency), then the self-hosted LLM integration inside the back end (llama.cpp, ADR-0022) | **Dan** |
 | **D, OpenCode agents** | Bulky, well-specified work: simulated data, test set, Knowledge base, string files, fixtures, scenario scripts, posters, research | **Luciano** (every D task names a human reviewer) |
 
 Write names in `Owner:` when you claim a task. The track split is a recommendation; anyone may take any unblocked task.
@@ -48,12 +48,13 @@ Write names in `Owner:` when you claim a task. The track split is a recommendati
 | [S01](S01-repo-scaffold-and-gitignore.md) | Repo folders, `.gitignore` for all stacks, `.env.example`s | S (A lead) | 0 | none |
 | [S02](S02-api-contract-v1.md) | API contract v1 (`contract/openapi.yaml`) | S (A lead) | 0 | none |
 | [S03](S03-supabase-project-and-accounts.md) | Supabase dev project, schema settings, demo staff accounts | S (A lead) | 0 | none |
-| [S04](S04-anthropic-api-key.md) | Anthropic Console API key with spend limit | S (C lead) | 0 | none |
+| [S04](S04-llama-server-and-model.md) | `llama-server` on a dev machine, first model, latency measured | S (C lead) | 0-1 | none |
 | [S05](S05-team-kickoff-and-machines.md) | Assign tracks, check tools on every machine, accept proposed ADRs | S (all) | 0 | none |
 | [S06](S06-integration-g1-g2.md) | Integration runs at G1 and G2 | S (all) | 1-2 | see file |
-| [S07](S07-demo-environment-and-recording.md) | Demo environment, rehearsal, fallback recording | S (all) | 4 | G3 |
+| [S07](S07-demo-environment-and-recording.md) | Demo environment, rehearsal, fallback recording | S (all) | 4 | G3, S10 |
 | [S08](S08-pitch.md) | Pitch script, slides, honest numbers | S (all) | 3-4 | C05 |
 | [S09](S09-ci-optional.md) | CI on GitHub Actions (optional, needs team OK) | S (A lead) | 2 | A01, W01, B01 |
+| [S10](S10-llama-server-for-the-demo.md) | `llama-server` on the demo machine, failure path tested | S (A lead) | 3 | S04, C06, A11 |
 | [A01](A01-backend-skeleton.md) | Spring Boot skeleton, config, errors, health, CORS | A | 1 | S01 |
 | [A02](A02-database-schema.md) | Flyway schema, entities, repositories | A | 1 | A01, S03 |
 | [A03](A03-staff-auth.md) | Supabase JWT verification, `CurrentStaff`, `/me`, `/teams`, access policy | A | 1 | A02 |
@@ -75,7 +76,7 @@ Write names in `Owner:` when you claim a task. The track split is a recommendati
 | [W02](W02-compose-and-sending.md) | Compose and Sending screens, emergency strip, language button | C | 1 | W01 |
 | [W03](W03-outcome-screens.md) | Answer, Bounced, Confirmation, Emergency screens | C | 1-2 | W02 |
 | [W04](W04-passenger-design-and-accessibility.md) | Web design and accessibility pass, slow-network test | B | 3 | W03 |
-| [C01](C01-llm-client.md) | `LlmClient` on the Claude Java SDK: config, timeouts, failures, usage cap | C | 2 | A01, S04 |
+| [C01](C01-llm-client.md) | `LlmClient` for the self-hosted `llama-server`: config, timeouts, failures, usage cap | C | 2 | A01, S04 |
 | [C02](C02-classifier-and-knowledge-base.md) | Knowledge base loader, classify prompt and schema, validator | C | 2 | C01, A06, D03 |
 | [C03](C03-issue-matcher.md) | LLM issue matcher | C | 2 | C01, A08 |
 | [C04](C04-issue-summarizer.md) | LLM Issue summariser | C | 2 | C01, A08 |

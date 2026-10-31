@@ -38,7 +38,7 @@ The QR code ID is the primary location signal. Device location is only a soft si
 ## 4. Prompt injection through free text
 
 - Treat all Passenger text as untrusted data. It is never mixed into the instructions given to the LLM.
-- Only Spring Boot calls the LLM ([ADR-0003](adr/0003-llm-only-behind-spring-boot.md)). LLM output follows a fixed structure, is validated, and cannot trigger actions.
+- Only Spring Boot calls the LLM ([ADR-0022](adr/0022-self-hosted-llm-llama-cpp.md)). LLM output follows a fixed structure, is validated, and cannot trigger actions.
 - Knowledge base answers come only from the Knowledge base. A Passenger cannot make the LLM say arbitrary things in an official-looking answer.
 - Both apps display Passenger text and LLM output as plain text, never as markup.
 
