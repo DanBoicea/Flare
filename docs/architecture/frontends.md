@@ -45,7 +45,7 @@ Compose ──send──▶ Sending ──┬─ REPORTED  ─▶ Confirmation �
   - the Send button, disabled while the field is empty
   - the privacy line and "This is not an emergency line." under it
   - `elapsedMs` measured from page load
-- **Sending:** "Checking your message…" with the pulsing beacon, "Don't close this page.", an `aria-live` region, and the Passenger's text quoted under "You wrote". After 6 s it adds "This can take a few seconds." The request times out after 20 s and shows the error state.
+- **Sending:** "Checking your message…" with the pulsing beacon, "Don't close this page.", an `aria-live` region, and the Passenger's text quoted under "You wrote". After 6 s it adds "This can take a few seconds." The request times out after **50 s** and shows the error state: longer than the back end's 40 s classify timeout, so the back end always answers first, with the model's answer or the fallback (ADR-0016). *(Changed 2026-10-31 from 20 s; the web app's `TIMEOUT_MS` needs updating, Track C.)*
 - **Focus:** on every screen change, focus moves to the new screen's heading (not on first load).
 - **Answer:** the question under "You asked", then a card labelled "Automatic answer" with the answer as plain text and the line "Answer generated automatically (AI) from the airport's information. It can be wrong." Buttons "That helped" and "Ask staff". If `found` is false, the card shows `answer.notFound`, "Ask staff" is the main button and "Send another message" the second.
 - **Bounced:** a short title (`bounce.title.<REASON>`) and a body (`bounce.<REASON>`), the Passenger's text under "You wrote", and "Edit message", which returns to Compose with focus in the field. When `sendAnywayAvailable`, also "Send anyway".

@@ -81,7 +81,7 @@ flare:
     base-url: ${FLARE_LLM_BASE_URL:http://localhost:8081}   # llama-server
     api-key: ${FLARE_LLM_API_KEY:}                          # llama-server --api-key; empty when it listens on 127.0.0.1 only
     tasks:   # timeouts are set from the S04 measurements
-      classify:  { model: flare-llm, temperature: 0.0, max-tokens: 1024, timeout: 15s }
+      classify:  { model: flare-llm, temperature: 0.0, max-tokens: 1024, timeout: 40s }   # Passengers wait rather than get the fallback
       match:     { model: flare-llm, temperature: 0.0, max-tokens: 512, timeout: 20s }
       summarize: { model: flare-llm, temperature: 0.0, max-tokens: 512, timeout: 20s }
   limits:

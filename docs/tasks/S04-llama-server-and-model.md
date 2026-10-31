@@ -29,7 +29,7 @@ A self-hosted LLM the back end can call during development, with numbers that te
    - time to the first call's answer (cold) and the median of the rest (warm, with the prompt prefix cached)
    - whether the JSON was valid every time
    - a quick human judgement of the Romanian classifications (right, wrong, unclear)
-6. **Choose the first model** for development with the team, and write the choice and the numbers under **Notes**. Propose the classify timeout for `application.yml` (warm median plus a margin). The final choice still comes from the eval (C05, C06).
+6. **Choose the first model** for development with the team, and write the choice and the numbers under **Notes**. Check that the classify timeout in `application.yml` (40 s: Passengers wait rather than get the fallback, ADR-0016) covers a message queued behind two others on this machine; adjust it if the numbers say so. The final choice still comes from the eval (C05, C06).
 7. **Share** how to run it in the team chat: the model name and download link, and the start command. Anyone who runs the back end with `FLARE_LLM_ENABLED=true` needs it running, or needs `FLARE_LLM_BASE_URL` pointing at the machine that runs it (then start it with `--host 0.0.0.0 --api-key <key>`, and set `FLARE_LLM_API_KEY` to the same key; share the key privately).
 
 ## Don't

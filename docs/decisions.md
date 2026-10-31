@@ -148,6 +148,7 @@ Mentor feedback, verbatim: "De adresat partea de impersonare qr code; Marketingu
 - **No Claude API:** the LLM is an open-weight model run by the team with llama.cpp's `llama-server`, still called only by Spring Boot (ADR-0022, superseding ADR-0003). Passenger text never leaves machines we control.
 - **No new back-end library:** the back end calls `llama-server`'s OpenAI-compatible API with Spring's `RestClient`; `anthropic-java` is dropped (ADR-0013). Output is constrained with `response_format` `json_schema` and validated again in our code.
 - **Config:** `FLARE_LLM_BASE_URL` and `FLARE_LLM_API_KEY` replace `ANTHROPIC_API_KEY`. Per task: model alias, `temperature`, `max-tokens`, timeout (ADR-0016, rewritten). Model files (`*.gguf`) are git-ignored.
+- **Passengers wait rather than get the fallback:** classify's timeout is 40 s (was 15 s), and the passenger web app waits 50 s (was 20 s). A busy `llama-server` queues requests instead of failing them. The fallback only answers when the server is unreachable or loading (fail fast), the daily cap is reached, the output is invalid, or 40 s pass (ADR-0016).
 - **Tasks:** S04 becomes "llama-server and first model"; C01 becomes the `llama-server` client; new S10 runs `llama-server` on the demo machine. The `claude` back-end packages are renamed `llm`.
 
 ## Open questions
