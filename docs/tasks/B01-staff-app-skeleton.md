@@ -12,6 +12,8 @@ A running Staff app with routing, strings, typed API access and mock data, befor
 ## Read first
 [frontends: Staff app](../architecture/frontends.md#staff-app-appsflare-mobile-expo-router) · [repo structure](../architecture/repo-structure.md) · [ADR-0013](../adr/0013-tooling-and-dependencies.md).
 
+**Design:** [docs/design](../design/README.md): [foundations](../design/foundations.md), [components](../design/components.md), [screens](../design/screens.md), [mobile](../design/mobile.md), [reference screens](../design/reference/README.md).
+
 ## Do
 1. **Start from the existing skeleton** in `apps/flare-mobile` (Expo 58, Expo Router, TypeScript, with routes in `src/app/`). Remove the template's demo screens (`index`, `explore`) and demo components, keeping `src/constants/theme.ts` and the theme hooks. Check the app's `.gitignore` covers `node_modules`, `.expo` and native folders.
 2. **Routes:** add exactly the route files from frontends.md, as placeholder screens.

@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<meta name="color-scheme" content="only light">
+<title>Flare reference design</title>
+<!-- Reference screens for the Flare design system: ?screen=<id>. All data is simulated.
+     The font is loaded from Google Fonts only in this preview; the apps self-host it (docs/design/foundations.md). -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;700;800&display=swap">
+<link rel="stylesheet" href="flare.css">
+<script>
+  const params = new URLSearchParams(location.search)
+  if (params.get('w')) document.documentElement.style.width = `${params.get('w')}px`
+</script>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+  <symbol id="i-chevron-down" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></symbol>
+  <symbol id="i-chevron-right" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></symbol>
+  <symbol id="i-chevron-left" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+  <symbol id="i-check-circle" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></symbol>
+  <symbol id="i-sev-critical" viewBox="0 0 24 24"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/><line x1="12" y1="7.5" x2="12" y2="12.5" stroke-width="2.6"/><line x1="12" y1="16.5" x2="12.01" y2="16.5" stroke-width="2.6"/></symbol>
+  <symbol id="i-sev-high" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></symbol>
+  <symbol id="i-sev-medium" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></symbol>
+  <symbol id="i-sev-low" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="8 12 12 16 16 12"/><line x1="12" y1="8" x2="12" y2="16"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  <symbol id="i-user-check" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></symbol>
+  <symbol id="i-inbox" viewBox="0 0 24 24"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></symbol>
+</svg>
+
+<!-- ================= Passenger web app ================= -->
+<div class="p-app">
+  <div class="strip" role="note">
+    <p class="strip__text"><strong>Urgență? Sună la</strong></p>
+    <a class="strip__call" href="tel:112"><svg class="i" aria-hidden="true"><use href="#i-phone"/></svg>112<span class="visually-hidden">, apel de urgență</span></a>
+  </div>
+  <header class="topbar">
+    <span class="plate-logo">Flare</span>
+    <button class="lang" type="button" lang="en"><svg class="i" aria-hidden="true"><use href="#i-globe"/></svg>English</button>
+    <span class="brand__place">Aeroportul Internațional Craiova</span>
+  </header>
+
+  <main class="p-main">
+    <section class="screen" id="compose">
+      <h1 class="title"><label for="msg">Cu ce te putem ajuta?</label></h1>
+      <div class="field">
+        <textarea class="field__input" id="msg" rows="4" enterkeyhint="send" aria-describedby="msg-hint">Liftul de la poarta 3 nu merge.</textarea>
+        <p class="hint" id="msg-hint">Scrie cu cuvintele tale. Poți și dicta: apasă microfonul de pe tastatură.</p>
+      </div>
+      <button class="callback" type="button" aria-expanded="false">
+        <svg class="i" aria-hidden="true"><use href="#i-phone"/></svg>
+        <span class="callback__text"><span>Vreau să fiu sunat înapoi</span><span class="muted">Opțional</span></span>
+        <svg class="i" aria-hidden="true"><use href="#i-chevron-down"/></svg>
+      </button>
+      <button class="btn btn--primary" type="button">Trimite</button>
+      <ul class="trust">
+        <li><svg class="i" aria-hidden="true"><use href="#i-lock"/></svg><span>Nu cerem niciodată plăți, parole sau documente personale.</span></li>
+        <li><svg class="i" aria-hidden="true"><use href="#i-info"/></svg><span>Aceasta nu este o linie de urgență.</span></li>
+      </ul>
+    </section>
+
+    <section class="screen" id="compose-open">
+      <h1 class="title"><label for="msg2">Cu ce te putem ajuta?</label></h1>
+      <div class="field">
+        <textarea class="field__input" id="msg2" rows="3">Mi-am uitat geanta neagră la poarta 3.</textarea>
+      </div>
+      <button class="callback" type="button" aria-expanded="true" aria-controls="tel-field">
+        <svg class="i" aria-hidden="true"><use href="#i-phone"/></svg>
+        <span class="callback__text"><span>Vreau să fiu sunat înapoi</span><span class="muted">Opțional</span></span>
+        <svg class="i" aria-hidden="true" style="rotate:180deg"><use href="#i-chevron-down"/></svg>
+      </button>
+      <div class="field" id="tel-field">
+        <label class="label" for="tel">Număr de telefon</label>
+        <input class="field__input field__input--short" id="tel" type="tel" inputmode="tel" autocomplete="tel" value="0722 123 456" aria-describedby="tel-hint">
+        <p class="hint" id="tel-hint">Te sunăm doar pentru acest raport. Numărul se șterge la 30 de zile după rezolvare.</p>
+      </div>
+      <button class="btn btn--primary" type="button">Trimite</button>
+      <ul class="trust">
+        <li><svg class="i" aria-hidden="true"><use href="#i-lock"/></svg><span>Nu cerem niciodată plăți, parole sau documente personale.</span></li>
+      </ul>
+    </section>
+
+    <section class="screen screen--center" id="sending" aria-live="polite">
+      <div class="beacon" aria-hidden="true"></div>
+      <h1 class="title">Verificăm mesajul…</h1>
+      <p class="lead">Durează câteva secunde. Nu închide pagina.</p>
+      <p class="echo">„Liftul de la poarta 3 nu merge.”</p>
+    </section>
+
+    <section class="screen" id="answer">
+      <p class="asked">Ai întrebat: „Nu mi-a venit bagajul. Unde mă duc?”</p>
+      <article class="answer" aria-labelledby="answer-h">
+        <h1 class="answer__label" id="answer-h"><svg class="i" aria-hidden="true"><use href="#i-info"/></svg>Răspuns automat</h1>
+        <div class="answer__body">
+          <p>Mergi la biroul de bagaje din zona de sosiri, lângă banda 2, înainte să ieși din zona de bagaje.</p>
+          <p>Ia cu tine cartea de îmbarcare și eticheta bagajului primită la check&#8209;in.</p>
+        </div>
+        <p class="answer__source">Răspuns generat automat (AI) din informațiile aeroportului. Poate greși. Date simulate.</p>
+      </article>
+      <div class="actions">
+        <button class="btn btn--primary" type="button">M-a ajutat</button>
+        <button class="btn btn--secondary" type="button">Întreabă personalul</button>
+      </div>
+    </section>
+
+    <section class="screen" id="bounced">
+      <div class="notice notice--warn" role="alert">
+        <svg class="i notice__icon" aria-hidden="true"><use href="#i-edit"/></svg>
+        <div>
+          <h1 class="notice__title">Nu am înțeles mesajul.</h1>
+          <p>Scrie din nou, în câteva cuvinte, ce s-a întâmplat și unde. De exemplu: „Lift stricat la poarta 3”.</p>
+        </div>
+      </div>
+      <p class="echo">Ai scris: „asdfgh qwerty”</p>
+      <div class="actions">
+        <button class="btn btn--primary" type="button">Modifică mesajul</button>
+        <button class="btn btn--secondary" type="button">Trimite oricum</button>
+      </div>
+      <p class="fine">Mesajele trimise oricum sunt verificate de un om înainte să ajungă la echipe.</p>
+    </section>
+
+    <section class="screen" id="confirm">
+      <div class="done" aria-hidden="true"><svg class="i"><use href="#i-check"/></svg></div>
+      <h1 class="title">Mulțumim. Raportul a ajuns la personalul aeroportului.</h1>
+      <p class="lead">Echipa potrivită l-a primit pe telefon. Poți închide pagina.</p>
+      <p class="text">Dacă ai lăsat numărul de telefon, te pot suna pentru detalii.</p>
+      <div class="actions"><button class="btn btn--secondary" type="button">Trimite alt mesaj</button></div>
+    </section>
+
+    <section class="screen" id="emergency">
+      <div class="emergency" role="alert">
+        <h1 class="emergency__title">Dacă cineva este în pericol, sună acum la 112.</h1>
+        <p class="emergency__en" lang="en">If someone is in danger, call 112 now.</p>
+        <a class="btn btn--call" href="tel:112"><svg class="i" aria-hidden="true"><use href="#i-phone"/></svg>Sună la 112</a>
+      </div>
+      <p class="lead">Dacă poți, anunță cel mai apropiat angajat al aeroportului.</p>
+      <p class="text">Mesajul tău a fost trimis și personalului.</p>
+      <div class="actions"><button class="btn btn--secondary" type="button">Înapoi</button></div>
+    </section>
+  </main>
+
+  <footer class="demo">Demonstrație cu date simulate</footer>
+</div>
+
+<!-- ================= Staff app ================= -->
+<div class="s-app">
+  <header class="s-head">
+    <div class="s-head__row">
+      <span class="plate-logo">Flare</span><span class="s-head__app">Personal</span>
+      <button class="lang" type="button" lang="en"><svg class="i" aria-hidden="true"><use href="#i-globe"/></svg>EN</button>
+    </div>
+    <div class="s-head__meta"><h1 class="visually-hidden">Active</h1><span>Mihai (simulat), manager de tură</span><span class="updated">Actualizat acum 4 s</span></div>
+  </header>
+
+  <main class="s-main">
+    <section class="screen" id="staff-list">
+      <ul class="issues">
+        <li class="issue issue--critical">
+          <a class="issue__link" href="#">
+            <div class="issue__top"><span class="sev sev--critical"><svg class="i" aria-hidden="true"><use href="#i-sev-critical"/></svg>Critic</span><span class="status status--nobody">Nimeni nu se ocupă</span></div>
+            <h2 class="issue__title" id="t1">Persoană căzută lângă poarta 3, nu răspunde</h2>
+            <p class="issue__where"><span class="issue__place">Poarta 3, zona de așteptare</span><span class="code">DEP-G03</span></p>
+            <p class="issue__facts"><svg class="i" aria-hidden="true"><use href="#i-users"/></svg>Raportat de 2 persoane<span class="age">de 1 min</span></p>
+            <span class="issue__chev" aria-hidden="true"><svg class="i"><use href="#i-chevron-right"/></svg></span>
+          </a>
+          <div class="issue__actions"><span class="tag tag--emergency">Urgență</span><span class="tag">Securitate</span><button class="btn btn--primary btn--sm" type="button" aria-describedby="t1">Mă ocup eu</button></div>
+        </li>
+        <li class="issue issue--high">
+          <a class="issue__link" href="#">
+            <div class="issue__top"><span class="sev sev--high"><svg class="i" aria-hidden="true"><use href="#i-sev-high"/></svg>Ridicat</span><span class="status status--nobody">Nimeni nu se ocupă</span></div>
+            <h2 class="issue__title" id="t2">Liftul de la check&#8209;in nu funcționează</h2>
+            <p class="issue__where"><span class="issue__place">Check&#8209;in, lângă intrare</span><span class="code">CHK-LFT-01</span></p>
+            <p class="issue__facts"><svg class="i" aria-hidden="true"><use href="#i-users"/></svg>Raportat de 4 persoane<span class="age">de 12 min</span></p>
+            <span class="issue__chev" aria-hidden="true"><svg class="i"><use href="#i-chevron-right"/></svg></span>
+          </a>
+          <div class="issue__actions"><span class="tag">Mentenanță</span><button class="btn btn--primary btn--sm" type="button" aria-describedby="t2">Mă ocup eu</button></div>
+        </li>
+        <li class="issue issue--medium">
+          <a class="issue__link" href="#">
+            <div class="issue__top"><span class="sev sev--medium"><svg class="i" aria-hidden="true"><use href="#i-sev-medium"/></svg>Mediu</span><span class="status status--new">Nou</span></div>
+            <h2 class="issue__title" id="t3">Lipsește hârtia igienică, cabina 2</h2>
+            <p class="issue__where"><span class="issue__place">Toalete sosiri, lângă banda 2</span><span class="code">ARR-WC-02</span></p>
+            <p class="issue__facts"><svg class="i" aria-hidden="true"><use href="#i-users"/></svg>Raportat de 3 persoane<span class="age">de 14 min</span></p>
+            <span class="issue__chev" aria-hidden="true"><svg class="i"><use href="#i-chevron-right"/></svg></span>
+          </a>
+          <div class="issue__actions"><span class="tag">Curățenie</span><button class="btn btn--secondary btn--sm" type="button" aria-describedby="t3">Mă ocup eu</button></div>
+        </li>
+        <li class="issue issue--medium">
+          <a class="issue__link" href="#">
+            <div class="issue__top"><span class="sev sev--medium"><svg class="i" aria-hidden="true"><use href="#i-sev-medium"/></svg>Mediu</span><span class="status status--taken"><svg class="i" aria-hidden="true"><use href="#i-user-check"/></svg>Ana se ocupă</span></div>
+            <h2 class="issue__title">Toaleta este murdară</h2>
+            <p class="issue__where"><span class="issue__place">Toalete sosiri, lângă banda 2</span><span class="code">ARR-WC-02</span></p>
+            <p class="issue__facts"><svg class="i" aria-hidden="true"><use href="#i-users"/></svg>Raportat de 1 persoană<span class="age">de 20 min</span></p>
+            <span class="issue__chev" aria-hidden="true"><svg class="i"><use href="#i-chevron-right"/></svg></span>
+          </a>
+          <div class="issue__actions"><span class="tag">Curățenie</span></div>
+        </li>
+      </ul>
+    </section>
+
+    <section class="screen" id="staff-detail">
+      <div class="d-bar"><button class="back" type="button"><svg class="i" aria-hidden="true"><use href="#i-chevron-left"/></svg>Active</button><span class="updated">Actualizat acum 4 s</span></div>
+      <div class="d-top">
+        <span class="sev sev--medium"><svg class="i" aria-hidden="true"><use href="#i-sev-medium"/></svg>Mediu</span>
+        <span class="status status--new">Nou, nimeni nu se ocupă</span>
+        <span class="tag">Curățenie</span>
+      </div>
+      <h1 class="d-title">Lipsește hârtia igienică în toaleta de lângă banda 2, cabina 2.</h1>
+      <p class="ai-note">Rezumat scris de AI din 3 rapoarte. Rapoartele originale sunt mai jos.</p>
+      <div class="d-place">
+        <span class="plate">ARR-WC-02</span>
+        <div><p class="d-place__name">Toalete sosiri, lângă banda 2</p><p class="d-place__area">Sosiri și bagaje</p></div>
+      </div>
+      <dl class="facts">
+        <div><dt>Raportat de</dt><dd>3 persoane</dd></div>
+        <div><dt>Prima raportare</dt><dd>acum 14 min (10:02)</dd></div>
+      </dl>
+      <h2 class="d-h2">Ce au scris pasagerii</h2>
+      <ol class="reports">
+        <li class="report"><p>„Hârtie igienică terminată”</p><p class="report__meta">10:10, în română</p></li>
+        <li class="report"><p lang="en">„No toilet paper in cubicle 2”</p><p class="report__meta">10:06, în engleză</p></li>
+        <li class="report"><p>„Nu mai e hârtie în toaleta de lângă banda 2”</p><p class="report__meta">10:02, în română</p></li>
+      </ol>
+      <div class="actionbar">
+        <button class="btn btn--primary" type="button">Mă ocup eu</button>
+        <button class="btn btn--secondary btn--icon" type="button" aria-label="Mai multe acțiuni"><svg class="i" aria-hidden="true"><use href="#i-more"/></svg></button>
+      </div>
+    </section>
+  </main>
+
+  <nav class="tabbar" aria-label="Secțiuni">
+    <a class="tab is-current" href="#" aria-current="page"><svg class="i" aria-hidden="true"><use href="#i-list"/></svg>Active<span class="tab__count">4</span></a>
+    <a class="tab" href="#"><svg class="i" aria-hidden="true"><use href="#i-check-circle"/></svg>Rezolvate</a>
+    <a class="tab" href="#"><svg class="i" aria-hidden="true"><use href="#i-inbox"/></svg>De verificat<span class="tab__count">2</span></a>
+  </nav>
+</div>
+
+<!-- ================= QR poster (A-series portrait, 595 x 842 = A4 at 72 dpi) ================= -->
+<div class="poster" id="poster">
+  <div class="poster__loc"><span class="poster__code">ARR-WC-02</span><span class="poster__name">Toalete sosiri<br>lângă banda 2</span></div>
+  <div class="poster__body">
+    <p class="poster__brand"><span class="plate-logo">Flare</span>Aeroportul Internațional Craiova</p>
+    <h1 class="poster__title">Ceva nu e în regulă? Scrie-ne.</h1>
+    <p class="poster__sub" lang="en">Something wrong? Tell us.</p>
+    <div class="poster__panel">
+      <svg class="poster__qr" viewBox="0 0 29 29" role="img" aria-label="Cod QR (exemplu, nefuncțional)" shape-rendering="crispEdges"></svg>
+      <p class="poster__url">flare.example/q/k7f3m9q2xd</p>
+    </div>
+    <p class="poster__never"><b>Nu cerem niciodată plăți, parole sau date de card.</b><span lang="en">We never ask for payments, passwords or card details.</span></p>
+    <p class="poster__never"><b>Dacă codul QR pare lipit peste altul, nu-l scana.</b><span lang="en">If the QR code looks stuck over another one, don't scan it.</span></p>
+  </div>
+  <div class="poster__112"><span>Doar pentru urgențe: 112</span><span lang="en">Emergencies only: 112</span></div>
+  <p class="poster__demo">Demonstrație cu date simulate. Codul QR din imagine este doar un exemplu.</p>
+</div>
+
+<!-- ================= Palette sheet ================= -->
+<div class="sheet" id="palette">
+  <h1>Flare: culori și litere</h1>
+  <div class="swatches"></div>
+  <h2>Atkinson Hyperlegible Next</h2>
+  <p style="font-size:var(--fs-h1);font-weight:700;line-height:1.15">Cu ce te putem ajuta?</p>
+  <p style="font-size:var(--fs-lead)">Ăă Ââ Îî Șș Țț „ghilimele” Il1 O0 ARR-WC-02</p>
+  <div class="row"><button class="btn btn--primary btn--sm" type="button">Trimite</button><button class="btn btn--secondary btn--sm" type="button">Înapoi</button><span class="plate">ARR-WC-02</span><span class="code">ARR-WC-02</span></div>
+  <div class="row">
+    <span class="sev sev--critical"><svg class="i" aria-hidden="true"><use href="#i-sev-critical"/></svg>Critic</span>
+    <span class="sev sev--high"><svg class="i" aria-hidden="true"><use href="#i-sev-high"/></svg>Ridicat</span>
+    <span class="sev sev--medium"><svg class="i" aria-hidden="true"><use href="#i-sev-medium"/></svg>Mediu</span>
+    <span class="sev sev--low"><svg class="i" aria-hidden="true"><use href="#i-sev-low"/></svg>Scăzut</span>
+  </div>
+</div>
+
+<script>
+  const screen = params.get('screen') || 'compose'
+  const root = document.documentElement
+  root.dataset.screen = screen
+  root.dataset.app = screen === 'palette' ? 'sheet' : screen === 'poster' ? 'poster' : screen.startsWith('staff') ? 'staff' : 'passenger'
+  document.getElementById(screen)?.classList.add('is-active')
+
+  // Example QR-like pattern for the poster mock-up only (not a scannable code).
+  const qr = document.querySelector('.poster__qr')
+  let seed = 7, cells = ''
+  const rand = () => (seed = (seed * 9301 + 49297) % 233280) / 233280
+  const finder = (x, y) => `<rect x="${x}" y="${y}" width="7" height="7"/><rect x="${x + 1}" y="${y + 1}" width="5" height="5" fill="#fff"/><rect x="${x + 2}" y="${y + 2}" width="3" height="3"/>`
+  const inFinder = (x, y) => (x < 8 && y < 8) || (x > 20 && y < 8) || (x < 8 && y > 20)
+  for (let y = 0; y < 29; y++) for (let x = 0; x < 29; x++) if (!inFinder(x, y) && rand() > 0.52) cells += `<rect x="${x}" y="${y}" width="1" height="1"/>`
+  qr.innerHTML = finder(0, 0) + finder(22, 0) + finder(0, 22) + cells
+
+  if (screen === 'palette') {
+    const style = getComputedStyle(root)
+    const names = ['black', 'ink', 'ink-2', 'paper-2', 'line', 'signal', 'danger', 'danger-soft', 'warn', 'warn-soft', 'info', 'quiet', 'ok', 'ok-soft', 'info-soft']
+    document.querySelector('.swatches').innerHTML = names.map((n) => {
+      const v = style.getPropertyValue('--' + n).trim()
+      return `<div class="sw"><div class="sw__chip" style="background:${v}"></div><div class="sw__meta"><b>${n}</b><br>${v}</div></div>`
+    }).join('')
+  }
+</script>
+</body>
+</html>

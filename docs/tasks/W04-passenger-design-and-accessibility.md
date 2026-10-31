@@ -8,6 +8,8 @@ Depends on: W03
 ## Goal
 The passenger web app looks calm, trustworthy and clearly human-made, and works for elderly and non-technical people ([principles](../principles.md)).
 
+**Design:** [docs/design](../design/README.md): [foundations](../design/foundations.md), [components](../design/components.md), [screens](../design/screens.md), [mobile](../design/mobile.md), [reference screens](../design/reference/README.md).
+
 ## Do
 1. Use the **frontend-design** skill on all six screens: hierarchy, spacing, the emergency strip's prominence without alarm, and button sizes (main buttons at least 56 px tall). Keep the tokens in step with B06.
 2. **Accessibility audit:**

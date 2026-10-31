@@ -3,13 +3,16 @@
 Status: TODO
 Owner:
 Reviewer: any human (checks the printed result)
-Track: D (OpenCode) · Phase 3 · Estimate: 45 min · Agent-friendly: yes, **but generating QR images needs the team's OK for the `qrcode` npm package** ([ADR-0013](../adr/0013-tooling-and-dependencies.md)). Without it, generate QR images with any trusted offline tool and save them as files.
+Track: D (OpenCode) · Phase 3 · Estimate: 45 min · Agent-friendly: yes. The `qrcode` npm package is approved (2026-10-31, [ADR-0013](../adr/0013-tooling-and-dependencies.md)).
 Depends on: D01, the demo domain (S07)
 
 ## Goal
 Posters that make the QR code trustworthy and correctly placed ([marketing: poster contents](../marketing.md#poster-contents-draft), [security: fake QR codes](../security-and-abuse.md#1-fake-qr-codes-quishing)).
 
+**Design:** [docs/design](../design/README.md): [foundations](../design/foundations.md), [components](../design/components.md), [screens](../design/screens.md), [mobile](../design/mobile.md), [reference screens](../design/reference/README.md).
+
 ## Do
+0. **Follow the poster design exactly:** [screens: QR poster](../design/screens.md#qr-poster-poster-a4-or-a3-portrait) and the `poster` reference screen (`docs/design/reference/index.html?screen=poster`). Reuse `reference/flare.css` poster styles.
 1. **`scripts/posters/`:** a generator that reads `data/airport/airport.json` plus a `--base-url`, and writes `scripts/posters/out/<label>.html`, an A5 or A4 printable page. Add `scripts/posters/out/` to `.gitignore`. Each poster contains:
    - the invitation in RO and EN (from marketing.md)
    - a large QR code encoding `<base-url>/q/<qrCodeId>`

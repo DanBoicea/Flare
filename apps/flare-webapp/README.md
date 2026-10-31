@@ -1,75 +1,37 @@
-# React + TypeScript + Vite
+# Flare passenger web app
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The page a Passenger opens by scanning a QR code (`/q/{qrCodeId}`). React + Vite + TypeScript. Design: [docs/architecture/frontends.md](../../docs/architecture/frontends.md).
 
-Currently, two official plugins are available:
+## Run
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```sh
+npm install
+cp .env.example .env        # Windows PowerShell: Copy-Item .env.example .env
+npm run dev                 # http://localhost:5173/q/test123
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+- **Mock mode:** set `VITE_MOCK=true` in `.env` to run without a back end. Mock answers depend on the text:
+  - "fire" or "foc": Emergency screen
+  - "joke", "glumă" or "test": Bounced (from the 3rd one, "Send anyway" appears)
+  - a "?": automatic answer (also containing "wifi": no answer found)
+  - anything else: confirmation
+- **Real back end:** `VITE_MOCK=false` and `VITE_API_BASE_URL` pointing at Spring Boot (default `http://localhost:8080`).
+- **From a phone on the same Wi-Fi:** `npm run dev -- --host`, then open `http://<laptop-ip>:5173/q/<id>`.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Other commands
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- `npm run build`: type-check and build to `dist/`. Hosting must serve `index.html` for every path (SPA fallback), over HTTPS.
+- `npm run lint`
+- `npm run gen:api`: regenerate `src/api/schema.d.ts` from `contract/openapi.yaml` after every contract change, and commit the result. It runs `openapi-typescript` through `npx` instead of installing it, because the package's TypeScript peer range doesn't include our TypeScript 6 yet.
 
-```
+## Layout
+
+| Path | Contents |
+| --- | --- |
+| `src/App.tsx` | Screen state machine (Compose, Sending, Answer, Bounced, Confirmation, Emergency) |
+| `src/screens/`, `src/components/` | Screens; always-visible emergency strip and language button |
+| `src/api/` | Generated contract types, typed `fetch` client, mock mode |
+| `src/i18n/` | `ro.json` (default language, source of the key list), `en.json`, provider and `t()` |
+| `src/lib/` | QR code ID from the URL, device ID, elapsed time for the bot check |
+| `src/styles/` | Design tokens and global styles |
+| `src/fixtures/` | Simulated mock responses |

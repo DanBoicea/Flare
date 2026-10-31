@@ -14,6 +14,18 @@ The log of what the team decided in grilling sessions, plus what is still open. 
 | [0006](adr/0006-location-specific-qr-codes.md) | Every QR code belongs to one Location, which only staff see |
 | [0007](adr/0007-llm-grouping-and-summaries.md) | Grouping and staff summaries are done by the LLM |
 | [0008](adr/0008-individual-staff-accounts-team-routing.md) | Individual staff accounts with Team routing from phase 1 |
+| [0009](adr/0009-monorepo-independent-apps.md) | One repository, three independent apps, one contract folder |
+| [0010](adr/0010-supabase-postgres-and-auth-only.md) | Supabase for the database and staff sign-in only; all data goes through Spring Boot |
+| [0011](adr/0011-staff-app-polling.md) | The Staff app polls every 5 seconds |
+| [0012](adr/0012-contract-first-openapi.md) | Contract-first OpenAPI, generated TypeScript types, hand-written Java DTOs |
+| [0013](adr/0013-tooling-and-dependencies.md) | Tooling and the full dependency list |
+| [0014](adr/0014-single-classification-call-with-knowledge-base.md) | One LLM call classifies and answers Questions; whole Knowledge base in the prompt |
+| [0015](adr/0015-single-instance-in-memory-limits.md) | One back-end instance; in-memory limits and a single-threaded grouping worker |
+| [0016](adr/0016-llm-model-per-task-in-config.md) | Model and effort per LLM task in config (proposed until the eval run) |
+| [0017](adr/0017-qr-code-url-format.md) | QR codes open `/q/{qrCodeId}` with a random opaque ID |
+| [0018](adr/0018-hashed-device-and-network-keys.md) | Device and network identifiers stored only as keyed hashes |
+| [0019](adr/0019-bot-check-without-third-party.md) | Bot check is a honeypot and a minimum fill time, no third-party service |
+| [0020](adr/0020-design-language-airfield-signage.md) | One design language: airfield signage, Atkinson Hyperlegible Next (proposed) |
 
 ## Decided
 
@@ -83,6 +95,11 @@ Mentor feedback, verbatim: "De adresat partea de impersonare qr code; Marketingu
 - **Bot check:** no third-party bot detection services (ADR-0019 confirmed).
 - **`qrcode` npm package approved** for the poster generator (D07).
 - **Romanian first:** both apps default to Romanian, and switch to English only when the device language is English. The team's Romanian speaker reviews all Romanian text.
+
+### Round 6: passenger contact and design (2026-10-31)
+
+- **Contact details are a phone number only.** Staff call back; nobody replies by email, so the form never asks for an email address. The field is `type="tel"`, optional, and limited to 32 characters in the web app.
+- **Design direction is being chosen by testing three directions with persona reviews** (see [design](design/README.md)). The result is recorded in ADR-0020.
 
 ## Open questions
 

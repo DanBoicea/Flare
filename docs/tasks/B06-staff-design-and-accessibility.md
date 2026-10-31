@@ -8,6 +8,8 @@ Depends on: B05
 ## Goal
 Zero-training, glanceable, calm and clearly human-made ([principles](../principles.md), [frontends](../architecture/frontends.md#shared-conventions)).
 
+**Design:** [docs/design](../design/README.md): [foundations](../design/foundations.md), [components](../design/components.md), [screens](../design/screens.md), [mobile](../design/mobile.md), [reference screens](../design/reference/README.md).
+
 ## Do
 1. Use the **frontend-design** skill to refine the tokens, the card layout and the Severity treatment. Keep the shared tokens in step with W04.
 2. **Accessibility:**

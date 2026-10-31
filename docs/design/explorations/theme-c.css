@@ -1,0 +1,53 @@
+/* Direction C: "Panou de plecări" (departures board).
+   Dark airside navy with amber board type, like a flight information display. Barlow (OFL; a grotesk
+   modelled on road and highway signage) with its semi-condensed cut for headings. The most dramatic
+   option for the pitch; readability in a bright terminal is the open question. */
+:root {
+  color-scheme: dark;
+  --theme-name: "Panou de plecări (departures board)";
+  --font-name: "Barlow + Barlow Semi Condensed";
+  --font-body: "Barlow", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Barlow Semi Condensed", "Barlow", system-ui, sans-serif;
+  --title-size: 2.125rem; --title-weight: 700; --title-tracking: 0; --title-leading: 1.1;
+  --body-size: 1.125rem; --lead-size: 1.25rem; --small-size: 1rem; --btn-size: 1.25rem; --row-title-size: 1.25rem;
+  --brand-tracking: 0.01em;
+
+  --bg: #0E1B2A; --surface-2: #1C3149; --field-bg: #152638;
+  --text: #F4F6F8; --text-2: #B8C4D0; --border-strong: #5A7896; --divider: #22384F; --divider-strong: #5A7896;
+
+  --primary-bg: #FFB81C; --primary-text: #0E1B2A; --primary-border: #FFB81C;
+  --secondary-bg: transparent; --secondary-text: #F4F6F8; --secondary-border: #5A7896;
+
+  --strip-bg: #D92D20; --strip-text: #FFFFFF; --strip-call-bg: #FFFFFF; --strip-call-text: #B42318; --strip-call-border: #FFFFFF;
+  --emergency-bg: #D92D20; --emergency-text: #FFFFFF; --call-bg: #FFFFFF; --call-text: #B42318;
+  --success-bg: #3CCB7F; --success-text: #0E1B2A;
+
+  --answer-border: #FFB81C; --answer-border-w: 0; --answer-bg: #152638;
+  --answer-head-bg: #0A121C; --answer-head-text: #FFB81C;
+  --notice-bg: #152638; --notice-text: #F4F6F8; --notice-border: #FFB81C; --notice-border-w: 0;
+
+  --plate-bg: #0A121C; --plate-text: #FFB81C; --plate-border: #FFB81C; --plate-border-w: 1px;
+
+  --sev-critical: #F04438; --sev-critical-badge-bg: #3A1518; --sev-critical-badge-text: #FFB4AB;
+  --sev-high: #F79009; --sev-high-tint: #3A2410; --sev-high-text: #FFD3A1;
+  --sev-medium: #4EA1FF; --sev-medium-tint: #12304F; --sev-medium-text: #A9D1FF;
+  --sev-low: #8FA0B2; --sev-low-tint: #22384F; --sev-low-text: #D5DEE7;
+  --row-bg: #0E1B2A; --row-critical-bg: #24131A;
+  --new-dot: #FFB81C;
+
+  --s-head-bg: #0A121C; --s-head-text: #F4F6F8; --chip-bg: #1C3149; --chip-text: #D5DEE7;
+  --tab-bg: #0A121C; --tab-text: #8FA0B2; --tab-active: #FFB81C; --count-bg: #FFB81C; --count-text: #0E1B2A;
+  --brand-outer: #FFB81C; --brand-inner: #0E1B2A;
+  --beacon: #FFB81C;
+
+  --r-plate: 2px; --r-btn: 4px; --r-field: 4px; --r-card: 6px; --r-chip: 3px;
+  --btn-border-w: 2px; --field-border-w: 2px; --btn-height: 3.5rem; --pad-x: 20px; --gap: 22px;
+}
+
+/* Signature details */
+.answer { border-top: 4px solid #FFB81C; }
+.notice { border-top: 4px solid #FFB81C; }
+.s-title, .issue__title, .d-title, .btn { font-family: var(--font-display); }
+.issue__title { font-weight: 600; letter-spacing: 0.005em; }
+.tab.is-current::before { content: ""; position: absolute; top: 0; left: 25%; right: 25%; height: 3px; background: #FFB81C; }
+.sw__meta { background: #0A121C; color: #F4F6F8; }

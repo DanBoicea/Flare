@@ -32,7 +32,7 @@ Request:
 | `uiLanguage` | `ro` or `en` |
 | `qrCodeId` | Optional, at most 32 characters of `[a-z0-9]`. Any other value is treated as unknown |
 | `deviceId` | Required, a UUID string |
-| `contact` | Optional, at most 120 characters (phone or email, free text) |
+| `contact` | Optional phone number, free text, at most 120 characters (the web app limits input to 32). Phone only: staff call back, nobody replies by email |
 | `sendAnyway` | Optional. Honoured only if the server's Bounce counter for this device allows it |
 | `website` | Honeypot. Must be empty ([ADR-0019](../adr/0019-bot-check-without-third-party.md)) |
 | `elapsedMs` | Milliseconds since the page opened ([ADR-0019](../adr/0019-bot-check-without-third-party.md)) |

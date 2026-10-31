@@ -65,7 +65,11 @@ This is not an emergency channel. The passenger web app shows the emergency numb
 
 ## Setup
 
-Not written yet. The skeleton tasks (A01, B01, W01) fill this section in. The planned commands and environment variables are in [docs/architecture/operations.md](docs/architecture/operations.md).
+Each app has its own setup notes. Environment variables and the overall local setup are in [docs/architecture/operations.md](docs/architecture/operations.md).
+
+- **Passenger web app:** [apps/flare-webapp/README.md](apps/flare-webapp/README.md). Runs on its own in mock mode (`VITE_MOCK=true`).
+- **Back end:** to be added by task A01.
+- **Staff app:** to be added by task B01.
 
 ## Team
 
