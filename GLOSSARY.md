@@ -71,7 +71,7 @@ The web page a Passenger opens by scanning a QR code.
 _Avoid_: form, site, portal
 
 **Staff member**:
-A person with their own Staff app account. They belong to one or more Teams and have one role: staff or duty manager.
+A person with their own Staff app account. They belong to one or more Teams and hold one or more roles: staff, duty manager.
 _Avoid_: employee, user, agent
 
 **Team**:

@@ -1,0 +1,351 @@
+{
+  "_comment": "SIMULATED DEMO DATA for the Flare hackathon demo. Not the real layout of Craiova International Airport. QR code IDs were generated randomly.",
+  "simulated": true,
+  "areas": [
+    {
+      "id": "CHK",
+      "name": {
+        "ro": "Hala de check-in (simulat)",
+        "en": "Check-in hall (simulated)"
+      }
+    },
+    {
+      "id": "SEC",
+      "name": {
+        "ro": "Control de securitate (simulat)",
+        "en": "Security checkpoint (simulated)"
+      }
+    },
+    {
+      "id": "DEP",
+      "name": {
+        "ro": "Zona porților de plecare (simulat)",
+        "en": "Departure gates (simulated)"
+      }
+    },
+    {
+      "id": "ARR",
+      "name": {
+        "ro": "Sosiri și preluare bagaje (simulat)",
+        "en": "Arrivals and baggage claim (simulated)"
+      }
+    },
+    {
+      "id": "LND",
+      "name": {
+        "ro": "Intrare și parcare (simulat)",
+        "en": "Entrance and parking (simulated)"
+      }
+    }
+  ],
+  "locations": [
+    {
+      "label": "CHK-WC-01",
+      "area": "CHK",
+      "criticality": 0,
+      "name": {
+        "ro": "Toalete check-in, partea de est",
+        "en": "Check-in toilets, east side"
+      },
+      "qrCodeId": "7agzywhpr5",
+      "qrCodeStatus": "ACTIVE"
+    },
+    {
+      "label": "CHK-WC-02",
+      "area": "CHK",
+      "criticality": 0,
+      "name": {
+        "ro": "Toalete check-in, partea de vest",
+        "en": "Check-in toilets, west side"
+      },
+      "qrCodeId": "zfq455w3gj",
+      "qrCodeStatus": "ACTIVE"
+    },
+    {
+      "label": "CHK-LIFT-01",
+      "area": "CHK",
+      "criticality": 2,
+      "name": {
+        "ro": "Lift check-in, spre etajul plecări",
+        "en": "Check-in lift to departures level"
+      },
+      "qrCodeId": "8hf2c2ty55",
+      "qrCodeStatus": "ACTIVE"
+    },
+    {
+      "label": "CHK-ESC-01",
+      "area": "CHK",
+      "criticality": 0,
+      "name": {
+        "ro": "Scară rulantă check-in, spre etajul plecări",
+        "en": "Check-in escalator to departures level"
+      },
+      "qrCodeId": "gbkvh989h9",
+      "qrCodeStatus": "ACTIVE"
+    },
+    {
+      "label": "CHK-INFO-01",
+      "area": "CHK",
+      "criticality": 0,
+      "name": {
+        "ro": "Birou de informații, hala de check-in",
+        "en": "Information desk, check-in hall"
+      },
+      "qrCodeId": "zb8mt6agr3",
+      "qrCodeStatus": "ACTIVE"
+    },
+    {
+      "label": "CHK-SEAT-01",
+      "area": "CHK",
+      "criticality": 0,
+      "name": {
+        "ro": "Locuri de așteptare, hala de check-in",
+        "en": "Seating, check-in hall"
+      },
+      "qrCodeId": "af8twxuzvz",
+      "qrCodeStatus": "ACTIVE"
+    },
+    {
+      "label": "SEC-ENT-01",
+      "area": "SEC",
+      "criticality": 2,
+      "name": {
+        "ro": "Intrare control de securitate",
+        "en": "Security checkpoint entrance"
+      },
+      "qrCodeId": "9h2ktwk33n",
+      "qrCodeStatus": "ACTIVE"
+    },
+    {
+      "label": "SEC-SEAT-01",
+      "area": "SEC",
+      "criticality": 2,
+      "name": {
+        "ro": "Bănci după control, zona de reîmpachetare",
+        "en": "Benches after screening, repacking area"
+      },
+      "qrCodeId": "ssfjp2wntf",
+      "qrCodeStatus": "ACTIVE"
+    },
+    {
+      "label": "DEP-WC-01",
+      "area": "DEP",
+      "criticality": 0,
+      "name": {
+        "ro": "Toalete plecări, lângă cafenea",
+        "en": "Departures toilets near the café"
+      },
+      "qrCodeId": "kc7m2th6qc",
+      "qrCodeStatus": "ACTIVE"
+    },
+    {
+      "label": "DEP-WC-02",
+      "area": "DEP",
+      "criticality": 0,
+      "name": {
+        "ro": "Toalete plecări, zona porților nord",
+        "en": "Departures toilets, north gates"
+      },
+      "qrCodeId": "xw9fwv52ua",
+      "qrCodeStatus": "ACTIVE"
+    },
+    {
+      "label": "DEP-WC-03",
+      "area": "DEP",
+      "criticality": 0,
+      "name": {
+        "ro": "Toalete plecări, zona porților sud",
+        "en": "Departures toilets, south gates"
+      },
+      "qrCodeId": "pnp64ghb6v",
+      "qrCodeStatus": "ACTIVE"
+    },
+    {
+      "label": "DEP-SEAT-01",
+      "area": "DEP",
+      "criticality": 0,
+      "name": {
+        "ro": "Locuri de așteptare, porțile nord",
+        "en": "Seating, north gates"
+      },
+      "qrCodeId": "z2adejw8y9",
+      "qrCodeStatus": "ACTIVE"
+    },
+    {
+      "label": "DEP-SEAT-02",
+      "area": "DEP",
+      "criticality": 0,
+      "name": {
+        "ro": "Locuri de așteptare, porțile sud",
+        "en": "Seating, south gates"
+      },
+      "qrCodeId": "dkvunmjbq2",
+      "qrCodeStatus": "ACTIVE"
+    },
+    {
+      "label": "DEP-LIFT-01",
+      "area": "DEP",
+      "criticality": 2,
+      "name": {
+        "ro": "Lift plecări, spre etajul sosiri",
+        "en": "Departures lift to arrivals level"
+      },
+      "qrCodeId": "vvaqgkx4v7",
+      "qrCodeStatus": "ACTIVE"
+    },
+    {
+      "label": "DEP-FAM-01",
+      "area": "DEP",
+      "criticality": 0,
+      "name": {
+        "ro": "Camera pentru familii, plecări",
+        "en": "Family room, departures"
+      },
+      "qrCodeId": "z5vbtr9xxr",
+      "qrCodeStatus": "ACTIVE"
+    },
+    {
+      "label": "ARR-WC-01",
+      "area": "ARR",
+      "criticality": 0,
+      "name": {
+        "ro": "Toalete sosiri, lângă ieșire",
+        "en": "Arrivals toilets near the exit"
+      },
+      "qrCodeId": "dqd92r6xbp",
+      "qrCodeStatus": "ACTIVE"
+    },
+    {
+      "label": "ARR-WC-02",
+      "area": "ARR",
+      "criticality": 0,
+      "name": {
+        "ro": "Toalete sosiri, lângă banda 2",
+        "en": "Arrivals toilets near belt 2"
+      },
+      "qrCodeId": "skp4fq3r5e",
+      "qrCodeStatus": "ACTIVE"
+    },
+    {
+      "label": "ARR-BELT-01",
+      "area": "ARR",
+      "criticality": 1,
+      "name": {
+        "ro": "Banda de bagaje 1",
+        "en": "Baggage belt 1"
+      },
+      "qrCodeId": "xkb2zw97br",
+      "qrCodeStatus": "ACTIVE"
+    },
+    {
+      "label": "ARR-BELT-02",
+      "area": "ARR",
+      "criticality": 1,
+      "name": {
+        "ro": "Banda de bagaje 2",
+        "en": "Baggage belt 2"
+      },
+      "qrCodeId": "5m34p7yevg",
+      "qrCodeStatus": "ACTIVE"
+    },
+    {
+      "label": "ARR-LIFT-01",
+      "area": "ARR",
+      "criticality": 2,
+      "name": {
+        "ro": "Lift sosiri, spre parcare",
+        "en": "Arrivals lift to parking"
+      },
+      "qrCodeId": "x6cxjq4mra",
+      "qrCodeStatus": "ACTIVE"
+    },
+    {
+      "label": "ARR-ESC-01",
+      "area": "ARR",
+      "criticality": 0,
+      "name": {
+        "ro": "Scară rulantă sosiri",
+        "en": "Arrivals escalator"
+      },
+      "qrCodeId": "de4vksfrzc",
+      "qrCodeStatus": "ACTIVE"
+    },
+    {
+      "label": "ARR-SEAT-01",
+      "area": "ARR",
+      "criticality": 0,
+      "name": {
+        "ro": "Zona de așteptare sosiri",
+        "en": "Arrivals meeting area seating"
+      },
+      "qrCodeId": "vgdfdvghwy",
+      "qrCodeStatus": "ACTIVE"
+    },
+    {
+      "label": "LND-ENT-01",
+      "area": "LND",
+      "criticality": 0,
+      "name": {
+        "ro": "Intrarea principală",
+        "en": "Main entrance"
+      },
+      "qrCodeId": "mqzhbcqkrt",
+      "qrCodeStatus": "ACTIVE"
+    },
+    {
+      "label": "LND-ENT-02",
+      "area": "LND",
+      "criticality": 0,
+      "name": {
+        "ro": "Intrarea dinspre parcare",
+        "en": "Parking-side entrance"
+      },
+      "qrCodeId": "5etmmcn8j4",
+      "qrCodeStatus": "ACTIVE"
+    },
+    {
+      "label": "LND-ENT-03",
+      "area": "LND",
+      "criticality": 0,
+      "name": {
+        "ro": "Intrarea de serviciu, lângă stația de taxi",
+        "en": "Side entrance near the taxi rank"
+      },
+      "qrCodeId": "9wa6zzsz5d",
+      "qrCodeStatus": "MUTED"
+    }
+  ],
+  "staff": [
+    {
+      "email": "cleaning@demo.flare.invalid",
+      "displayName": "Ana (simulat)",
+      "roles": ["STAFF"],
+      "teams": [
+        "CLEANING"
+      ]
+    },
+    {
+      "email": "maintenance@demo.flare.invalid",
+      "displayName": "Mihai (simulat)",
+      "roles": ["STAFF"],
+      "teams": [
+        "MAINTENANCE",
+        "PASSENGER_ASSISTANCE"
+      ]
+    },
+    {
+      "email": "security@demo.flare.invalid",
+      "displayName": "Ioana (simulat)",
+      "roles": ["STAFF"],
+      "teams": [
+        "SECURITY"
+      ]
+    },
+    {
+      "email": "manager@demo.flare.invalid",
+      "displayName": "Radu (simulat)",
+      "roles": ["DUTY_MANAGER"],
+      "teams": []
+    }
+  ]
+}

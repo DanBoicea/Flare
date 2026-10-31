@@ -9,7 +9,7 @@ Postgres in Supabase, schema `flare` (not exposed through Supabase's Data API; r
 | `Category` | `CLEANING_OR_SPILL`, `TOILET`, `LIFT_OR_ESCALATOR`, `BROKEN_OR_MAINTENANCE`, `SIGN_OR_INFORMATION`, `ASSISTANCE_NEEDED`, `LOST_ITEM_OR_PERSON`, `SAFETY_OR_SECURITY`, `OTHER` |
 | `Severity` | `CRITICAL`, `HIGH`, `MEDIUM`, `LOW` |
 | `TeamId` | `CLEANING`, `MAINTENANCE`, `SECURITY`, `PASSENGER_ASSISTANCE` |
-| `StaffRole` | `STAFF`, `DUTY_MANAGER` |
+| `StaffRole` | `STAFF`, `DUTY_MANAGER` (the IDs of the `role` rows) |
 | `IssueStatus` | `NEW`, `ACKNOWLEDGED`, `IN_PROGRESS`, `RESOLVED` |
 | `ReportStatus` | `ACCEPTED`, `QUARANTINED`, `DISMISSED` |
 | `QuarantineReason` | `RATE_LIMIT`, `QR_CODE_STRICT_MODE`, `UNKNOWN_QR_CODE`, `MUTED_QR_CODE`, `BOT_CHECK`, `SEND_ANYWAY` |
@@ -53,9 +53,8 @@ Categories and Severities are tentative. Changing them means one migration, the 
 ### `staff_member`
 | Column | Type | Notes |
 | --- | --- | --- |
-| `id` | uuid PK | Equals the Supabase Auth user ID (`auth.users.id`, the JWT `sub`) |
+| `id` | uuid PK | Equals the Supabase Auth user ID (`auth.users.id`, the JWT `sub`). No FK to `auth.users`, so the schema doesn't depend on Supabase internals |
 | `display_name` | text | Shown in "I'm on it" and the history |
-| `role` | text `StaffRole` | |
 | `active` | boolean | Inactive means 403 on every staff endpoint |
 | `created_at` | timestamptz | |
 
@@ -64,6 +63,18 @@ Categories and Severities are tentative. Changing them means one migration, the 
 | --- | --- | --- |
 | `staff_member_id` | uuid FK | PK (both columns) |
 | `team_id` | text FK | A staff member can be in several Teams |
+
+### `role`
+| Column | Type | Notes |
+| --- | --- | --- |
+| `id` | text PK `StaffRole` | Seeded by migration (real config, not demo data) |
+| `name_ro`, `name_en` | text | |
+
+### `staff_member_role`
+| Column | Type | Notes |
+| --- | --- | --- |
+| `staff_member_id` | uuid FK | PK (both columns) |
+| `role_id` | text FK | A staff member can hold several roles. A member with no `DUTY_MANAGER` row gets ordinary staff access |
 
 ### `question`
 | Column | Type | Notes |
@@ -139,7 +150,13 @@ Categories and Severities are tentative. Changing them means one migration, the 
 | `details` | jsonb | e.g. `{ "from": "MEDIUM", "to": "HIGH" }`. Never contains Passenger text |
 | `created_at` | timestamptz | |
 
-Indexes: `issue(status, team_id)`, `issue(location_id, status)`, `report(issue_id)`, `report(status) where status = 'QUARANTINED'`, `report(issue_id) where issue_id is null and status = 'ACCEPTED'` (worker recovery), `question(created_at)`.
+Indexes: `issue(status, team_id)`, `issue(location_id, status)`, `report(issue_id)`, `report(created_at) where status = 'QUARANTINED'` (Needs review), `report(created_at) where issue_id is null and status = 'ACCEPTED'` (worker recovery), `question(created_at)`, `audit_event(issue_id)` (Issue history).
+
+Constraints beyond the column types (all in `V1__schema.sql`):
+- Columns without "null" in the tables above are `not null`. Booleans default to `false`, counters to `0`, `created_at` to `now()`.
+- Length checks: `text` 1-1000 characters, `contact` at most 120, `scanned_qr_code_id` at most 32. `confidence` is between 0 and 1.
+- On delete: `audit_event` rows go with their Issue or Report (`cascade`), `question.sent_to_staff_report_id` is cleared (`set null`), and Team and role links go with their staff member (`cascade`). Everything else is restricted, so retention (A10) deletes Reports before their Issue.
+- Flyway's own `flyway_schema_history` table has no row-level security; like every table here, it is unreachable because the schema isn't exposed.
 
 ## Issue state machine
 
@@ -180,6 +197,6 @@ message ──(Question)──▶ question row ──(send to staff)──▶ re
 
 ## Seed data
 
-- **Real configuration** (`team` rows) goes in a normal versioned migration.
-- **Simulated demo data** goes in `db/seed/R__demo_seed.sql`, loaded only by the `local` and `demo` profiles through Flyway's `locations` setting. That covers Areas, Locations, QR codes and staff members linked to Supabase users by email. It is produced by D01 from `data/airport/`, and every name is visibly simulated.
+- **Real configuration** (`team` and `role` rows) goes in a normal versioned migration.
+- **Simulated demo data** goes in `db/seed/R__demo_seed.sql`, loaded only by the `local` and `demo` profiles through Flyway's `locations` setting. That covers Areas, Locations, QR codes, and staff members (with their Teams and roles) linked to Supabase users by email. It is produced by D01 from `data/airport/`, and every name is visibly simulated.
 - Staff accounts are created by hand in the Supabase dashboard (S03). The seed then links them: `insert into flare.staff_member (id, …) select id, … from auth.users where email = …`.

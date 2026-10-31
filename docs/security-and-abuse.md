@@ -52,7 +52,7 @@ The quality check Bounces most abusive, joke and garbage content up front. Anyth
 
 ## 7. Staff access
 
-- Individual accounts from phase 1. Each staff member is in one or more Teams, with the role staff or duty manager ([ADR-0008](adr/0008-individual-staff-accounts-team-routing.md)).
+- Individual accounts from phase 1. Each staff member is in one or more Teams, with one or more roles (staff, duty manager) ([ADR-0008](adr/0008-individual-staff-accounts-team-routing.md)).
 - Least privilege: a staff member can read and act only on their Teams' Issues, and Security also on every Critical Issue. The duty manager sees all and is the only one who sees Needs review. The server checks this on every request.
 - An audit log of who did what to which Issue.
 - The sign-in mechanism (Supabase Auth or Spring Security) is a planning decision.

@@ -10,6 +10,18 @@ Unblocks: A03 (seeded staff), D06, D07, G1
 ## Progress note
 Split in two so D02 and D03 can use the real Location labels now: **part 1** (steps 1-4, `data/airport/airport.json`) is done first, without waiting for A02. **Part 2** (steps 5-6, the SQL seed and reset script) waits for A02's table shapes.
 
+Part 1 is done. Two fields were added to the shape below:
+- `qrCodeStatus` on each Location (`ACTIVE` or `MUTED`, matching `QrCodeStatus`), so the seed knows which QR code is muted
+- a top-level `_comment` carrying the "SIMULATED DEMO DATA" header, since JSON has no comments
+
+The muted QR code is at `LND-ENT-03`.
+
+Part 2 (steps 5-6) was done by Florin Cristi on 2026-10-31, after A02, so A03 has seeded staff. Luciano still owns D01:
+- `scripts/seed/generate-seed.mjs` generates `R__demo_seed.sql` from `airport.json`. Run `node scripts/seed/generate-seed.mjs` after editing the JSON, and commit both files.
+- Teams and roles are replaced on every run, so the database always matches the JSON.
+- `scripts/sql/reset-dev.sql` is written.
+- Applied on `flare-dev`: 5 Areas, 25 Locations, 25 QR codes (one muted), and all four staff members with their roles and Teams. A second start was a no-op.
+
 ## Goal
 A believable but clearly **simulated** airport layout to demo with. Nothing claims to be the real Craiova Airport layout ([CLAUDE.md](../../CLAUDE.md): never invent airport facts).
 
@@ -22,7 +34,7 @@ A believable but clearly **simulated** airport layout to demo with. Nothing clai
      "locations": [ { "label": "ARR-WC-02", "area": "ARR", "criticality": 0,
                       "name": { "ro": "Toalete sosiri, lângă banda 2", "en": "Arrivals toilets near belt 2" },
                       "qrCodeId": "k7f3m9q2xd" } ],
-     "staff": [ { "email": "cleaning@demo.flare.invalid", "displayName": "Ana (simulat)", "role": "STAFF", "teams": ["CLEANING"] } ]
+     "staff": [ { "email": "cleaning@demo.flare.invalid", "displayName": "Ana (simulat)", "roles": ["STAFF"], "teams": ["CLEANING"] } ]
    }
    ```
 2. **Content:**
@@ -31,7 +43,7 @@ A believable but clearly **simulated** airport layout to demo with. Nothing clai
    - `criticality` 2 for the security checkpoint and lifts, 1 for baggage belts, 0 otherwise
    - Location names stay short; the "(simulated)" / "(simulat)" marker goes on the Area names, the staff display names and the seed file header
 3. **QR code IDs:** one per Location, 10 characters from `abcdefghjkmnpqrstuvwxyz23456789`, unique, generated randomly (not hand-picked). Add **one** `MUTED` QR code at an extra Location, for the demo.
-4. **Staff:** the four accounts from [S03](S03-supabase-project-and-accounts.md), plus Teams: `maintenance@` is in `MAINTENANCE` and `PASSENGER_ASSISTANCE`; `manager@` has role `DUTY_MANAGER` and no Teams. Display names are fictional first names plus "(simulat)".
+4. **Staff:** the four accounts from [S03](S03-supabase-project-and-accounts.md), plus Teams: `maintenance@` is in `MAINTENANCE` and `PASSENGER_ASSISTANCE`; `manager@` has roles `["DUTY_MANAGER"]` and no Teams; the other three have `["STAFF"]`. The seed fills `staff_member_role` as well as `staff_member_team`. Display names are fictional first names plus "(simulat)".
 5. **`apps/flare-backend/src/main/resources/db/seed/R__demo_seed.sql`**, generated from the JSON (by hand or with a Node script in `scripts/seed/`, Node built-ins only):
    - upserts (`on conflict do update`) Areas, Locations, QR codes, staff members and staff Teams
    - links staff by email through `auth.users`; skips silently if the user doesn't exist yet
@@ -42,7 +54,7 @@ A believable but clearly **simulated** airport layout to demo with. Nothing clai
 Use real shop names, real gate numbers or real airport staff names. Add dependencies.
 
 ## Done when
-- [ ] Flyway applies the seed on `flare-dev`, and re-running is a no-op.
+- [x] Flyway applies the seed on `flare-dev`, and re-running is a no-op.
 - [ ] Every QR code ID resolves through A06.
-- [ ] All demo accounts have their `staff_member` rows.
+- [x] All demo accounts have their `staff_member` rows.
 - [ ] The reviewer approves.

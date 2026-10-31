@@ -1,0 +1,78 @@
+# Flare back-end configuration (docs/architecture/backend.md).
+# Secrets come only from environment variables; see .env.example.
+spring:
+  application:
+    name: flare-backend
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: flare
+  flyway:
+    schemas: flare
+    create-schemas: true
+    locations: classpath:db/migration
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${SUPABASE_JWKS_URI}
+          issuer-uri: ${SUPABASE_JWT_ISSUER}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+
+flare:
+  llm:
+    enabled: ${FLARE_LLM_ENABLED:false}
+    daily-call-limit: 2000
+    tasks:
+      classify:  { model: claude-opus-5-5, effort: low, max-tokens: 2048, timeout: 10s }
+      match:     { model: claude-opus-5-5, effort: low, max-tokens: 1024, timeout: 15s }
+      summarize: { model: claude-opus-5-5, effort: low, max-tokens: 1024, timeout: 15s }
+  limits:
+    device:    { per-10-min: 3, per-day: 10 }
+    network:   { per-10-min: 30 }
+    qr-code:   { per-10-min: 20, strict-mode-duration: 30m }
+    bounce:    { window: 30m, send-anyway-after: 3, block-after: 6 }
+    bot-check: { min-elapsed-ms: 2000 }
+  grouping:
+    window: 30m
+    max-candidates: 10
+  routing:
+    low-confidence-threshold: 0.5
+    category-team:
+      CLEANING_OR_SPILL: CLEANING
+      TOILET: CLEANING
+      LIFT_OR_ESCALATOR: MAINTENANCE
+      BROKEN_OR_MAINTENANCE: MAINTENANCE
+      SIGN_OR_INFORMATION: PASSENGER_ASSISTANCE
+      ASSISTANCE_NEEDED: PASSENGER_ASSISTANCE
+      LOST_ITEM_OR_PERSON: PASSENGER_ASSISTANCE
+      SAFETY_OR_SECURITY: SECURITY
+      # OTHER → no Team (duty manager)
+  priority:
+    severity-weight: { CRITICAL: 10000, HIGH: 600, MEDIUM: 300, LOW: 100 }
+    per-extra-reporter: 25
+    max-extra-reporters: 10
+    max-age-minutes: 120
+    per-criticality: 50
+    reopened-bonus: 50
+  retention:
+    contact-days-after-resolve: 30
+    question-days: 30
+    issue-days-after-resolve: 90
+    dismissed-days: 7
+  cors:
+    allowed-origins: ${FLARE_ALLOWED_ORIGINS:http://localhost:5173}
+  security:
+    hash-secret: ${FLARE_HASH_SECRET}   # required; HMAC key for device and network hashes
