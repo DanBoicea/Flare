@@ -67,7 +67,10 @@ public class GroupingWorker {
 		}
 	}
 
-	/** Each Report gets one retry; if that fails too it stays ungrouped and the next startup tries again. */
+	/**
+	 * Each Report gets one retry; if that fails too, it becomes its own Unclassified Issue (pipeline.md section 5).
+	 * Only if even that fails does it stay ungrouped, to be tried again on the next startup.
+	 */
 	void process(UUID reportId) {
 		for (int attempt = 1; attempt <= 2; attempt++) {
 			try {
@@ -79,6 +82,11 @@ public class GroupingWorker {
 				log.warn("Grouping report {} failed (attempt {}): {}", reportId, attempt, e.getClass().getName());
 			}
 		}
-		log.error("Report {} stays ungrouped after 2 attempts; it is retried on the next startup", reportId);
+		try {
+			grouper.groupAsUnclassified(reportId);
+		}
+		catch (RuntimeException e) {
+			log.error("Report {} stays ungrouped ({}); it is retried on the next startup", reportId, e.getClass().getName());
+		}
 	}
 }

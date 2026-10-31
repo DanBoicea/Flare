@@ -179,6 +179,13 @@ Mentor feedback, verbatim: "De adresat partea de impersonare qr code; Marketingu
 - **Only Quarantined Reports** can be released or dismissed; anything else is `404`.
 - **A released "Send anyway"** is classified as a Report the Passenger insisted on.
 
+### Round 14: grouping (A08, 2026-10-31)
+
+- **Over-merging is worse than under-merging:** a matcher failure, or an answer outside the candidates, creates a new Issue.
+- **A failed or unchanged summary keeps the old one;** a new one is marked as written by the LLM.
+- **Nothing is ever stuck:** after a failed retry, a Report becomes its own Unclassified Issue for the duty manager.
+- **The summariser's input is `IssueSummaryView`,** because `IssueView` already names the ACTIVE/RESOLVED list choice.
+
 ## Open questions
 
 ### Waiting for the team's answer
