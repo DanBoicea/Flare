@@ -17,7 +17,7 @@ import './App.css'
 
 /** Screen state machine (frontends.md). No router: the URL only carries the QR code ID. */
 type Screen =
-  | { name: 'compose'; error?: ErrorCode | 'NETWORK' }
+  | { name: 'compose'; error?: ErrorCode | 'NETWORK'; focusField?: boolean }
   | { name: 'sending' }
   | { name: 'answer'; questionId: string; answer: Answer }
   | { name: 'bounced'; bounce: Bounce }
@@ -38,11 +38,16 @@ export default function App() {
 
   // On every screen change, move focus to the new screen's heading, so screen readers announce it
   // and keyboard users start from the top. Not on first load: the Passenger has not acted yet.
+  // "Edit message" puts focus straight into the field instead, ready to type.
   const mainRef = useRef<HTMLElement>(null)
   const firstScreen = useRef(true)
   useEffect(() => {
     if (firstScreen.current) {
       firstScreen.current = false
+      return
+    }
+    if (screen.name === 'compose' && screen.focusField) {
+      mainRef.current?.querySelector<HTMLElement>('#message')?.focus()
       return
     }
     const heading = mainRef.current?.querySelector<HTMLElement>('h1')
@@ -147,6 +152,7 @@ export default function App() {
         {screen.name === 'sending' && <SendingScreen text={text.trim()} />}
         {screen.name === 'answer' && (
           <AnswerScreen
+            question={text.trim()}
             answer={screen.answer}
             onHelped={startOver}
             onSendToStaff={() => sendToStaff(screen.questionId)}
@@ -154,8 +160,9 @@ export default function App() {
         )}
         {screen.name === 'bounced' && (
           <BouncedScreen
+            text={text.trim()}
             bounce={screen.bounce}
-            onEdit={() => setScreen({ name: 'compose' })}
+            onEdit={() => setScreen({ name: 'compose', focusField: true })}
             onSendAnyway={() => send(true)}
           />
         )}

@@ -1,5 +1,6 @@
 import type { KeyboardEvent } from 'react'
 import type { ErrorCode } from '../api/types'
+import { PhoneIcon } from '../components/PhoneIcon'
 import { useI18n } from '../i18n/context'
 import { hasKey } from '../i18n/strings'
 
@@ -94,9 +95,7 @@ export function ComposeScreen(props: Props) {
             aria-controls="callback-details"
             onChange={(event) => props.onWantsCallBackChange(event.target.checked)}
           />
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-            <path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2z" />
-          </svg>
+          <PhoneIcon />
           <span>
             {t('compose.contact.toggle')} {t('compose.optional')}
           </span>

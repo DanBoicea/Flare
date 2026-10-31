@@ -117,6 +117,9 @@ Mentor feedback, verbatim: "De adresat partea de impersonare qr code; Marketingu
 - **Compose uses a call-back checkbox** that reveals the phone field; unticked sends no contact. The title is the field's label. Sending echoes the Passenger's text.
 - **Enter sends the message** on Compose (the keyboard key says "Send"); Shift+Enter adds a new line.
 - **Open for B01:** distinct colours for High, Medium and Low severity in V1.
+- **Emergency strip reworded** for clarity: "Urgență?" on the left, a red pill button "Sună la 112" with a phone icon on the right (a bare "112" box read like a badge).
+- **Outcome screens (W03) follow V1 with three changes:** Confirmation keeps "Send another message" as a secondary button and keeps the copy-deck wording (V1's "the right team got it on their phone" is untrue for Quarantined "Send anyway" Reports); the Emergency title shows in both languages and keeps "tell the nearest staff member"; each Bounce reason gets a short title plus a body.
+- **Answer not found:** the second button is "Send another message" ("That helped" makes no sense when nothing was found).
 
 ## Open questions
 

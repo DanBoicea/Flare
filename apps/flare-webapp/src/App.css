@@ -313,11 +313,13 @@
   color: var(--ink-2);
 }
 
-.sending__quote {
+
+/* ---- Shared: the Passenger's own words, stacked actions ---- */
+.quote {
   width: 100%;
-  margin: var(--s2) 0 0;
+  margin: 0;
   padding: var(--s4) 18px;
-  border-radius: var(--r-card);
+  border-radius: var(--r-control);
   background: var(--paper);
   font-size: var(--fs-lead);
   line-height: 1.4;
@@ -325,9 +327,144 @@
   white-space: pre-wrap;
 }
 
-.sending__quote-label {
+.quote__label {
   display: block;
   margin-bottom: var(--s1);
   font-size: var(--fs-caption);
   color: var(--ink-2);
+}
+
+.screen__actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  margin-top: var(--s1);
+}
+
+/* ---- Answer (design 03) ---- */
+.answer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  padding: var(--s5);
+  border: 2px solid var(--navy);
+  border-radius: 24px;
+  background: var(--paper);
+}
+
+.answer__label {
+  align-self: flex-start;
+  padding: var(--s1) 14px;
+  border-radius: var(--r-pill);
+  background: var(--tint);
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+/* Plain text from the server: keep its line breaks, never interpret it. */
+.answer__text {
+  font-size: var(--fs-lead);
+  line-height: 1.45;
+  white-space: pre-line;
+}
+
+.answer__disclaimer {
+  font-size: var(--fs-caption);
+  color: var(--ink-2);
+}
+
+/* ---- Bounced (design 04) ---- */
+.bounce {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: var(--s5);
+  border-radius: 24px;
+  background: var(--tint);
+}
+
+.bounce__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--navy);
+  color: var(--paper);
+  font-size: 1.375rem;
+  font-weight: 700;
+}
+
+/* ---- Confirmation (design 05) ---- */
+.confirmation {
+  align-items: center;
+  gap: var(--s5);
+  padding-top: var(--s8);
+  text-align: center;
+}
+
+.confirmation__check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 116px;
+  height: 116px;
+  border-radius: 50%;
+  background: var(--cobalt);
+}
+
+.confirmation__next {
+  font-size: var(--fs-lead);
+  color: var(--ink-2);
+}
+
+/* ---- Emergency (design 06): the only screen with a solid red block ---- */
+.emergency {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 26px 22px 22px;
+  border-radius: var(--r-header);
+  background: var(--danger);
+  color: var(--paper);
+}
+
+.emergency__title {
+  font-size: var(--fs-display);
+  font-weight: 700;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+.emergency__other {
+  font-size: var(--fs-lead);
+  line-height: 1.4;
+}
+
+.emergency__call {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 72px;
+  margin-top: 6px;
+  padding: var(--s3) var(--s4);
+  border-radius: 18px;
+  background: var(--paper);
+  color: var(--danger);
+  font-size: 1.5625rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.emergency :focus-visible {
+  outline-color: var(--paper);
+  box-shadow: 0 0 0 2px var(--navy);
+}
+
+.emergency__body {
+  font-size: var(--fs-lead);
+  line-height: 1.45;
 }

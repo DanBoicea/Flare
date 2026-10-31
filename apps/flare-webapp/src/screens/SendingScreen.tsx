@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Quote } from '../components/Quote'
 import { useI18n } from '../i18n/context'
 
 const SLOW_AFTER_MS = 6000
@@ -33,13 +34,7 @@ export function SendingScreen({ text }: Props) {
         {slow && <p>{t('sending.slow')}</p>}
         <p>{t('sending.keepOpen')}</p>
       </div>
-      {text && (
-        <blockquote className="sending__quote">
-          <span className="sending__quote-label">{t('sending.youWrote')}</span>
-          {/* lang="": the Passenger may write in any language, not necessarily the UI's. */}
-          <span lang="">{text}</span>
-        </blockquote>
-      )}
+      <Quote label={t('sending.youWrote')} text={text} />
     </div>
   )
 }
