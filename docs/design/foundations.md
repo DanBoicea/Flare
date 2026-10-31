@@ -131,7 +131,7 @@ All interactive elements get a two-tone ring that is visible on every background
 - **Sizes:** 20-24 px next to text, 18 px inside badges.
 - **Meaning:** icons always sit next to a word, except the "Mai multe" (⋯) button, which has an accessible label.
 - **Web:** inline SVG symbols (see `reference/index.html`). No icon font and no library.
-- **Staff app:** the same SVG shapes need `react-native-svg` (Expo-supported, but a **new dependency**: B01 asks the team). The alternative is `expo-symbols`, which is already installed but iOS-first and looks different on Android.
+- **Staff app:** the same SVG shapes through `react-native-svg` (approved in B01, `src/components/Icon.tsx`).
 
 | Meaning | Icon |
 | --- | --- |

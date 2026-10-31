@@ -105,6 +105,8 @@ Mentor feedback, verbatim: "De adresat partea de impersonare qr code; Marketingu
 - **`POST /api/public/messages` is a validating stub that returns `501`** until A06.
 - **Contract `Me` uses `roles`** (an array of `StaffRole`) instead of `role`, matching the many-to-many roles (fixed before B01 generates types).
 - **Staff-member check is central** (A03): an interceptor on `/api/staff/**` rejects valid tokens without an active `staff_member` row with `403 NOT_A_STAFF_MEMBER`, so individual endpoints can't forget it.
+- **Staff app icons use `react-native-svg`** (B01), so both apps share the design's icon shapes. The Atkinson font is deferred to B06, as W01 deferred it to W04; both apps use the system font until ADR-0020 is accepted.
+- **Staff app is light theme only** (design foundations, colour rule 6), so the template's colour-scheme hooks were removed.
 
 ### Round 7: passenger contact and design (2026-10-31)
 

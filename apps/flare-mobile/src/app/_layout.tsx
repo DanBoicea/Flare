@@ -1,18 +1,19 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useColorScheme } from 'react-native';
+import { Stack } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
 
-import { AnimatedSplashOverlay } from '@/components/animated-icon';
-import AppTabs from '@/components/app-tabs';
+import { color } from '@/constants/theme';
+import { I18nProvider } from '@/i18n/I18nProvider';
 
-SplashScreen.preventAutoHideAsync();
-
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
+// TODO(B02): the session gate. No session goes to sign-in; with one, load /me and hold it in context.
+export default function RootLayout() {
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <AnimatedSplashOverlay />
-      <AppTabs />
-    </ThemeProvider>
+    <I18nProvider>
+      <StatusBar style="light" />
+      <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: color.paper } }}>
+        <Stack.Screen name="sign-in" />
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="issue/[id]" options={{ headerShown: true, headerTitle: '', headerTintColor: color.ink }} />
+      </Stack>
+    </I18nProvider>
   );
 }

@@ -1,14 +1,8 @@
-/**
- * Learn more about light and dark modes:
- * https://docs.expo.dev/guides/color-schemes/
- */
+import { color, font, radius, severity, size, space, tap } from '@/constants/theme';
 
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+const theme = { color, severity, font, size, space, radius, tap } as const;
 
+/** The design tokens. Light theme only, so this never changes; a hook keeps a night theme (stretch) possible. */
 export function useTheme() {
-  const scheme = useColorScheme();
-  const theme = scheme === 'dark' ? 'dark' : 'light';
-
-  return Colors[theme];
+  return theme;
 }
