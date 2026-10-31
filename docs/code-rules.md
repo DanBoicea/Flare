@@ -76,7 +76,10 @@ Items marked **(pending)** depend on a decision not made yet (see [technical](te
 
 ## 8. Docs and decisions
 
-- **Something decided or changed means an ADR.** Write a new ADR in `docs/adr/`, numbered after the highest existing one, or a one-line entry in [decisions](decisions.md) for small items. An ADR is never rewritten after the fact; a new one supersedes it.
+- **Something decided or changed means an ADR.** Write a new ADR in `docs/adr/`, numbered after the highest existing one, or a one-line entry in [decisions](decisions.md) for small items.
+- **Amending an ADR:** an ADR may be corrected in place only while no code is built on it, and the correction is recorded in its `amended` field. Once code depends on it, write a new ADR that supersedes it.
+- **Proposed ADRs:** an ADR with status `proposed` can be built on, but changing it is cheap until the team accepts it. Flag any work that would make it expensive to change.
+- **Work from task files.** Every piece of work has a task file in [tasks/](tasks/README.md). Update its status as you go, and fix the task file if the plan turns out wrong.
 - **A new domain term** goes into [GLOSSARY.md](../GLOSSARY.md) in the same PR.
 - **When behaviour changes,** the docs describing it change in the same PR.
 

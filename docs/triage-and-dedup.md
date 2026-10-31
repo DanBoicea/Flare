@@ -6,9 +6,8 @@ Everything the LLM does in Flare. Every LLM call runs in the Spring Boot back en
 
 - **Kind:** Report, Question, or garbage, joke or spam (Bounced). Emergencies are flagged in every case.
 - **For Reports:**
-  - category
+  - category (the Team is derived from it, see the table below)
   - Severity
-  - Team
   - short summary for staff
   - language
   - confidence
@@ -30,7 +29,13 @@ Everything the LLM does in Flare. Every LLM call runs in the Spring Boot back en
 | Safety or security concern | Security |
 | Other | Duty manager |
 
-The duty manager sees every Issue regardless of Team. The Team list is still to confirm.
+The Team comes from the category through this table, which lives in config. The LLM only picks the category, which keeps routing explainable. Routing safeguards ([ADR-0008](adr/0008-individual-staff-accounts-team-routing.md)):
+- The duty manager sees every Issue.
+- Security also sees every Critical Issue.
+- Unclassified, "Other" and low-confidence Issues have no Team and go to the duty manager.
+- Staff can hand an Issue over to another Team.
+
+Example of a Question: "my suitcase didn't arrive" gets a Knowledge base answer pointing to the airline's baggage desk. It is not a Report.
 
 ## Severity scale (tentative, will probably change)
 
@@ -78,9 +83,9 @@ The duty manager sees every Issue regardless of Team. The Team list is still to 
 - Proposed: when the message clearly describes another place ("the lift near gate 3"), the LLM flags it, and staff see both "Scanned at" and "Mentioned".
 - Some out-of-place messages are really Questions. For example, "my suitcase didn't arrive" sent from a toilet gets a Knowledge base answer.
 
-## Role of deterministic rules (open)
+## Role of deterministic rules (decided 2026-10-31)
 
-The team asked whether a rule-based system on top of the LLM is redundant. Proposed answer: there is no second classifier. Only three small things stay outside the LLM, because they must work when the LLM is slow, wrong or down:
+There is no second, rule-based classifier. Only three small things stay outside the LLM, because they must work when the LLM is slow, wrong or down:
 
 1. A short Romanian and English emergency word list that shows 112 instantly.
 2. A default for when the LLM fails: the message is stored as Unclassified and sent to the duty manager.

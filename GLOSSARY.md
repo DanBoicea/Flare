@@ -31,14 +31,22 @@ Describes a message the quality check judged to be garbage, a joke or spam. It i
 _Avoid_: rejected, blocked, deleted
 
 **Quarantined**:
-Describes a Report that was accepted and kept, but held out of the main list for staff review, for example because of rate limits.
+Describes a Report that was accepted and kept, but held out of every Team's list until the duty manager reviews it, for example because of rate limits or an unknown QR code.
 _Avoid_: spam folder, blocked, bounced
+
+**Unclassified**:
+Describes a Report the LLM could not classify, for example during an outage. It goes to the duty manager.
+_Avoid_: failed, unknown report
 
 ### Places
 
 **Location**:
 A named place in the airport, as specific as one particular toilet or one lift.
-_Avoid_: zone, area, spot
+_Avoid_: spot, point
+
+**Area**:
+A larger part of the airport that contains several nearby Locations, such as the arrivals hall. Reports from the same Area may describe the same Issue.
+_Avoid_: zone, region, sector
 
 **QR code**:
 A printed code placed at one Location that opens the passenger web app. Always say "QR code", never just "code".
@@ -47,6 +55,10 @@ _Avoid_: code, tag, sticker
 **Location label**:
 The short human-readable identifier printed beneath a QR code so staff put each poster at the right Location.
 _Avoid_: location code, poster ID
+
+**Strict mode**:
+A temporary state of a QR code that is receiving a suspicious flood of messages. While it lasts, that QR code's messages are Quarantined, except Emergencies.
+_Avoid_: lockdown, attack mode
 
 ### Staff side
 
@@ -58,9 +70,17 @@ _Avoid_: employee app, dashboard, admin panel
 The web page a Passenger opens by scanning a QR code.
 _Avoid_: form, site, portal
 
+**Staff member**:
+A person with their own Staff app account. They belong to one or more Teams and have one role: staff or duty manager.
+_Avoid_: employee, user, agent
+
 **Team**:
-A group of staff responsible for one kind of Issue, such as Cleaning or Security. Each staff member belongs to one Team.
+A group of staff members responsible for one kind of Issue, such as Cleaning or Security. A staff member can belong to several Teams. Each Issue belongs to at most one Team.
 _Avoid_: department, role, unit
+
+**Duty manager**:
+The role of a staff member who sees every Issue whatever its Team, receives Unclassified Reports, and reviews Quarantined ones. It is a role, not a Team.
+_Avoid_: admin, supervisor, operations manager
 
 **Knowledge base**:
 The curated set of airport facts used to answer Questions.
@@ -73,5 +93,5 @@ _Avoid_: priority (priority also weighs the number of Reports and their age), ur
 ### Travel
 
 **Ticket**:
-A Passenger's plane ticket or boarding pass. Never used for Issues or work items.
+A Passenger's plane ticket or boarding pass. Flare never asks for, stores or processes Tickets.
 _Avoid_: boarding card (use Ticket)

@@ -4,7 +4,12 @@ Passenger issue reporting and help for airports. A passenger scans a QR code and
 
 ## Status
 
-Hackathon prototype, in the planning stage. The stack is chosen (see below), but there is no runnable code yet. The product brief, decisions and architecture decision records are in [CLAUDE.md](CLAUDE.md), [GLOSSARY.md](GLOSSARY.md) and the [docs](docs/) folder.
+Hackathon prototype. The architecture and the workplan are done, and the build is starting. The documents are:
+- the product brief: [CLAUDE.md](CLAUDE.md)
+- the vocabulary: [GLOSSARY.md](GLOSSARY.md)
+- the system design: [docs/architecture](docs/architecture/README.md)
+- decisions: [docs/adr](docs/adr/)
+- the task board: [docs/tasks](docs/tasks/README.md)
 
 ## How it works
 
@@ -60,7 +65,7 @@ This is not an emergency channel. The passenger web app shows the emergency numb
 
 ## Setup
 
-Not yet defined. Setup steps will be added once the project structure is planned.
+Not written yet. The skeleton tasks (A01, B01, W01) fill this section in. The planned commands and environment variables are in [docs/architecture/operations.md](docs/architecture/operations.md).
 
 ## Team
 

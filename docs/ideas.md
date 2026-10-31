@@ -16,7 +16,11 @@ Parking lot. Nothing here is committed. Items move into [product](product.md) on
 
 - **Quick-start suggestions** under the text field, such as "Something is broken", "Cleaning needed" or "I need help". Tapping one fills in the start of a sentence, which helps Passengers who find typing hard.
 - **"Send anyway for staff review"** after repeated Bounces. See [AI pipeline](triage-and-dedup.md).
-- **An anonymised Ticket code or boarding-pass scan** for lost luggage. Under review and probably dropped: lost luggage is handled by the airline's baggage desk, and the proposal is to answer it from the Knowledge base instead. See [product](product.md).
+- **Heads-up to a handling-agent Team:** when a Passenger asks about a missing bag, the baggage desk gets a heads-up ("a Passenger at belt 2 says their bag didn't arrive") so it expects them. No Ticket data is needed, since the bag is still matched at the desk by its bag tag. This needs airline and handling-agent Teams, which are stretch.
+
+## Dropped
+
+- **An anonymised Ticket code or boarding-pass scan** for lost luggage. Dropped on 2026-10-31: lost luggage is handled at the airline's baggage desk, and Flare answers it from the Knowledge base instead. See [product](product.md).
 
 ## Out of scope (not ideas)
 

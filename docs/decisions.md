@@ -57,24 +57,45 @@ Mentor feedback, verbatim: "De adresat partea de impersonare qr code; Marketingu
 - **Testing:** pure logic test-first, an evaluation script on the labelled Romanian and English set, and no browser end-to-end tests.
 - **Code rules:** [code-rules.md](code-rules.md).
 
+### Round 4: domain follow-ups (2026-10-31)
+
+- **Report vs Issue confirmed:** a Report is one Passenger's message; an Issue is the real-world problem that one or more Reports describe.
+- **Deterministic rules:** only three things stay outside the LLM:
+  - a short Romanian and English emergency word list that shows 112 instantly
+  - the LLM-failure default (the Report becomes Unclassified and goes to the duty manager)
+  - cheap checks before any LLM call (empty or repeated text, rate limits, bot check)
+  
+  Everything else is decided by the LLM.
+- **Lost luggage:** the anonymised Ticket code idea is dropped. A missing bag is handled at the airline's baggage desk using the bag tag. Flare treats "my bag didn't arrive" as a Question and answers it from the Knowledge base, so Ticket data never passes through Flare. Luggage problems that staff can act on, such as an unattended bag, a broken belt or missing trolleys, stay normal Reports. A heads-up to a handling-agent Team is parked in [ideas](ideas.md).
+- **Teams:** Cleaning, Maintenance, Security and Passenger assistance. A staff member can belong to several Teams. Duty manager is a role, not a Team (ADR-0008, amended).
+- **Routing safeguards:**
+  - Critical Issues are always visible to Security and the duty manager.
+  - Unclassified, "Other" and low-confidence Issues go to the duty manager.
+  - Staff can hand an Issue over to another Team.
+  - Only the duty manager sees Needs review.
+- **ADR amendments:** an ADR may be corrected in place only while nothing is built on it. After that, write a new ADR that supersedes it.
+- **Planning started:** architecture in [architecture/](architecture/), tasks in [tasks/](tasks/). The technical choices made there are ADRs 0009 to 0019 with status `proposed`, waiting for the team's confirmation.
+
+### Round 5: technical ADRs confirmed (2026-10-31)
+
+- **Accepted:** ADRs 0009-0015 and 0017-0019. **0016** (model per task) stays proposed until the eval run (C06).
+- **Project skeleton:** a colleague created the three apps. The docs now use their real names: `apps/flare-backend` (Spring Boot 4.1.2, Java 21, package `com.fsociety.flarebackend`), `apps/flare-webapp` (Vite + React + TypeScript) and `apps/flare-mobile` (Expo 58, Expo Router, routes in `src/app/`).
+- **Bot check:** no third-party bot detection services (ADR-0019 confirmed).
+- **`qrcode` npm package approved** for the poster generator (D07).
+- **Romanian first:** both apps default to Romanian, and switch to English only when the device language is English. The team's Romanian speaker reviews all Romanian text.
+
 ## Open questions
 
 ### Waiting for the team's answer
 
-- **Report vs Issue:** confirm the glossary reading. A Report is one Passenger's message; an Issue is the real-world problem that one or more Reports describe.
-- **Deterministic rules:** keep only the emergency word list, the LLM-failure default (Unclassified, to the duty manager) and the cheap checks? See [AI pipeline](triage-and-dedup.md).
-- **Lost luggage and Tickets:** drop the anonymised Ticket code idea and answer lost-luggage messages from the Knowledge base? See [product](product.md).
-- **Teams and routing safeguards:** the Team list, who sees the Needs review tab, handing Issues to another Team.
-
-### Technical (next grilling round)
-
-See the list in [technical](technical.md): how Supabase and Spring Boot split the work, live updates, Expo, TypeScript and web tooling, Spring Boot setup, the API contract, repository layout, the Claude model and a cost limit, the QR code URL format, and where the Knowledge base lives.
+- **Lombok:** the skeleton includes it, but ADR-0013 planned Java records instead. Keep it or remove it (S05).
+- **Track owners:** who takes Track A, B and C, and who runs the OpenCode agents (see [tasks](tasks/README.md)).
 
 ### Also open
 
-- **Quality check guardrails:** the proposed list in [AI pipeline](triage-and-dedup.md), including "Send anyway" after 3 Bounces.
-- **Location mismatch:** show staff both "Scanned at" and "Mentioned"?
-- **Quick-start suggestions** under the text field, to help Passengers who struggle to type.
+- **Quality check guardrails:** the proposed list in [AI pipeline](triage-and-dedup.md), including "Send anyway" after 3 Bounces. The architecture assumes they are accepted.
+- **Location mismatch:** show staff both "Scanned at" and "Mentioned"? The architecture assumes yes.
+- **Quick-start suggestions** under the text field, to help Passengers who struggle to type (stretch).
 - **Passengers without a data connection.**
 - **Who physically audits QR codes** (stretch).
 - **Who owns airline and handling-agent Issues** (stretch).

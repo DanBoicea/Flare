@@ -15,7 +15,7 @@ A Passenger scans a QR code in the airport and types a problem or a question int
 ## Users
 
 - **Passenger:** any language, possibly stressed, in a hurry, using one hand, possibly elderly or with low digital skill. No app install, no account, no sign-up.
-- **Staff:** individual accounts. Each staff member belongs to one Team and sees only that Team's Issues. A duty manager sees all Issues ([ADR-0008](adr/0008-individual-staff-accounts-team-routing.md)). The Team list is still to confirm (proposed: Cleaning, Maintenance, Security, Passenger assistance and information).
+- **Staff:** individual accounts. Each staff member belongs to one or more Teams (Cleaning, Maintenance, Security, Passenger assistance) and sees those Teams' Issues. The duty manager is a role: it sees all Issues and reviews Quarantined Reports ([ADR-0008](adr/0008-individual-staff-accounts-team-routing.md)).
 - **Admin (later):** manages QR codes, Locations, Teams and the Knowledge base.
 
 ## Scope for the hackathon
@@ -62,7 +62,7 @@ The exact order of the checks is a planning decision. Emergency handling is neve
 
 - No account, no app install, no mandatory personal data.
 - An emergency strip at the top of every screen: "Emergency? Call 112. This is not an emergency line." in Romanian and English.
-- A language button at the top right. The default comes from the device's language when it is Romanian or English. Proposed: English when it is neither.
+- A language button at the top right. The default is Romanian; English is used only when the device language is English. The Passenger can switch at any time.
 - One text field, with the placeholder "Report an issue in the airport or ask for help..." (RO: "Raportează o problemă în aeroport sau cere ajutor..."). Dictation works through the phone keyboard.
 - The Location is not shown. It comes from the QR code.
 - Optional contact details, collapsed by default and clearly marked optional.
@@ -82,8 +82,9 @@ The exact order of the checks is a planning decision. Emergency handling is neve
   - the age of the Issue
   - one-tap actions
 - The original Reports are one tap away, with their text always escaped.
-- Actions: acknowledge, "I'm on it" (takes the Issue under your name), resolve, override category or Severity. Proposed: hand an Issue to another Team.
-- Tabs: Active, Needs review (Quarantined Reports and unknown QR code flags; who sees this tab is still open) and Resolved.
+- Actions: acknowledge, "I'm on it" (takes the Issue under your name), resolve, reopen, override category or Severity, hand over to another Team.
+- Tabs: Active, Resolved, and, for the duty manager only, Needs review (Quarantined Reports and QR code alerts).
+- Critical Issues are always visible to Security and the duty manager. Unclassified, "Other" and low-confidence Issues go to the duty manager.
 - A subtle signal for new Issues. Sound only for Critical.
 - Big text, minimal jargon, zero training needed.
 
@@ -94,15 +95,21 @@ The exact order of the checks is a planning decision. Emergency handling is neve
 - There is no "still a problem?" button for Passengers.
 - Staff can reopen an Issue, and a new Report about the same problem shortly after resolution can reopen it through grouping.
 
-## Lost luggage and Tickets (under review)
+## Lost luggage and Tickets (decided 2026-10-31)
+
+**Decision:** the anonymised Ticket code idea is dropped, and Ticket data never passes through Flare. "My bag didn't arrive" is a Question. The Knowledge base answer tells the Passenger which desk to go to, to go there before leaving the baggage area, and to bring the boarding pass and bag tag receipt. Luggage problems that staff can act on stay normal Reports:
+- an unattended bag goes to Security, possibly as an Emergency
+- a broken baggage belt goes to Maintenance
+- missing trolleys go to Maintenance
+
+The background that led to the decision:
 
 - **The original idea:** let a Passenger attach an anonymised code tied to their Ticket, so staff can connect a lost-luggage Report to the actual bag without seeing the whole Ticket.
 - **How airports usually handle it** (general industry practice, not verified for Craiova):
   - A missing checked bag is reported at the baggage services or lost-and-found desk in the baggage claim area. That desk is usually run by the airline or its ground handling agent, not by airport operations.
   - The Passenger fills in a property irregularity report there, using the bag tag number on the receipt they got at check-in.
   - The bag is traced through the airlines' own systems. WorldTracer is the widely used one.
-- **What that means for Flare:** matching a Report to a bag needs airline systems, which are out of scope. The proposal is to treat "my bag didn't arrive" as a Question and answer it from the Knowledge base: which desk to go to, before leaving the baggage area, and what to bring. Ticket data would then never pass through Flare. Decision pending, see [decisions](decisions.md).
-- If any Ticket data is kept, it must be optional and minimal, and it is never a photo of the Ticket.
+- **What that means for Flare:** matching a Report to a bag needs airline systems, which are out of scope. Answering the Question is the useful part, because a stressed Passenger at an empty belt often doesn't know where to go.
 
 ## Out of scope for the hackathon
 

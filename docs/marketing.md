@@ -24,7 +24,7 @@ Every poster carries:
 - the not-an-emergency line with 112
 - the small Location label, for staff, so posters go up in the right place
 
-Draft text, to review with a native speaker before any use:
+Draft text, reviewed by the team's Romanian speaker before any use:
 
 - RO: "Ai o problemă sau o întrebare? Scanează și spune-ne. Nu cerem niciodată plăți, parole sau date personale. Nu este o linie de urgență: pentru urgențe sună la 112."
 - EN: "A problem or a question? Scan and tell us. This page never asks for payment, passwords or personal data. This is not an emergency line: in an emergency call 112."
