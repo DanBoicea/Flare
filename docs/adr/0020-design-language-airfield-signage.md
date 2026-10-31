@@ -1,7 +1,9 @@
 ---
-status: proposed
+status: superseded by 0021
 date: 2026-10-31
 ---
+
+> Superseded by [ADR-0021](0021-design-v1-navy-cobalt-instrument-sans.md): the team chose Design V1. Kept as the record of the signage direction.
 
 # One design language for every surface: airfield signage, set in Atkinson Hyperlegible Next
 

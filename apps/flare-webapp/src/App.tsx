@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ApiError, sendMessage, sendQuestionToStaff } from './api/client'
 import type { Answer, Bounce, ErrorCode } from './api/types'
 import { EmergencyStrip } from './components/EmergencyStrip'
@@ -32,8 +32,24 @@ export default function App() {
   const [screen, setScreen] = useState<Screen>({ name: 'compose' })
   // Kept across screens so "Edit message" and errors never lose what the Passenger typed.
   const [text, setText] = useState('')
+  const [wantsCallBack, setWantsCallBack] = useState(false)
   const [contact, setContact] = useState('')
   const [website, setWebsite] = useState('') // honeypot (ADR-0019)
+
+  // On every screen change, move focus to the new screen's heading, so screen readers announce it
+  // and keyboard users start from the top. Not on first load: the Passenger has not acted yet.
+  const mainRef = useRef<HTMLElement>(null)
+  const firstScreen = useRef(true)
+  useEffect(() => {
+    if (firstScreen.current) {
+      firstScreen.current = false
+      return
+    }
+    const heading = mainRef.current?.querySelector<HTMLElement>('h1')
+    if (!heading) return
+    heading.tabIndex = -1
+    heading.focus()
+  }, [screen])
 
   const fail = (error: unknown) =>
     setScreen({ name: 'compose', error: error instanceof ApiError ? error.code : 'NETWORK' })
@@ -46,7 +62,8 @@ export default function App() {
         uiLanguage: language,
         qrCodeId,
         deviceId: getDeviceId(),
-        contact: contact.trim() || null,
+        // An unticked call-back box means no contact, even if a number was typed before.
+        contact: (wantsCallBack && contact.trim()) || null,
         sendAnyway,
         website,
         elapsedMs: elapsedMs(),
@@ -87,6 +104,7 @@ export default function App() {
 
   function startOver() {
     setText('')
+    setWantsCallBack(false)
     setContact('')
     setScreen({ name: 'compose' })
   }
@@ -95,16 +113,29 @@ export default function App() {
     <div className="app">
       <EmergencyStrip />
       <header className="app__header">
-        <span className="brand__plate">Flare</span>
+        <div className="brand">
+          <svg className="brand__mark" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+            <rect width="32" height="32" rx="10" fill="var(--cobalt)" />
+            <g transform="translate(4 4)" fill="none" stroke="#fff" strokeWidth="2.4" strokeLinecap="round">
+              <circle cx="12" cy="12" r="3.5" fill="#fff" />
+              <path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3" />
+            </g>
+          </svg>
+          <div>
+            <p className="brand__name">Flare</p>
+            <p className="brand__place">{t('app.airport')}</p>
+          </div>
+        </div>
         <LanguageButton />
-        <span className="brand__place">{t('app.airport')}</span>
       </header>
 
-      <main className="app__main">
+      <main className="app__main" ref={mainRef}>
         {screen.name === 'compose' && (
           <ComposeScreen
             text={text}
             onTextChange={setText}
+            wantsCallBack={wantsCallBack}
+            onWantsCallBackChange={setWantsCallBack}
             contact={contact}
             onContactChange={setContact}
             website={website}
@@ -113,7 +144,7 @@ export default function App() {
             onSend={() => send()}
           />
         )}
-        {screen.name === 'sending' && <SendingScreen />}
+        {screen.name === 'sending' && <SendingScreen text={text.trim()} />}
         {screen.name === 'answer' && (
           <AnswerScreen
             answer={screen.answer}

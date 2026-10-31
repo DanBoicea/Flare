@@ -1,6 +1,32 @@
 # Foundations
 
-The tokens and rules every Flare surface uses: the passenger web app, the Staff app, posters, slides. The live reference is [reference/](reference/), built from `reference/flare.css`. If this file and that CSS disagree, fix both in the same PR.
+The tokens and rules every Flare surface uses: the passenger web app, the Staff app, posters, slides.
+
+## Design V1 tokens (current, ADR-0021)
+
+The visual source of truth is [flare-design-v1/](flare-design-v1/README.md). The web tokens live in `apps/flare-webapp/src/styles/tokens.css`; if this table and that file disagree, fix both in the same PR.
+
+| Token | Value | Role |
+| --- | --- | --- |
+| `navy` (`ink`) | #0B2545 | Header background, text |
+| `cobalt` | #2457E6 | The one main action per screen; the message field border (6.1:1 on white) |
+| `cobalt-press` | #1C46BD | Pressed main action |
+| `page` | #EAF0FB | Page background |
+| `tint` | #DCE6FA | Notices, tags, the inline error (with a navy left bar) |
+| `paper` | #FFFFFF | Fields, cards, the emergency strip |
+| `ink-2` | #44587A | Muted text (6.3:1 on `page`) |
+| `line` | #CBD8EF | Hairlines, quiet field borders |
+| `on-navy-2` / `on-navy-line` | #BCD0F5 / #8FB2FF | Secondary text and the language pill border on the navy header |
+| `danger` / `danger-soft` | #C8102E / #FDECEE | **Only** 112, the Emergency screen and Critical |
+
+- **Type:** Instrument Sans 400-700, self-hosted (never from Google Fonts). Same size scale as below; nothing below 16 px. Buttons 600, titles 700.
+- **Shape:** controls 16 px radius, cards and the message field 20 px, pills 999 px, the navy header's bottom corners 28 px. Main buttons 56 px tall (staff 48 px), the 112 and language buttons 44 px.
+- **Focus:** 3 px navy outline with a 2 px white halo; white outline inside the navy header.
+- **Motion:** the sending beacon is a cobalt dot with two rings; the outer ring pulses (2.4 s ease-out) unless reduced motion is on.
+- **Logo:** a cobalt rounded square with a white beacon mark, next to "Flare" (700) and the airport name.
+- **Severity (Staff app):** V1 only defines Critical (red). Until B01 decides High, Medium and Low, use the severity colours and icon shapes below.
+
+The sections below describe the superseded airfield-signage direction (ADR-0020). Their space, severity, icon and accessibility rules still apply; their colours, typeface, radii and logo do not.
 
 ## The idea: airfield signage
 
@@ -172,7 +198,9 @@ All interactive elements get a two-tone ring that is visible on every background
 
 ## Tokens in code
 
-**Web** (`apps/flare-webapp/src/styles/tokens.css`) uses the custom properties in [`reference/flare.css`](reference/flare.css) (the `:root` block). Copy it verbatim.
+**Web** (`apps/flare-webapp/src/styles/tokens.css`) holds the Design V1 tokens above, plus the self-hosted Instrument Sans `@font-face` rules.
+
+**Staff app:** the block below is the superseded signage palette; B01 replaces it with the V1 tokens (keeping the severity entries until decided).
 
 **Staff app** (`apps/flare-mobile/src/constants/theme.ts`, extends the template file):
 
