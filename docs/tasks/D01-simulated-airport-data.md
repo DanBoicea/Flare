@@ -16,6 +16,12 @@ Part 1 is done. Two fields were added to the shape below:
 
 The muted QR code is at `LND-ENT-03`.
 
+Part 2 (steps 5-6) was done by Florin Cristi on 2026-10-31, after A02, so A03 has seeded staff. Luciano still owns D01:
+- `scripts/seed/generate-seed.mjs` generates `R__demo_seed.sql` from `airport.json`. Run `node scripts/seed/generate-seed.mjs` after editing the JSON, and commit both files.
+- Teams and roles are replaced on every run, so the database always matches the JSON.
+- `scripts/sql/reset-dev.sql` is written.
+- Applied on `flare-dev`: 5 Areas, 25 Locations, 25 QR codes (one muted), and all four staff members with their roles and Teams. A second start was a no-op.
+
 ## Goal
 A believable but clearly **simulated** airport layout to demo with. Nothing claims to be the real Craiova Airport layout ([CLAUDE.md](../../CLAUDE.md): never invent airport facts).
 
@@ -48,7 +54,7 @@ A believable but clearly **simulated** airport layout to demo with. Nothing clai
 Use real shop names, real gate numbers or real airport staff names. Add dependencies.
 
 ## Done when
-- [ ] Flyway applies the seed on `flare-dev`, and re-running is a no-op.
+- [x] Flyway applies the seed on `flare-dev`, and re-running is a no-op.
 - [ ] Every QR code ID resolves through A06.
-- [ ] All demo accounts have their `staff_member` rows.
+- [x] All demo accounts have their `staff_member` rows.
 - [ ] The reviewer approves.
