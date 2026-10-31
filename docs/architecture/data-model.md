@@ -53,7 +53,7 @@ Categories and Severities are tentative. Changing them means one migration, the 
 ### `staff_member`
 | Column | Type | Notes |
 | --- | --- | --- |
-| `id` | uuid PK | Equals the Supabase Auth user ID (`auth.users.id`, the JWT `sub`) |
+| `id` | uuid PK | Equals the Supabase Auth user ID (`auth.users.id`, the JWT `sub`). No FK to `auth.users`, so the schema doesn't depend on Supabase internals |
 | `display_name` | text | Shown in "I'm on it" and the history |
 | `active` | boolean | Inactive means 403 on every staff endpoint |
 | `created_at` | timestamptz | |
@@ -150,7 +150,13 @@ Categories and Severities are tentative. Changing them means one migration, the 
 | `details` | jsonb | e.g. `{ "from": "MEDIUM", "to": "HIGH" }`. Never contains Passenger text |
 | `created_at` | timestamptz | |
 
-Indexes: `issue(status, team_id)`, `issue(location_id, status)`, `report(issue_id)`, `report(status) where status = 'QUARANTINED'`, `report(issue_id) where issue_id is null and status = 'ACCEPTED'` (worker recovery), `question(created_at)`.
+Indexes: `issue(status, team_id)`, `issue(location_id, status)`, `report(issue_id)`, `report(created_at) where status = 'QUARANTINED'` (Needs review), `report(created_at) where issue_id is null and status = 'ACCEPTED'` (worker recovery), `question(created_at)`, `audit_event(issue_id)` (Issue history).
+
+Constraints beyond the column types (all in `V1__schema.sql`):
+- Columns without "null" in the tables above are `not null`. Booleans default to `false`, counters to `0`, `created_at` to `now()`.
+- Length checks: `text` 1-1000 characters, `contact` at most 120, `scanned_qr_code_id` at most 32. `confidence` is between 0 and 1.
+- On delete: `audit_event` rows go with their Issue or Report (`cascade`), `question.sent_to_staff_report_id` is cleared (`set null`), and Team and role links go with their staff member (`cascade`). Everything else is restricted, so retention (A10) deletes Reports before their Issue.
+- Flyway's own `flyway_schema_history` table has no row-level security; like every table here, it is unreachable because the schema isn't exposed.
 
 ## Issue state machine
 
