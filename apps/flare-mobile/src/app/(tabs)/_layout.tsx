@@ -1,17 +1,22 @@
 import { Tabs } from 'expo-router/tabs';
 
+import { useMe, useSession } from '@/auth/session';
 import { Icon } from '@/components/Icon';
+import { StaffHeader } from '@/components/StaffHeader';
 import { color, size } from '@/constants/theme';
 import { useI18n } from '@/i18n/context';
 
-// TODO(B02): show Needs review only when /me roles include DUTY_MANAGER, and add the black header
-// with the name, Teams, language button and sign-out.
+/** Active and Resolved for everyone; Needs review only for duty managers (ADR-0008). The server checks it too. */
 export default function TabsLayout() {
   const { t } = useI18n();
+  const me = useMe();
+  const { signOut } = useSession();
+  const isDutyManager = me.roles.includes('DUTY_MANAGER');
+
   return (
     <Tabs
       screenOptions={{
-        headerShown: false,
+        header: () => <StaffHeader me={me} onSignOut={signOut} />,
         tabBarActiveTintColor: color.black,
         tabBarInactiveTintColor: color.ink2,
         tabBarLabelStyle: { fontSize: size.caption, fontWeight: '700' },
@@ -27,7 +32,12 @@ export default function TabsLayout() {
       />
       <Tabs.Screen
         name="review"
-        options={{ title: t('tabs.review'), tabBarIcon: ({ color: tint }) => <Icon name="inbox" color={String(tint)} size={24} /> }}
+        options={{
+          title: t('tabs.review'),
+          // href: null removes the tab and its route for everyone else.
+          href: isDutyManager ? undefined : null,
+          tabBarIcon: ({ color: tint }) => <Icon name="inbox" color={String(tint)} size={24} />,
+        }}
       />
     </Tabs>
   );

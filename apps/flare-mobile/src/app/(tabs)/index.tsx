@@ -1,7 +1,6 @@
 import { Link } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ApiError, listIssues, USE_MOCK } from '@/api/client';
 import type { IssueCard } from '@/api/types';
@@ -10,7 +9,7 @@ import { color, severity as severityTokens, size, space } from '@/constants/them
 import { useI18n } from '@/i18n/context';
 import { hasKey } from '@/i18n/strings';
 
-/** Placeholder Active list: loads once and shows plain rows. B03 adds polling, the header and the full IssueCard. */
+/** Placeholder Active list: loads once and shows plain rows. B03 adds polling, "updated N s ago" and the full IssueCard. */
 export default function ActiveScreen() {
   const { t, language } = useI18n();
   const [issues, setIssues] = useState<IssueCard[] | null>(null);
@@ -26,7 +25,7 @@ export default function ActiveScreen() {
   }, [t]);
 
   return (
-    <SafeAreaView style={styles.screen} edges={['top']}>
+    <View style={styles.screen}>
       {USE_MOCK && <Text style={styles.mockNote}>{t('active.mockNote')}</Text>}
       {error && <Text style={styles.message}>{error}</Text>}
       {!error && issues === null && <Text style={styles.message}>{t('list.loading')}</Text>}
@@ -60,7 +59,7 @@ export default function ActiveScreen() {
           )}
         />
       )}
-    </SafeAreaView>
+    </View>
   );
 }
 

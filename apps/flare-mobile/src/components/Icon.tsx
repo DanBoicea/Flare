@@ -6,7 +6,9 @@ import { color as palette } from '@/constants/theme';
  * The Feather/Lucide icon shapes from docs/design/foundations.md ("Icons"): 24 grid, 2 stroke, round caps.
  * Icons always sit next to a word, so they are hidden from screen readers.
  */
-export type IconName = 'octagon-filled' | 'triangle' | 'circle-bar' | 'circle-down' | 'list' | 'check-circle' | 'inbox';
+export type IconName =
+  | 'octagon-filled' | 'triangle' | 'circle-bar' | 'circle-down'
+  | 'list' | 'check-circle' | 'inbox' | 'globe' | 'log-out';
 
 interface Props {
   name: IconName;
@@ -59,6 +61,20 @@ export function Icon({ name, size = 20, color = palette.ink }: Props) {
         <>
           <Path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" {...stroke} />
           <Polyline points="22 4 12 14.01 9 11.01" {...stroke} />
+        </>
+      )}
+      {name === 'globe' && (
+        <>
+          <Circle cx="12" cy="12" r="10" {...stroke} />
+          <Line x1="2" y1="12" x2="22" y2="12" {...stroke} />
+          <Path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" {...stroke} />
+        </>
+      )}
+      {name === 'log-out' && (
+        <>
+          <Path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" {...stroke} />
+          <Polyline points="16 17 21 12 16 7" {...stroke} />
+          <Line x1="21" y1="12" x2="9" y2="12" {...stroke} />
         </>
       )}
       {name === 'inbox' && (

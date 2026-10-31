@@ -25,7 +25,7 @@ The tooling and the complete list of libraries we expect to need. Anything not o
 | Passenger web app | `react`, `react-dom`, `vite`, `typescript`, `@vitejs/plugin-react` | Vite template defaults |
 | Passenger web app (dev) | `openapi-typescript` | Types from the contract |
 | Staff app | Expo default template packages | App framework and navigation |
-| Staff app | `@supabase/supabase-js`, `@react-native-async-storage/async-storage` | Staff sign-in and keeping the session ([ADR-0010](0010-supabase-postgres-and-auth-only.md)); follow Supabase's current Expo guide, which may also require a URL polyfill |
+| Staff app | `@supabase/supabase-js`, `@react-native-async-storage/async-storage` | Staff sign-in and keeping the session ([ADR-0010](0010-supabase-postgres-and-auth-only.md)); set up as in Supabase's current Expo example: AsyncStorage storage, no URL polyfill needed (B02) |
 | Staff app | `expo-localization` | Device language for the default UI language |
 | Staff app | `react-native-svg` | The shared Feather/Lucide icon shapes (severity, tabs), included in Expo Go. Approved 2026-10-31 (B01, ADR-0020) |
 | Staff app (dev) | `eslint`, `eslint-config-expo` | `npm run lint`, set up by `npx expo lint` (the template's lint script) |
