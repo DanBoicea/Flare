@@ -59,7 +59,7 @@ Request `{ "deviceId": "uuid" }`. Response `200 { "outcome": "REPORTED" }`. This
 ## Staff endpoints (Staff app)
 
 ### `GET /api/staff/me`
-`200 { "id": "uuid", "displayName": "Ana (simulat)", "role": "STAFF | DUTY_MANAGER", "teams": ["CLEANING", "PASSENGER_ASSISTANCE"] }`. Returns `403 NOT_A_STAFF_MEMBER` if the JWT is valid but there is no active `staff_member` row.
+`200 { "id": "uuid", "displayName": "Ana (simulat)", "roles": ["STAFF"], "teams": ["CLEANING", "PASSENGER_ASSISTANCE"] }`. `roles` holds `StaffRole` values (`STAFF`, `DUTY_MANAGER`) and may list several. Returns `403 NOT_A_STAFF_MEMBER` if the JWT is valid but there is no active `staff_member` row.
 
 ### `GET /api/staff/teams`
 `200 [ { "id": "CLEANING", "name": { "ro": "Curățenie", "en": "Cleaning" } }, … ]`. Used by the hand-over picker.

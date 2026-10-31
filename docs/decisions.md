@@ -84,6 +84,10 @@ Mentor feedback, verbatim: "De adresat partea de impersonare qr code; Marketingu
 - **`qrcode` npm package approved** for the poster generator (D07).
 - **Romanian first:** both apps default to Romanian, and switch to English only when the device language is English. The team's Romanian speaker reviews all Romanian text.
 
+### Round 6: build-time changes (2026-10-31)
+
+- **Staff roles many-to-many:** roles move from the `staff_member.role` column to a `role` table and a `staff_member_role` link table, like Teams, so a staff member can hold several roles. `/api/staff/me` returns `roles` (an array) instead of `role`. Passwords stay in Supabase Auth only, never in our tables (ADR-0010). See [data model](architecture/data-model.md) and ADR-0008 (amended in place; nothing was built on it yet).
+
 ## Open questions
 
 ### Waiting for the team's answer

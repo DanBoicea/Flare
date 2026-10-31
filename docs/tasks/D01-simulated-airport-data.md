@@ -22,7 +22,7 @@ A believable but clearly **simulated** airport layout to demo with. Nothing clai
      "locations": [ { "label": "ARR-WC-02", "area": "ARR", "criticality": 0,
                       "name": { "ro": "Toalete sosiri, lângă banda 2", "en": "Arrivals toilets near belt 2" },
                       "qrCodeId": "k7f3m9q2xd" } ],
-     "staff": [ { "email": "cleaning@demo.flare.invalid", "displayName": "Ana (simulat)", "role": "STAFF", "teams": ["CLEANING"] } ]
+     "staff": [ { "email": "cleaning@demo.flare.invalid", "displayName": "Ana (simulat)", "roles": ["STAFF"], "teams": ["CLEANING"] } ]
    }
    ```
 2. **Content:**
@@ -31,7 +31,7 @@ A believable but clearly **simulated** airport layout to demo with. Nothing clai
    - `criticality` 2 for the security checkpoint and lifts, 1 for baggage belts, 0 otherwise
    - Location names stay short; the "(simulated)" / "(simulat)" marker goes on the Area names, the staff display names and the seed file header
 3. **QR code IDs:** one per Location, 10 characters from `abcdefghjkmnpqrstuvwxyz23456789`, unique, generated randomly (not hand-picked). Add **one** `MUTED` QR code at an extra Location, for the demo.
-4. **Staff:** the four accounts from [S03](S03-supabase-project-and-accounts.md), plus Teams: `maintenance@` is in `MAINTENANCE` and `PASSENGER_ASSISTANCE`; `manager@` has role `DUTY_MANAGER` and no Teams. Display names are fictional first names plus "(simulat)".
+4. **Staff:** the four accounts from [S03](S03-supabase-project-and-accounts.md), plus Teams: `maintenance@` is in `MAINTENANCE` and `PASSENGER_ASSISTANCE`; `manager@` has roles `["DUTY_MANAGER"]` and no Teams; the other three have `["STAFF"]`. The seed fills `staff_member_role` as well as `staff_member_team`. Display names are fictional first names plus "(simulat)".
 5. **`apps/flare-backend/src/main/resources/db/seed/R__demo_seed.sql`**, generated from the JSON (by hand or with a Node script in `scripts/seed/`, Node built-ins only):
    - upserts (`on conflict do update`) Areas, Locations, QR codes, staff members and staff Teams
    - links staff by email through `auth.users`; skips silently if the user doesn't exist yet

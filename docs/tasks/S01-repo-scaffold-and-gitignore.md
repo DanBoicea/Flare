@@ -1,6 +1,6 @@
 # S01: Repo folders, `.gitignore` for all stacks, `.env.example` files
 
-Status: IN PROGRESS
+Status: DONE
 Owner: Florin Cristi
 Track: S (lead: A) · Phase 0 · Estimate: 30 min · Agent-friendly: yes (OpenCode can do it; a human reviews)
 Depends on: none

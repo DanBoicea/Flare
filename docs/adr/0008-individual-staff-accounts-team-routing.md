@@ -1,12 +1,12 @@
 ---
 status: accepted
 date: 2026-10-30
-amended: 2026-10-31 (staff members can belong to several Teams; duty manager is a role; safeguards confirmed)
+amended: 2026-10-31 (staff members can belong to several Teams; duty manager is a role; safeguards confirmed; roles stored many-to-many)
 ---
 
 # Staff have individual accounts and see only their Teams' Issues, from phase 1
 
-Each staff member has their own account and belongs to one or more Teams: Cleaning, Maintenance, Security or Passenger assistance. They see the Issues of all their Teams. People often cover several areas; nobody does only Passenger assistance, for example. Each Issue belongs to at most one Team. Duty manager is a role, not a Team: a duty manager sees every Issue and reviews the Quarantined ones. This replaces the earlier plan of one shared staff view for phase 1. Cleaning staff should not receive security Issues and security should not receive cleaning Issues, and individual accounts make the audit log meaningful.
+Each staff member has their own account and belongs to one or more Teams: Cleaning, Maintenance, Security or Passenger assistance. They see the Issues of all their Teams. People often cover several areas; nobody does only Passenger assistance, for example. Each Issue belongs to at most one Team. Duty manager is a role, not a Team: a duty manager sees every Issue and reviews the Quarantined ones. Roles live in their own table, and a staff member can hold several (`staff_member_role`, like `staff_member_team`). This replaces the earlier plan of one shared staff view for phase 1. Cleaning staff should not receive security Issues and security should not receive cleaning Issues, and individual accounts make the audit log meaningful.
 
 Routing now decides who sees what, so these safeguards are part of the design:
 - Critical Issues are always visible to Security and the duty manager.

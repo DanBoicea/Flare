@@ -17,7 +17,7 @@ The `flare` schema exists on `flare-dev`, and JPA maps it exactly (`ddl-auto: va
    - every table, column, `check` constraint (enums), FK and index from the data model
    - `gen_random_uuid()` defaults
    - `alter table … enable row level security` on every table, with **no policies**
-2. **`db/migration/V2__teams.sql`:** the four `team` rows (real configuration, not demo data):
+2. **`db/migration/V2__teams_and_roles.sql`:** the four `team` rows and the two `role` rows (real configuration, not demo data):
 
    | ID | RO | EN |
    | --- | --- | --- |
@@ -25,6 +25,11 @@ The `flare` schema exists on `flare-dev`, and JPA maps it exactly (`ddl-auto: va
    | `MAINTENANCE` | Mentenanță | Maintenance |
    | `SECURITY` | Securitate | Security |
    | `PASSENGER_ASSISTANCE` | Asistență pasageri | Passenger assistance |
+
+   | Role ID | RO | EN |
+   | --- | --- | --- |
+   | `STAFF` | Personal | Staff |
+   | `DUTY_MANAGER` | Manager de tură | Duty manager |
 3. **Flyway config:**
    - `spring.flyway.schemas=flare`, `create-schemas=true`
    - the `local` and `demo` profiles add `classpath:db/seed`
@@ -32,6 +37,7 @@ The `flare` schema exists on `flare-dev`, and JPA maps it exactly (`ddl-auto: va
 4. **Entities** in their feature packages (`location`, `staff`, `question`, `report`, `issue`, `audit`):
    - explicit `@Table(schema = "flare", name = …)` and `@Column(name = …)`
    - enums as `@Enumerated(STRING)`
+   - `StaffMember` maps its Teams and roles as `@ManyToMany` through `staff_member_team` and `staff_member_role` (the role ID as the `StaffRole` enum)
    - `@Version` on `Issue.version`
    - `jsonb` for `audit_event.details` (map it as a `String` holding JSON, to avoid extra libraries)
 5. **Repositories** (Spring Data) with the queries the other tasks need:
@@ -49,6 +55,6 @@ Put demo data in `db/migration`, or store Passenger text in `audit_event.details
 `apps/flare-backend/src/main/resources/db/**`, entity and repository classes under `apps/flare-backend/src/main/java/com/fsociety/flarebackend/**`.
 
 ## Done when
-- [ ] The app starts on `flare-dev`, with Flyway at V2 and Hibernate validation passing.
+- [ ] The app starts on `flare-dev`, with Flyway at V2 (Teams and roles seeded) and Hibernate validation passing.
 - [ ] RLS is enabled on every `flare` table, checked in the Supabase dashboard.
 - [ ] The schema matches the data model doc, and any intentional difference is fixed in the doc too.
