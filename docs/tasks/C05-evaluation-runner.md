@@ -19,10 +19,10 @@ Honest numbers for the pitch and a safety net for prompt changes ([AI pipeline: 
    - garbage catch rate
    - **false-Bounce rate** of genuine Reports and Questions
    - grouping accuracy on pairs, with false merges and false splits shown separately
-   - p50 and p90 latency, and total tokens and estimated cost
+   - p50 and p90 latency on the machine that ran it (name it), and total tokens
 2. **Misses:** list every misclassified item (ID, expected, got). These are simulated texts, so printing them is fine.
-3. **Cost control:** before running, print the item count and the estimated cost. Run it once per prompt change, not in a loop.
-4. **Results doc:** copy the result, with date, model, effort and prompt version (git hash), into `docs/eval-results.md`, keeping a history table.
+3. **Run time:** before running, print the item count and check `llama-server` answers `GET /health`. A full run on a laptop takes minutes; run it once per prompt change, not in a loop.
+4. **Results doc:** copy the result, with date, model file (name and quantisation), machine, `temperature` and prompt version (git hash), into `docs/eval-results.md`, keeping a history table.
 
 ## Done when
 - [ ] One full run is recorded in `docs/eval-results.md`, with every metric above.

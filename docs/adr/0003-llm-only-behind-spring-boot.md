@@ -1,7 +1,9 @@
 ---
-status: accepted
+status: superseded by 0022
 date: 2026-10-30
 ---
+
+> Superseded by [ADR-0022](0022-self-hosted-llm-llama-cpp.md): the LLM is now a self-hosted model served by llama.cpp. The rule that only Spring Boot talks to the LLM still holds. Kept as the record of the original choice.
 
 # Only the Spring Boot back end talks to the LLM, and the LLM is Claude
 

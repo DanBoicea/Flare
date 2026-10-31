@@ -1,7 +1,7 @@
 ---
 status: accepted
 date: 2026-10-31
-amended: 2026-10-31 (Lombok kept and used instead of records; Spring Boot 4 starter names filled in)
+amended: 2026-10-31 (Lombok kept and used instead of records; Spring Boot 4 starter names filled in; Claude SDK dropped for the self-hosted llama.cpp server, ADR-0022)
 ---
 
 # Tooling and the full dependency list
@@ -19,7 +19,8 @@ The tooling and the complete list of libraries we expect to need. Anything not o
 | Back end | `spring-boot-starter-flyway`, `flyway-database-postgresql` | Versioned schema migrations (Spring Boot 4 needs the starter for auto-configuration) |
 | Back end | `spring-boot-starter-security`, `spring-boot-starter-security-oauth2-resource-server` | Verifying Supabase JWTs (the old `spring-boot-starter-oauth2-resource-server` name is deprecated in Boot 4) |
 | Back end | `spring-boot-starter-actuator` | Health check for hosting |
-| Back end | `com.anthropic:anthropic-java` | Official Claude SDK ([ADR-0003](0003-llm-only-behind-spring-boot.md)) |
+| Back end | none extra for the LLM | `llama-server`'s OpenAI-compatible HTTP API is called with Spring's built-in `RestClient` ([ADR-0022](0022-self-hosted-llm-llama-cpp.md)). `com.anthropic:anthropic-java` was dropped |
+| Outside the repo | llama.cpp (`llama-server`) and one GGUF model file | Run on a team machine, never committed (S04, S10) |
 | Back end | `lombok` (in the skeleton) | Getters, constructors and immutable value classes instead of records |
 | Back end (test) | `spring-boot-starter-webmvc-test`, `spring-boot-starter-security-test` (in the skeleton) | JUnit 5, AssertJ, Mockito, MockMvc web-slice tests |
 | Passenger web app | `react`, `react-dom`, `vite`, `typescript`, `@vitejs/plugin-react` | Vite template defaults |

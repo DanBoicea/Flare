@@ -12,24 +12,23 @@ The entry point for technical work. The full design is in [architecture/](archit
 | Data and staff sign-in | Supabase Postgres + Supabase Auth; apps never touch the database | [ADR-0010](adr/0010-supabase-postgres-and-auth-only.md) |
 | API | Contract-first OpenAPI in `contract/openapi.yaml` | [ADR-0012](adr/0012-contract-first-openapi.md) |
 | Live updates | Staff app polls every 5 s | [ADR-0011](adr/0011-staff-app-polling.md) |
-| LLM | Claude via the official Java SDK, called only by Spring Boot, model per task in config | [ADR-0003](adr/0003-llm-only-behind-spring-boot.md), [ADR-0014](adr/0014-single-classification-call-with-knowledge-base.md), [ADR-0016](adr/0016-llm-model-per-task-in-config.md) (proposed) |
+| LLM | Self-hosted open-weight model served by llama.cpp's `llama-server`, called only by Spring Boot over its OpenAI-compatible HTTP API, settings per task in config | [ADR-0022](adr/0022-self-hosted-llm-llama-cpp.md), [ADR-0014](adr/0014-single-classification-call-with-knowledge-base.md), [ADR-0016](adr/0016-llm-model-per-task-in-config.md) (proposed) |
 | Repository | One repo, independent apps | [ADR-0009](adr/0009-monorepo-independent-apps.md) |
 
 Team machines: 2 MacBooks, 1 Windows laptop. The Windows laptop has Java 21, Node 22, npm 10, Docker 29 and Python 3.13. Check the MacBooks in task S05.
 
-## Claude API facts (checked 2026-10-30)
+## llama.cpp server facts (checked 2026-10-31 against the `llama-server` README)
 
-- **SDK:** Anthropic publishes an official Java SDK (`com.anthropic:anthropic-java`). It reads the key from the `ANTHROPIC_API_KEY` environment variable. Read the `claude-api` skill's Java docs before writing any SDK code; never guess class or method names.
-- **Structured output:** the API supports it (JSON schema), so every answer can be forced into a fixed shape. We validate it again in our own code.
-- **Billing:** the back end needs an API key from the Claude Console, paid from API credits. A Claude Code or claude.ai subscription does not pay for API calls made by our app.
-- **Prices** (Anthropic list prices per million tokens, as cached on 2026-10-06; check before relying on them):
-  - Claude Opus 5.5 (`claude-opus-5-5`): $4 input / $20 output. The current default model.
-  - Claude Haiku 5.5 (`claude-haiku-5-5`): $0.10 input / $0.50 output. The cheapest current model.
-- **Rough cost per classification call,** assuming about 1,500 input and 200 output tokens and excluding thinking tokens: about $0.01 on Opus 5.5, about $0.0003 on Haiku 5.5. The team picks the model per task from eval results ([ADR-0016](adr/0016-llm-model-per-task-in-config.md)).
-- **Model behaviour:** on Opus 5.5, thinking can't be switched off; use effort `low` to keep calls short. Always check for the `refusal` stop reason and treat it as a failure, which sends the call to the fallback.
+- **What it is:** `llama-server` from [llama.cpp](https://github.com/ggml-org/llama.cpp) serves one GGUF model over HTTP. Install it from the project's releases or a package manager (for example Homebrew on macOS); S04 records the exact steps that worked on our machines.
+- **API:** an OpenAI-compatible `POST /v1/chat/completions`. `response_format` accepts `{"type": "json_object"}` and schema-constrained `{"type": "json_schema", ...}`, so every answer can be forced into a fixed shape. We validate it again in our own code. C01 confirms the exact request and response field names against the server README before relying on them.
+- **Health:** `GET /health` returns `503` while the model loads and `200 {"status": "ok"}` once it is ready.
+- **Useful flags:** `-m <file.gguf>` or `-hf <user>/<repo>[:quant]` (download from Hugging Face), `--host` (default `127.0.0.1`), `--port` (we use `8081`; the back end is on `8080`), `-c` context size (large enough for the Knowledge base plus a message), `-ngl` GPU layers (default auto), `-a/--alias` (we use `flare-llm`), `--api-key` (required whenever it listens beyond `127.0.0.1`).
+- **Prompt caching:** the server reuses a prompt prefix it has already processed, so the system prompt (instructions plus the Knowledge base) must be identical and first in every call.
+- **Cost:** no per-call price. The limits are speed and memory on the machine that runs it, measured in S04.
+- **Model choice:** an instruction-tuned GGUF model whose licence allows this use, good enough in Romanian and English, and fast enough for the classify timeout. Candidates and measurements go in S04; the final choice comes from the eval (C05, C06, ADR-0016).
 
 ## Open technical items
 
-- ADR-0016 (model per task) is decided after the eval run (C06).
-- Lombok: the skeleton includes it; keep or remove it (S05).
+- ADR-0016 (model and settings per task) is decided after the eval run (C06).
+- Which machine runs `llama-server` for the demo (S10).
 - Hosting is chosen by the team. The requirements are in [operations](architecture/operations.md).

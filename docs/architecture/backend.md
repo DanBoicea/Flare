@@ -15,17 +15,17 @@ com.fsociety.flarebackend
 ├── report/            [A] Report entity + repository
 ├── classification/    [A] MessageClassifier (interface), ClassificationInput, Classification, FallbackClassifier,
 │                          CategoryTeamRouting (category → Team, confidence rule)
-│   └── claude/        [C] ClaudeMessageClassifier, ClassificationSchema, ClassificationValidator
+│   └── llm/           [C] LlmMessageClassifier, ClassificationSchema, ClassificationValidator
 ├── knowledge/         [C] KnowledgeBase (loads knowledge-base/*.md from the classpath at startup)
-├── llm/               [C] LlmClient (interface), ClaudeLlmClient, LlmTask enum, LlmTaskProperties, PromptLoader,
+├── llm/               [C] LlmClient (interface), LlamaServerClient (llama.cpp over HTTP), LlmTask enum, PromptLoader,
 │                          LlmFailure exception, LlmUsageCounter (daily cap, token logging)
 ├── grouping/          [A] GroupingWorker (single thread + queue + startup recovery), CandidateSelector (pure),
 │                          IssueMatcher (interface), NoMatchIssueMatcher (fallback)
-│   └── claude/        [C] ClaudeIssueMatcher
+│   └── llm/           [C] LlmIssueMatcher
 ├── issue/             [A] Issue entity + repository, IssueService (create/merge/reopen), IssueActionService,
 │                          PriorityCalculator (pure), StaffIssueController, dto/
 │   └── summary/       [A] IssueSummarizer (interface), FallbackIssueSummarizer
-│       └── claude/    [C] ClaudeIssueSummarizer
+│       └── llm/       [C] LlmIssueSummarizer
 ├── review/            [A] ReviewController, ReviewService (Quarantined list, Strict mode alerts, release, dismiss)
 ├── staff/             [A] StaffMember, Team, entities + repositories, CurrentStaff (JWT → staff member),
 │                          StaffAccessPolicy (visibility, pure), MeController, TeamController
@@ -35,7 +35,7 @@ com.fsociety.flarebackend
 
 ## Seams between Track A and Track C
 
-Track A owns the interfaces and the fallbacks, and wires the Claude implementations only when `flare.llm.enabled=true` and an API key is present (`@ConditionalOnProperty`). Until Track C merges, the whole system runs on the fallbacks.
+Track A owns the interfaces and the fallbacks, and wires the LLM-backed implementations only when `flare.llm.enabled=true` (`@ConditionalOnProperty`). They call the self-hosted `llama-server` ([ADR-0022](../adr/0022-self-hosted-llm-llama-cpp.md)). Until Track C merges, the whole system runs on the fallbacks.
 
 ```java
 // classification
@@ -78,10 +78,12 @@ flare:
   llm:
     enabled: ${FLARE_LLM_ENABLED:false}
     daily-call-limit: 2000
-    tasks:
-      classify:  { model: claude-opus-5-5, effort: low, max-tokens: 2048, timeout: 10s }
-      match:     { model: claude-opus-5-5, effort: low, max-tokens: 1024, timeout: 15s }
-      summarize: { model: claude-opus-5-5, effort: low, max-tokens: 1024, timeout: 15s }
+    base-url: ${FLARE_LLM_BASE_URL:http://localhost:8081}   # llama-server
+    api-key: ${FLARE_LLM_API_KEY:}                          # llama-server --api-key; empty when it listens on 127.0.0.1 only
+    tasks:   # timeouts are set from the S04 measurements
+      classify:  { model: flare-llm, temperature: 0.0, max-tokens: 1024, timeout: 15s }
+      match:     { model: flare-llm, temperature: 0.0, max-tokens: 512, timeout: 20s }
+      summarize: { model: flare-llm, temperature: 0.0, max-tokens: 512, timeout: 20s }
   limits:
     device:   { per-10-min: 3, per-day: 10 }
     network:  { per-10-min: 30 }
@@ -127,7 +129,7 @@ spring:
 management.endpoints.web.exposure.include: health
 ```
 
-The `local` and `demo` profiles add `classpath:db/seed` to `spring.flyway.locations`. The Anthropic key is read by the SDK from `ANTHROPIC_API_KEY`.
+The `local` and `demo` profiles add `classpath:db/seed` to `spring.flyway.locations`. The LLM server's address and optional key come from `FLARE_LLM_BASE_URL` and `FLARE_LLM_API_KEY`.
 
 ## Conventions specific to the back end
 

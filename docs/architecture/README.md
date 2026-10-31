@@ -28,15 +28,16 @@ How Flare is built. Product behaviour is in [product](../product.md), vocabulary
  ┌──────────────────────────────────────────────────────────────┐   ┌──────────────────┐
  │ Spring Boot back end (single instance)                        │   │ Supabase Auth    │
  │                                                               │◀──│ (issues the JWT; │
- │  public API ─▶ intake pipeline ─▶ classification (Claude)     │JWKS│ back end checks │
+ │  public API ─▶ intake pipeline ─▶ classification (LLM)        │JWKS│ back end checks │
  │                    │                                          │   │ it via JWKS)     │
  │                    ▼                                          │   └──────────────────┘
  │             grouping worker (1 thread) ─▶ matcher, summariser │
  │                    │                                          │   ┌──────────────────┐
- │  staff API ◀── Issues · Teams · review · audit · retention    │──▶│ Claude API       │
- └───────────────┬───────────────────────────────────────────────┘   │ (only caller:    │
-                 │ JDBC                                              │  the back end)   │
-                 ▼                                                   └──────────────────┘
+ │  staff API ◀── Issues · Teams · review · audit · retention    │──▶│ llama-server     │
+ └───────────────┬───────────────────────────────────────────────┘   │ (self-hosted LLM;│
+                 │ JDBC                                              │  only caller: the│
+                 ▼                                                   │  back end)       │
+                                                                     └──────────────────┘
  ┌──────────────────────────────┐
  │ Supabase Postgres            │
  │ schema "flare" (not exposed) │
@@ -51,7 +52,7 @@ How Flare is built. Product behaviour is in [product](../product.md), vocabulary
 | Staff app | Sign-in through Supabase Auth, polling the Issue list, Issue detail and actions, Needs review for the duty manager | Reading the database directly, deciding visibility |
 | Spring Boot | Every rule: QR code lookup, rate limits, Strict mode, bot check, Emergency words, LLM calls, grouping, priority, Team visibility, audit, retention | Rendering UI, trusting values sent by a client for Location, Team, role or limits |
 | Supabase | Postgres storage, staff accounts and JWTs | Serving data to the apps (the Data API, Realtime and Storage are unused) |
-| Claude | Classification, Knowledge base answers, matching, summaries, always in a fixed output shape | Taking actions, seeing secrets, seeing anything except the message, the candidate data and the Knowledge base |
+| LLM (self-hosted `llama-server`) | Classification, Knowledge base answers, matching, summaries, always in a fixed output shape | Taking actions, seeing secrets, seeing anything except the message, the candidate data and the Knowledge base |
 
 ## The key flows
 
@@ -77,9 +78,9 @@ How Flare is built. Product behaviour is in [product](../product.md), vocabulary
 
 | Track | Code | Main docs |
 | --- | --- | --- |
-| A, back-end platform | `apps/flare-backend/` except the `llm`, `knowledge` and Claude implementations | [backend](backend.md), [data model](data-model.md), [api](api.md), [auth and security](auth-and-security.md) |
+| A, back-end platform | `apps/flare-backend/` except the `llm`, `knowledge` and LLM-backed implementations | [backend](backend.md), [data model](data-model.md), [api](api.md), [auth and security](auth-and-security.md) |
 | B, Staff app | `apps/flare-mobile/` | [frontends](frontends.md), [api](api.md) |
-| C, passenger web app and AI pipeline | `apps/flare-webapp/`, plus `apps/flare-backend/` packages `llm`, `knowledge`, `classification.claude`, `grouping.claude`, `issue.summary.claude` | [frontends](frontends.md), [pipeline](pipeline.md) |
+| C, passenger web app and AI pipeline | `apps/flare-webapp/`, plus `apps/flare-backend/` packages `llm`, `knowledge`, `classification.llm`, `grouping.llm`, `issue.summary.llm`, and running `llama-server` | [frontends](frontends.md), [pipeline](pipeline.md) |
 | D, OpenCode agents | `data/`, `scripts/`, fixtures and string files | [tasks](../tasks/README.md) |
 
 The seams between tracks are the contract (`contract/openapi.yaml`) and three Java interfaces (`MessageClassifier`, `IssueMatcher`, `IssueSummarizer`) defined in [backend](backend.md). Track A ships fallback implementations of all three on day one, so the whole system runs before any LLM code exists.

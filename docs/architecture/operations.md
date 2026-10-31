@@ -25,7 +25,8 @@ SUPABASE_JWKS_URI=https://<project-ref>.supabase.co/auth/v1/.well-known/jwks.jso
 FLARE_HASH_SECRET=change-me-32-random-bytes
 FLARE_ALLOWED_ORIGINS=http://localhost:5173
 FLARE_LLM_ENABLED=false
-ANTHROPIC_API_KEY=sk-ant-change-me
+FLARE_LLM_BASE_URL=http://localhost:8081
+FLARE_LLM_API_KEY=
 ```
 
 Notes:
@@ -51,10 +52,11 @@ EXPO_PUBLIC_MOCK=false
 ## Running locally (for the README "Setup" section, filled in by S01 and the skeleton tasks)
 
 1. **Prerequisites:** Java 21, Node 22, and Expo Go on your phone. Maven and Expo come with the projects (wrapper and npx).
-2. **Back end:** set the env vars, then `cd apps/flare-backend && ./mvnw spring-boot:run -Dspring-boot.run.profiles=local` (on Windows `mvnw.cmd`). Flyway migrates and seeds on start. Check that `GET http://localhost:8080/actuator/health` returns UP.
-3. **Web:** `cd apps/flare-webapp && npm install && npm run dev`, then open `http://localhost:5173/q/<a seeded qrCodeId>`.
-4. **Staff:** `cd apps/flare-mobile && npm install && npx expo start`, scan the terminal QR with Expo Go, and sign in with a simulated demo account.
-5. **Tests:** `cd apps/flare-backend && ./mvnw test`, which excludes the `eval` tag. The evaluation is `./mvnw test -Dgroups=eval` (calls the real API and costs money; C05). Strings: `node scripts/check-i18n.mjs`.
+2. **LLM (optional):** start `llama-server` as described in S04 (`--port 8081 --alias flare-llm`), then set `FLARE_LLM_ENABLED=true`. Without it, the back end runs on the fallbacks.
+3. **Back end:** set the env vars, then `cd apps/flare-backend && ./mvnw spring-boot:run -Dspring-boot.run.profiles=local` (on Windows `mvnw.cmd`). Flyway migrates and seeds on start. Check that `GET http://localhost:8080/actuator/health` returns UP.
+4. **Web:** `cd apps/flare-webapp && npm install && npm run dev`, then open `http://localhost:5173/q/<a seeded qrCodeId>`.
+5. **Staff:** `cd apps/flare-mobile && npm install && npx expo start`, scan the terminal QR with Expo Go, and sign in with a simulated demo account.
+6. **Tests:** `cd apps/flare-backend && ./mvnw test`, which excludes the `eval` tag. The evaluation is `./mvnw test -Dgroups=eval` (needs a running `llama-server`; C05). Strings: `node scripts/check-i18n.mjs`.
 
 ## Seeding and resetting
 
@@ -85,5 +87,5 @@ EXPO_PUBLIC_MOCK=false
 ## Observability (minimal)
 
 - Structured log lines with an event name, IDs, latency, LLM tokens and outcome. No Passenger text.
-- A daily LLM call counter in the logs, plus the Console usage page.
+- A daily LLM call counter and per-call latency in the logs, plus `llama-server`'s own console output and `GET /health`.
 - The Needs review list doubles as the abuse monitor.

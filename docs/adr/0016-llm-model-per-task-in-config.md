@@ -1,8 +1,16 @@
 ---
 status: proposed (decide after the eval run, C06)
 date: 2026-10-31
+amended: 2026-10-31 (rewritten for the self-hosted llama.cpp server, ADR-0022; nothing was built on the Claude version)
 ---
 
-# The Claude model and effort are set per LLM task in config, defaulting to Claude Opus 5.5
+# The model and its sampling settings are set per LLM task in config
 
-Flare makes four kinds of LLM call: classify, match, summarise, and the Knowledge base answer, which is part of classify. Each reads its model ID, effort level, maximum output tokens and timeout from configuration, so changing the model never needs a code change. The default is `claude-opus-5-5`, the current default Claude model, with effort `low`, because these are short classification and summarising tasks. The team may switch some or all tasks to `claude-haiku-5-5`, which is much cheaper and faster. The rough cost per classification call is about $0.01 on Opus 5.5 and about $0.0003 on Haiku 5.5; see [technical](../technical.md). That choice should be made by running the evaluation script on both models, not by guessing. A spend limit is set on the Console API key.
+Flare makes four kinds of LLM call: classify, match, summarise, and the Knowledge base answer, which is part of classify. Each reads its settings from `flare.llm.tasks.*`: the model name, `temperature`, maximum output tokens and timeout. Changing them never needs a code change.
+
+- **One server, one model at first.** `llama-server` serves one model, under the name given with `--alias` (we use `flare-llm`), so every task starts with the same model. A task can later point at a second server or model if the eval shows it helps.
+- **Temperature 0** for every task: these are classification and summarising jobs, where repeatable answers matter more than variety.
+- **Timeouts come from measurement** (S04). Classify is synchronous, so the Passenger waits for it; its timeout is the most important number. On timeout the fallback answers.
+- **The model is chosen by evaluation, not by guessing** (C05, C06). S04 picks a first model by a quick check; C06 compares at least two candidates on the labelled test set, and this ADR is then accepted with the numbers.
+
+There is no per-call cost with a self-hosted model. `flare.llm.daily-call-limit` stays as a load guard, so a spam wave cannot keep the server busy for everyone.

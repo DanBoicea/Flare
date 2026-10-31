@@ -19,7 +19,7 @@ Items marked **(pending)** depend on a decision not made yet (see [technical](te
 - **Passenger text is untrusted.** It is never rendered as HTML or markup in either app. It is never placed inside the LLM's instructions; it is passed only as clearly separated user content.
 - **LLM output is untrusted too.** It is parsed against a fixed schema, and enum values (kind, category, Severity, Team) are checked. Invalid output takes the failure path: the Report becomes Unclassified and goes to the duty manager. It never crashes the request and never loses the Report.
 - **The server decides.** Location (from the QR code ID), Team routing, permissions and rate limits are decided on the server. Values sent by a client for these are never trusted.
-- **Only Spring Boot calls the LLM** and holds the key ([ADR-0003](adr/0003-llm-only-behind-spring-boot.md)).
+- **Only Spring Boot calls the LLM** and holds the key ([ADR-0022](adr/0022-self-hosted-llm-llama-cpp.md)).
 - **Every staff endpoint** requires sign-in and checks the caller's Team on every request.
 - **No personal data in logs.** Do not log contact details or message text. Log IDs and outcomes.
 - **Secrets only in environment variables.** Document each name, with a fake value, in `.env.example`. See "Never commit" in [CLAUDE.md](../CLAUDE.md).

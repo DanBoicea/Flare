@@ -28,7 +28,7 @@
 	</scm>
 	<properties>
 		<java.version>21</java.version>
-		<!-- Evaluation tests call the real Claude API and cost money; they run only with -Dgroups=eval (see the eval profile). -->
+		<!-- Evaluation tests call the self-hosted llama-server and take minutes; they run only with -Dgroups=eval (see the eval profile). -->
 		<excluded.test.groups>eval</excluded.test.groups>
 	</properties>
 	<dependencies>
