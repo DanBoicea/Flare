@@ -8,7 +8,7 @@ The log of what the team decided in grilling sessions, plus what is still open. 
 | --- | --- |
 | [0001](adr/0001-bounce-garbage-messages.md) | Garbage, joke and spam messages are Bounced back to the Passenger |
 | [0002](adr/0002-three-apps-spring-boot-supabase.md) | Three apps: React passenger web app, React Native Staff app, Spring Boot back end with Supabase |
-| [0003](adr/0003-llm-only-behind-spring-boot.md) | Only Spring Boot talks to the LLM, and the LLM is Claude |
+| [0003](adr/0003-llm-only-behind-spring-boot.md) | Only Spring Boot talks to the LLM, and the LLM is Claude (superseded by 0022) |
 | [0004](adr/0004-single-free-text-field.md) | The passenger web app is one free-text field, not category buttons |
 | [0005](adr/0005-knowledge-base-answers-questions.md) | Questions are answered from an airport Knowledge base instead of going to staff |
 | [0006](adr/0006-location-specific-qr-codes.md) | Every QR code belongs to one Location, which only staff see |
@@ -21,12 +21,13 @@ The log of what the team decided in grilling sessions, plus what is still open. 
 | [0013](adr/0013-tooling-and-dependencies.md) | Tooling and the full dependency list |
 | [0014](adr/0014-single-classification-call-with-knowledge-base.md) | One LLM call classifies and answers Questions; whole Knowledge base in the prompt |
 | [0015](adr/0015-single-instance-in-memory-limits.md) | One back-end instance; in-memory limits and a single-threaded grouping worker |
-| [0016](adr/0016-llm-model-per-task-in-config.md) | Model and effort per LLM task in config (proposed until the eval run) |
+| [0016](adr/0016-llm-model-per-task-in-config.md) | Model and sampling settings per LLM task in config (proposed until the eval run) |
 | [0017](adr/0017-qr-code-url-format.md) | QR codes open `/q/{qrCodeId}` with a random opaque ID |
 | [0018](adr/0018-hashed-device-and-network-keys.md) | Device and network identifiers stored only as keyed hashes |
 | [0019](adr/0019-bot-check-without-third-party.md) | Bot check is a honeypot and a minimum fill time, no third-party service |
 | [0020](adr/0020-design-language-airfield-signage.md) | One design language: airfield signage, Atkinson Hyperlegible Next (superseded by 0021) |
 | [0021](adr/0021-design-v1-navy-cobalt-instrument-sans.md) | Design V1 (navy and cobalt, self-hosted Instrument Sans) replaces airfield signage |
+| [0022](adr/0022-self-hosted-llm-llama-cpp.md) | The LLM is a self-hosted open-weight model served by llama.cpp, called only by Spring Boot |
 
 ## Decided
 
@@ -55,7 +56,7 @@ Mentor feedback, verbatim: "De adresat partea de impersonare qr code; Marketingu
 
 - **Stack:** a React passenger web app, a React Native Staff app, a Spring Boot back end and Supabase (ADR-0002). Team machines: 2 MacBooks, 1 Windows laptop.
 - **Demo hosting and running:** the team handles it.
-- **LLM:** Claude, called only through Spring Boot (ADR-0003). The team pays API usage from its own credits for the proof of concept.
+- **LLM:** Claude, called only through Spring Boot (ADR-0003). The team pays API usage from its own credits for the proof of concept. *Superseded on 2026-10-31 by ADR-0022 (self-hosted llama.cpp).*
 - **Git:** GitHub Flow, with `main` and `feature/<name>` branches only.
 - **ADRs:** created and updated throughout development whenever something is decided or changes.
 - **Vocabulary:** in [GLOSSARY.md](../GLOSSARY.md). "Ticket" means only a plane ticket.
@@ -124,7 +125,7 @@ Mentor feedback, verbatim: "De adresat partea de impersonare qr code; Marketingu
 - **Instrument Sans is self-hosted**, never loaded from Google Fonts (privacy).
 - **Compose uses a call-back checkbox** that reveals the phone field; unticked sends no contact. The title is the field's label. Sending echoes the Passenger's text.
 - **Enter sends the message** on Compose (the keyboard key says "Send"); Shift+Enter adds a new line.
-- **Open for B01:** distinct colours for High, Medium and Low severity in V1.
+- **Open for B01:** distinct colours for High, Medium and Low severity in V1. *Decided later the same day (see the Staff app V1 entry).*
 - **Emergency strip reworded** for clarity: "Urgență?" on the left, a red pill button "Sună la 112" with a phone icon on the right (a bare "112" box read like a badge).
 - **Outcome screens (W03) follow V1 with three changes:** Confirmation keeps "Send another message" as a secondary button and keeps the copy-deck wording (V1's "the right team got it on their phone" is untrue for Quarantined "Send anyway" Reports); the Emergency title shows in both languages and keeps "tell the nearest staff member"; each Bounce reason gets a short title plus a body.
 - **W04 design pass:** shorter header, plain question above the answer card, field borders at 3:1 or more, a page title per screen, and no sentence-initial "Ia" in Passenger copy (Instrument Sans draws I and l alike).
@@ -141,6 +142,13 @@ Mentor feedback, verbatim: "De adresat partea de impersonare qr code; Marketingu
 - **Test set: category of an Emergency (assumption, to be confirmed by the Track C owner):** medical → `ASSISTANCE_NEEDED`, missing child → `LOST_ITEM_OR_PERSON`, fire, smoke or threat → `SAFETY_OR_SECURITY`. Routing does not depend on it. The test set also adds `expected.language`.
 - **Demo scenarios run the spam wave last,** and a full run needs a back-end restart first, because every simulated Passenger shares one laptop's network limit. Raising the network limit in the `local` profile is suggested to the A07 owner (see A07's notes).
 
+### Round 9: self-hosted LLM (2026-10-31)
+
+- **No Claude API:** the LLM is an open-weight model run by the team with llama.cpp's `llama-server`, still called only by Spring Boot (ADR-0022, superseding ADR-0003). Passenger text never leaves machines we control.
+- **No new back-end library:** the back end calls `llama-server`'s OpenAI-compatible API with Spring's `RestClient`; `anthropic-java` is dropped (ADR-0013). Output is constrained with `response_format` `json_schema` and validated again in our code.
+- **Config:** `FLARE_LLM_BASE_URL` and `FLARE_LLM_API_KEY` replace `ANTHROPIC_API_KEY`. Per task: model alias, `temperature`, `max-tokens`, timeout (ADR-0016, rewritten). Model files (`*.gguf`) are git-ignored.
+- **Tasks:** S04 becomes "llama-server and first model"; C01 becomes the `llama-server` client; new S10 runs `llama-server` on the demo machine. The `claude` back-end packages are renamed `llm`.
+
 ## Open questions
 
 ### Waiting for the team's answer
@@ -148,6 +156,8 @@ Mentor feedback, verbatim: "De adresat partea de impersonare qr code; Marketingu
 - **Track owners:** who takes Track A, B and C, and who runs the OpenCode agents (see [tasks](tasks/README.md)).
 
 ### Also open
+
+- **LLM model and demo machine:** which open model (S04 picks a first one, C06 confirms by eval), and which machine runs `llama-server` for the demo (S10).
 
 - **Quality check guardrails:** the proposed list in [AI pipeline](triage-and-dedup.md), including "Send anyway" after 3 Bounces. The architecture assumes they are accepted.
 - **Location mismatch:** show staff both "Scanned at" and "Mentioned"? The architecture assumes yes.

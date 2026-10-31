@@ -1,36 +1,38 @@
-# C01: `LlmClient` on the Claude Java SDK: config, timeouts, failures, usage cap
+# C01: `LlmClient` for the self-hosted `llama-server`: config, timeouts, failures, usage cap
 
 Status: TODO
 Owner:
-Track: C · Phase 2 · Estimate: 1 h · Agent-friendly: no (main Claude session, using the `claude-api` skill)
+Track: C · Phase 2 · Estimate: 1.5 h · Agent-friendly: no (main session)
 Depends on: A01, S04
 Unblocks: C02, C03, C04
 
 ## Goal
-One safe gateway to Claude that every LLM feature uses ([ADR-0003](../adr/0003-llm-only-behind-spring-boot.md), [ADR-0016](../adr/0016-llm-model-per-task-in-config.md)).
+One safe gateway to the self-hosted LLM that every LLM feature uses ([ADR-0022](../adr/0022-self-hosted-llm-llama-cpp.md), [ADR-0016](../adr/0016-llm-model-per-task-in-config.md)).
 
 ## Read first
-[pipeline section 4](../architecture/pipeline.md#4-llm-calls-track-c-adr-0003-adr-0016) · [backend: config](../architecture/backend.md#configuration-applicationyml-secrets-only-from-env-vars) · **the `claude-api` skill and its `java/` documentation. Do not guess SDK class or method names. If something is not documented there, check the official SDK repository it links.**
+[pipeline section 4](../architecture/pipeline.md#4-llm-calls-track-c-adr-0022-adr-0016) · [backend: config](../architecture/backend.md#configuration-applicationyml-secrets-only-from-env-vars) · [technical: llama.cpp server facts](../technical.md#llamacpp-server-facts-checked-2026-10-31-against-the-llama-server-readme) · **S04's Notes** (the working `curl` request and the `finish_reason` values seen) · the `llama-server` README. **Do not guess request or response field names**; copy them from S04's working request and the README.
 
 ## Do
-1. Add `com.anthropic:anthropic-java` to `pom.xml`, at the version given in the skill's Java README or the latest release.
-2. **`llm/LlmTask`** enum (`CLASSIFY`, `MATCH`, `SUMMARIZE`) and **`LlmTaskProperties`** (model, effort, `max-tokens`, timeout) from `flare.llm.tasks.*`.
-3. **`llm/LlmClient`:** `<T> T call(LlmTask task, String systemPrompt, String userContent, JsonSchema schema, Class<T> type)`. The exact shape may follow the SDK's structured-output API; keep the interface small. Implementation `ClaudeLlmClient`:
-   - client from env (`ANTHROPIC_API_KEY`), created once
-   - model, effort (`output_config.effort`) and `max_tokens` per task; structured output with the JSON schema
-   - the system prompt marked for **prompt caching**
-   - a timeout per task, and at most one retry on 429 or 5xx inside the timeout
-   - check `stop_reason`: a `refusal`, `max_tokens`, or anything other than a normal end throws `LlmFailure`
-   - parse into `T`; parse errors throw `LlmFailure`
-   - log per call: task, model, latency, input, output and cache-read tokens. **Never prompt or response text**
-   - `LlmUsageCounter`: a daily call cap (`flare.llm.daily-call-limit`); over the cap, throw `LlmFailure` without calling
-   - the skill recommends server-side refusal `fallbacks` for this model family. Decide with the team whether to enable them; if enabled, note it in ADR-0016
-4. **`llm/PromptLoader`:** loads `prompts/*.md` from the classpath at startup and fails fast if one is missing.
-5. **Wiring:** only when `flare.llm.enabled=true` and the key is set (`@ConditionalOnProperty`). Otherwise there is no `LlmClient` bean, and the fallbacks stay active.
-6. **Smoke test:** a test tagged `eval` that calls `CLASSIFY` with a trivial schema. It runs only on demand, because it costs money.
+1. **No new dependency.** Use Spring's `RestClient` and the Jackson that Spring Boot already provides. Delete nothing that A-track code uses.
+2. **`llm/LlmTask`** enum (`CLASSIFY`, `MATCH`, `SUMMARIZE`). Settings come from `FlareProperties.Llm` (`base-url`, `api-key`, `daily-call-limit`, and per task `model`, `temperature`, `max-tokens`, `timeout`), which A01 already binds.
+3. **`llm/LlmClient`** (interface): `<T> T call(LlmTask task, String systemPrompt, String userContent, String jsonSchema, Class<T> type)`. Keep it this small; C02-C04 depend only on it.
+4. **`llm/LlamaServerClient`** implements it:
+   - one `RestClient` for `flare.llm.base-url`, created once; `Authorization: Bearer <api-key>` only when the key is set
+   - `POST /v1/chat/completions` with the task's model alias, `temperature`, `max_tokens`, the system and user messages, and `response_format` with `type: "json_schema"` carrying the schema (exact shape from S04)
+   - the system prompt first and byte-for-byte identical across calls of one task, so `llama-server` can reuse the cached prefix
+   - a timeout per task (connect and read), and at most one retry on 503 or another 5xx, inside the same timeout
+   - anything other than a normal finish (the `finish_reason` S04 recorded for a complete answer), an empty answer, or JSON that doesn't parse into `T` throws `LlmFailure`
+   - a connection refused or a 503 "Loading model" throws `LlmFailure` quickly, so the fallback answers the Passenger without waiting for the whole timeout
+   - log per call: task, model, latency, prompt and completion token counts if the response has them, and the outcome. **Never prompt or response text**
+5. **`llm/LlmUsageCounter`:** a daily call cap (`flare.llm.daily-call-limit`). Over the cap, throw `LlmFailure` without calling. It protects the server from a spam wave; there is no money involved.
+6. **`llm/PromptLoader`:** loads `prompts/*.md` from the classpath at startup and fails fast if one is missing.
+7. **Wiring:** only when `flare.llm.enabled=true` (`@ConditionalOnProperty`). Otherwise there is no `LlmClient` bean and the fallbacks stay active. Startup must not fail when the server is down; the first call just fails and falls back.
+8. **Tests:**
+   - unit tests with a fake HTTP server or a mocked `RestClient`: a valid answer, invalid JSON, a cut-off answer, a 503, a timeout, the cap
+   - a smoke test tagged `eval` that calls a running `llama-server` with a trivial schema. It runs only on demand.
 
 ## Done when
-- [ ] The smoke test passes with a real key.
-- [ ] The app starts with the LLM disabled and no key.
-- [ ] A forced timeout or an invalid key gives `LlmFailure`, which a unit test with a fake shows being handled by the caller.
-- [ ] Logs show tokens and no text.
+- [ ] The smoke test passes against S04's `llama-server`.
+- [ ] The app starts with the LLM disabled, and with it enabled while `llama-server` is stopped.
+- [ ] A timeout, a stopped server or invalid JSON gives `LlmFailure`, and a unit test with a fake shows the caller falling back.
+- [ ] Logs show latency and token counts, and no text.

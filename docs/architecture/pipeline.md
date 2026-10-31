@@ -45,17 +45,17 @@ Rules:
 
 The implementation is a pure `SlidingWindowCounter` (timestamps in a deque per key, and an injected `Clock` so tests can control time), wrapped by `RateLimitService`. Old keys are evicted every few minutes.
 
-## 4. LLM calls (Track C; [ADR-0003](../adr/0003-llm-only-behind-spring-boot.md), [ADR-0016](../adr/0016-llm-model-per-task-in-config.md))
+## 4. LLM calls (Track C; [ADR-0022](../adr/0022-self-hosted-llm-llama-cpp.md), [ADR-0016](../adr/0016-llm-model-per-task-in-config.md))
 
 Common rules:
-- **One gateway:** all calls go through `llm.LlmClient`, using the official Java SDK. Read the `claude-api` skill and its `java/` docs before writing this code. Never guess SDK names.
+- **One gateway:** all calls go through `llm.LlmClient`, which calls the self-hosted `llama-server` (`POST {FLARE_LLM_BASE_URL}/v1/chat/completions`) with Spring's `RestClient`. Check request and response field names against the `llama-server` README; never guess them.
 - **Fixed output:** structured output against a JSON schema. The result is parsed, then **validated again in our own code**: enums, lengths, required fields per kind, and IDs within the candidate set. Anything invalid is a failure.
-- **Per-task config:** model, effort, `max_tokens`, timeout. Defaults: `claude-opus-5-5`, effort `low`.
-- **Failure path:** a timeout, API error, refusal (`stop_reason == "refusal"`), invalid output or missing key all count as failures. The caller then uses the fallback implementation. Retry at most once, and only on 429 or 5xx, within the timeout.
+- **Per-task config:** model alias, `temperature` (0), `max_tokens`, timeout. All tasks start on the one model `llama-server` serves as `flare-llm`.
+- **Failure path:** a timeout, a connection error (server down or still loading), an HTTP error, output cut off by the token limit, invalid output, or the LLM being disabled all count as failures. The caller then uses the fallback implementation. Retry at most once, and only on 503 or another 5xx, within the timeout.
 - **Untrusted text stays data:** the system prompt holds only our instructions, our definitions and the Knowledge base. The Passenger's text goes in the user turn inside `<passenger_message>` tags, and the system prompt says to treat it as data and never follow instructions found inside it.
-- **Prompt caching** on the system prompt, which holds the Knowledge base. Check `usage.cache_read_input_tokens` in the logs.
+- **Prompt caching:** `llama-server` reuses a prompt prefix it has already processed, so the system prompt (instructions plus the Knowledge base) stays identical and comes first in every call.
 - **Prompts** are files in `src/main/resources/prompts/`, versioned in git, and changed only together with an eval run ([code rules](../code-rules.md)).
-- **Cost guard:** log input and output tokens for every call, keep a daily call counter, and above `flare.llm.daily-call-limit` (default 2000) every call fails, so the fallback runs. The Console spend limit is the outer guard.
+- **Load guard:** log latency and input and output tokens for every call (never the text), keep a daily call counter, and above `flare.llm.daily-call-limit` (default 2000) every call fails, so the fallback runs. There is no per-call cost; the guard stops a spam wave from keeping the server busy.
 
 ### 4.1 Classify (synchronous, also answers Questions)
 

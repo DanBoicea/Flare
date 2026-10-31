@@ -13,7 +13,7 @@ A running, empty back end that every other back-end task plugs into.
 [backend](../architecture/backend.md) · [ADR-0013](../adr/0013-tooling-and-dependencies.md) · [auth and security](../architecture/auth-and-security.md) (Spring Security rules).
 
 ## Do
-1. **Start from the existing skeleton** in `apps/flare-backend`: Spring Boot 4.1.2, Java 21, group `com.fsociety`, package `com.fsociety.flarebackend`, with the Maven wrapper already committed. Add the missing dependencies from ADR-0013, using their Spring Boot 4 starter names: validation, data JPA, Flyway with its PostgreSQL module, OAuth2 resource server, actuator. The Anthropic SDK is added by C01. Lombok is kept and used instead of records (decided 2026-10-31).
+1. **Start from the existing skeleton** in `apps/flare-backend`: Spring Boot 4.1.2, Java 21, group `com.fsociety`, package `com.fsociety.flarebackend`, with the Maven wrapper already committed. Add the missing dependencies from ADR-0013, using their Spring Boot 4 starter names: validation, data JPA, Flyway with its PostgreSQL module, OAuth2 resource server, actuator. The LLM client is added by C01 (it needs no extra library since ADR-0022). Lombok is kept and used instead of records (decided 2026-10-31).
 2. **Create the package folders** from [backend](../architecture/backend.md), each with a `package-info.java` holding a one-line purpose.
 3. **Typed config:**
    - `config/FlareProperties` as `@ConfigurationProperties("flare")` Lombok `@Value` classes, covering the whole `flare:` block in backend.md

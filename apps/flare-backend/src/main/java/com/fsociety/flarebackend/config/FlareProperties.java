@@ -31,6 +31,10 @@ public class FlareProperties {
 	@Value
 	public static class Llm {
 		boolean enabled;
+		/** The self-hosted llama.cpp server (ADR-0022). */
+		String baseUrl;
+		/** llama-server --api-key; empty when the server listens on 127.0.0.1 only. */
+		String apiKey;
 		int dailyCallLimit;
 		/** Keyed by task name: classify, match, summarize. */
 		Map<String, LlmTask> tasks;
@@ -38,8 +42,9 @@ public class FlareProperties {
 
 	@Value
 	public static class LlmTask {
+		/** The model name llama-server answers to (its --alias). */
 		String model;
-		String effort;
+		double temperature;
 		int maxTokens;
 		Duration timeout;
 	}

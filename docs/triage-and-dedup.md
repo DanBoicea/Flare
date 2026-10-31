@@ -1,6 +1,6 @@
 # AI pipeline: classification, Knowledge base, grouping and summaries
 
-Everything the LLM does in Flare. Every LLM call runs in the Spring Boot back end ([ADR-0003](adr/0003-llm-only-behind-spring-boot.md)). Terms are in [GLOSSARY.md](../GLOSSARY.md).
+Everything the LLM does in Flare. Every LLM call runs in the Spring Boot back end ([ADR-0022](adr/0022-self-hosted-llm-llama-cpp.md)). Terms are in [GLOSSARY.md](../GLOSSARY.md).
 
 ## What the LLM decides for each message
 
