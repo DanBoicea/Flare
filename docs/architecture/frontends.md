@@ -39,12 +39,14 @@ Compose ──send──▶ Sending ──┬─ REPORTED  ─▶ Confirmation �
 
 - **On every screen:** the `EmergencyStrip` at the top, and the `LanguageButton` at the top right.
 - **Compose:**
-  - the big text field with a counter near the limit
-  - "Want us to contact you? (optional)" collapsed, with one input and one line on retention
+  - the title, which is the big text field's label, then the field with a dictation hint and a counter near the limit (from 800 of 1000 characters). Enter sends, Shift+Enter adds a new line
+  - a "I would like a call back (optional)" checkbox; ticking it reveals the phone input and one line on retention. Unticked sends no contact ([ADR-0021](../adr/0021-design-v1-navy-cobalt-instrument-sans.md))
   - the hidden honeypot `website` (visually hidden, `tabIndex=-1`, `aria-hidden`, `autocomplete="off"`)
   - the Send button, disabled while the field is empty
+  - the privacy line and "This is not an emergency line." under it
   - `elapsedMs` measured from page load
-- **Sending:** "Checking your message…" with a spinner and an `aria-live` region. After 6 s it adds "This can take a few seconds." The request times out after 20 s and shows the error state.
+- **Sending:** "Checking your message…" with the pulsing beacon, "Don't close this page.", an `aria-live` region, and the Passenger's text quoted under "You wrote". After 6 s it adds "This can take a few seconds." The request times out after 20 s and shows the error state.
+- **Focus:** on every screen change, focus moves to the new screen's heading (not on first load).
 - **Answer:** labelled "Automatic answer". It shows the answer text and two buttons, "That helped" and "Send to staff". If `found` is false, "Send to staff" is the main button.
 - **Bounced:** the reason text, chosen by `bounce.reason`, and "Edit message". From the third Bounce, also "Send anyway".
 - **Confirmation:** "Thank you. Your report was sent to airport staff." plus a line on what happens next. No status page.
@@ -59,15 +61,20 @@ Compose ──send──▶ Sending ──┬─ REPORTED  ─▶ Confirmation �
 | Key | EN | RO |
 | --- | --- | --- |
 | `emergency.strip` | Emergency? Call (followed by the 112 button) | Urgență? Sună la (followed by the 112 button) |
+| `emergency.strip.note` | This is not an emergency line. | Aceasta nu este o linie de urgență. |
 | `compose.title` | How can we help? | Cu ce te putem ajuta? |
 | `compose.placeholder` | Report an issue in the airport or ask for help... | Raportează o problemă în aeroport sau cere ajutor... |
+| `compose.hint` | Write in your own words. You can also dictate: tap the microphone on your keyboard. | Scrie cu cuvintele tale. Poți și dicta: apasă microfonul de pe tastatură. |
 | `compose.contact.toggle` | I would like a call back | Vreau să fiu sunat înapoi |
+| `compose.optional` | (optional) | (opțional) |
 | `compose.contact.label` | Phone number | Număr de telefon |
 | `compose.contact.note` | Only used for this report. Deleted 30 days after it is resolved. | Folosit doar pentru acest raport. Șters la 30 de zile după rezolvare. |
 | `compose.send` | Send | Trimite |
 | `compose.privacy` | We never ask for payments, passwords or personal documents. | Nu cerem niciodată plăți, parole sau documente personale. |
 | `sending.checking` | Checking your message… | Verificăm mesajul… |
 | `sending.slow` | This can take a few seconds. | Poate dura câteva secunde. |
+| `sending.keepOpen` | Don't close this page. | Nu închide pagina. |
+| `sending.youWrote` | You wrote | Ai scris |
 | `answer.label` | Automatic answer | Răspuns automat |
 | `answer.helped` | That helped | M-a ajutat |
 | `answer.sendToStaff` | Ask staff | Întreabă personalul |

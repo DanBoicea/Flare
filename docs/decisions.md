@@ -25,7 +25,8 @@ The log of what the team decided in grilling sessions, plus what is still open. 
 | [0017](adr/0017-qr-code-url-format.md) | QR codes open `/q/{qrCodeId}` with a random opaque ID |
 | [0018](adr/0018-hashed-device-and-network-keys.md) | Device and network identifiers stored only as keyed hashes |
 | [0019](adr/0019-bot-check-without-third-party.md) | Bot check is a honeypot and a minimum fill time, no third-party service |
-| [0020](adr/0020-design-language-airfield-signage.md) | One design language: airfield signage, Atkinson Hyperlegible Next (proposed) |
+| [0020](adr/0020-design-language-airfield-signage.md) | One design language: airfield signage, Atkinson Hyperlegible Next (superseded by 0021) |
+| [0021](adr/0021-design-v1-navy-cobalt-instrument-sans.md) | Design V1 (navy and cobalt, self-hosted Instrument Sans) replaces airfield signage |
 
 ## Decided
 
@@ -110,6 +111,14 @@ Mentor feedback, verbatim: "De adresat partea de impersonare qr code; Marketingu
 
 - **Contact details are a phone number only.** Staff call back; nobody replies by email, so the form never asks for an email address. The field is `type="tel"`, optional, and limited to 32 characters in the web app.
 - **Design direction is being chosen by testing three directions with persona reviews** (see [design](design/README.md)). The result is recorded in ADR-0020.
+
+### Round 8: Design V1 (2026-10-31)
+
+- **Design V1 replaces airfield signage** (ADR-0021). The mock-ups in [design/flare-design-v1](design/flare-design-v1/README.md) are the visual source of truth.
+- **Instrument Sans is self-hosted**, never loaded from Google Fonts (privacy).
+- **Compose uses a call-back checkbox** that reveals the phone field; unticked sends no contact. The title is the field's label. Sending echoes the Passenger's text.
+- **Enter sends the message** on Compose (the keyboard key says "Send"); Shift+Enter adds a new line.
+- **Open for B01:** distinct colours for High, Medium and Low severity in V1.
 
 ## Open questions
 
