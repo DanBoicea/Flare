@@ -1,22 +1,27 @@
 package com.fsociety.flarebackend.intake;
 
-import com.fsociety.flarebackend.intake.dto.MessageRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
-/** Passenger messages. A stub until A06: it validates the request, then answers 501. */
+import com.fsociety.flarebackend.intake.dto.MessageRequest;
+import com.fsociety.flarebackend.intake.dto.MessageResponse;
+
+/** Passenger messages (api.md). Validation errors become Problem Details with a {@code code}. */
 @RestController
 @RequestMapping("/api/public/messages")
+@RequiredArgsConstructor
 public class PublicMessageController {
 
+	private final MessageIntakeService intake;
+
 	@PostMapping
-	public void sendMessage(@Valid @RequestBody MessageRequest request) {
-		// TODO(A06): hand the message to MessageIntakeService and return a MessageResponse.
-		throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
+	public MessageResponse sendMessage(@Valid @RequestBody MessageRequest request, HttpServletRequest http) {
+		// The network address is only hashed (ADR-0018); the raw value is never stored or logged.
+		return intake.handle(request, http.getRemoteAddr());
 	}
 }
