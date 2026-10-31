@@ -1,13 +1,16 @@
-import react from '@vitejs/plugin-react'
-import { defineConfig } from 'vitest/config'
+import react from "@vitejs/plugin-react";
+import { defineConfig } from "vitest/config";
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
-  test: {
-    // Unit and component tests (src/**/*.test.ts[x]) run in jsdom. Browser tests live in e2e/ (Playwright).
-    environment: 'jsdom',
-    include: ['src/**/*.test.{ts,tsx}'],
-    setupFiles: ['./src/test/setup.ts'],
-  },
-})
+	plugins: [react()],
+	test: {
+		// Unit and component tests (src/**/*.test.ts[x]) run in jsdom. Browser tests live in e2e/ (Playwright).
+		environment: "jsdom",
+		include: ["src/**/*.test.{ts,tsx}"],
+		setupFiles: ["./src/test/setup.ts"],
+	},
+	server: {
+		allowedHosts: [".ngrok-free.app", ".ngrok-free.dev", ".ngrok.app"],
+	},
+});

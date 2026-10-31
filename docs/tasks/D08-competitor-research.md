@@ -1,7 +1,7 @@
 # D08: Competitor feature check from primary sources
 
-Status: TODO
-Owner:
+Status: IN PROGRESS
+Owner: Luciano
 Reviewer: whoever presents (S08)
 Track: D (OpenCode, or a research subagent in a main session) · Phases 2-3 · Estimate: 45 min · Agent-friendly: yes (needs web access)
 Depends on: none
@@ -23,6 +23,11 @@ Verified facts for one honest comparison slide. Today the list is unverified ([m
 2. **`docs/research/competitors.md`:** a table with one row per product, every cell with a source link and the date checked. Write "not found" when unknown. **Never guess.**
 3. **Two or three sentences:** where Flare is similar, and what Flare emphasises (non-technical users, Romanian first, honest QR code impersonation stance, Questions answered instantly). No "first" or "only" claims.
 
+## Notes
+- Result: [research/competitors.md](../research/competitors.md), checked 2026-10-31.
+- **Aerosimple's Vigil module is very close to Flare** (QR code to a mobile web form, AI triage and routing, clustering at one location, emergency keywords). The pitch must not present the core idea as new.
+- `airvote.com` and `fixalert.com` now redirect to domain-sale pages. For those two, the sources are AirVote's own 2022 press release and Fixalert's App Store listing.
+
 ## Done when
-- [ ] Every claim in the table has a link.
+- [x] Every claim in the table has a link.
 - [ ] The reviewer is comfortable presenting it.

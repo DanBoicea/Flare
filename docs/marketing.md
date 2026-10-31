@@ -47,5 +47,5 @@ Draft text, reviewed by the team's Romanian speaker before any use:
 - **Questions answered instantly** instead of becoming staff work.
 - **Grouping turns noise into priority:** "3 people reported missing toilet paper".
 - **Transparent:** AI is labelled, and nothing pretends to be a person.
-- **No novelty claims.** Competing products exist, for example AeroSimple, Sensfix, AirVote, Zello QR Assist and Fixalert. That list is unverified. Before any comparison in the pitch, check their actual features from primary sources (a research task for later).
+- **No novelty claims.** Competing products exist: Aerosimple, Sensfix, AirVote, Zello QR Assist and Fixalert. Their public features were checked on 2026-10-31 in [research/competitors.md](research/competitors.md). Aerosimple's Vigil module is the closest to Flare. Never say "first" or "only".
 - The entry-page description is in [decisions](decisions.md) and is out of date. Keep it consistent with this positioning.
