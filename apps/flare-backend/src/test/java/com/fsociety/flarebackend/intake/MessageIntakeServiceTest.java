@@ -33,6 +33,7 @@ import com.fsociety.flarebackend.grouping.GroupingWorker;
 import com.fsociety.flarebackend.intake.dto.MessageRequest;
 import com.fsociety.flarebackend.intake.dto.MessageResponse;
 import com.fsociety.flarebackend.intake.dto.Outcome;
+import com.fsociety.flarebackend.llm.LlmFailure;
 import com.fsociety.flarebackend.location.Location;
 import com.fsociety.flarebackend.location.QrCodeService;
 import com.fsociety.flarebackend.question.Question;
@@ -93,6 +94,17 @@ class MessageIntakeServiceTest {
 			question.setId(UUID.randomUUID());
 			return question;
 		});
+	}
+
+	@Test
+	void anLlmFailureFromTheLlamaServerClientAlsoGivesTheFallback() {
+		// What LlamaServerClient throws when llama-server is down, slow or answers badly (C01).
+		when(classifier.classify(any())).thenThrow(new LlmFailure("llama-server unreachable"));
+
+		MessageResponse response = intake.handle(request("Nu mai e hârtie în toaleta de lângă banda 2", ACTIVE_QR), "10.0.0.1");
+
+		assertThat(response.getOutcome()).isEqualTo(Outcome.REPORTED);
+		assertThat(savedReport().getClassificationSource()).isEqualTo(ClassificationSource.FALLBACK);
 	}
 
 	@Test

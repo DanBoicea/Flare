@@ -1,7 +1,7 @@
 # C01: `LlmClient` for the self-hosted `llama-server`: config, timeouts, failures, usage cap
 
-Status: TODO
-Owner:
+Status: DONE
+Owner: Florin Cristi
 Track: C · Phase 2 · Estimate: 1.5 h · Agent-friendly: no (main session)
 Depends on: A01, S04
 Unblocks: C02, C03, C04
@@ -31,8 +31,17 @@ One safe gateway to the self-hosted LLM that every LLM feature uses ([ADR-0022](
    - unit tests with a fake HTTP server or a mocked `RestClient`: a valid answer, invalid JSON, a cut-off answer, a 503, a timeout, the cap
    - a smoke test tagged `eval` that calls a running `llama-server` with a trivial schema. It runs only on demand.
 
+## Notes
+- **Built** in `llm/`: `LlmTask`, `LlmFailure`, `LlmClient`, `LlamaServerClient`, `LlmUsageCounter`, `PromptLoader` and `LlmConfig` (all beans only when `flare.llm.enabled=true`). No new dependency.
+- **Deadline:** each task's timeout covers the whole call. The `RestClient` is built per attempt with the time still left, so a retry never runs past the deadline. One retry on any 5xx (including 503 "Loading model"), after 0.5 s, only if at least 2 s remain. 4xx is never retried.
+- **Fails fast:** connection refused gives `LlmFailure("llama-server unreachable")` in well under a second (2 s connect timeout), so the fallback answers without waiting 40 s.
+- **Only `finish_reason` "stop" counts;** "length" (cut off by `max_tokens`) is a failure, as are an empty answer and JSON that doesn't parse into the requested type. Callers still validate the content (C02-C04).
+- **Startup:** with the LLM on, the app logs whether `llama-server` answers `/health`, without blocking or failing startup.
+- **For C02-C04:** inject `LlmClient` and `PromptLoader`; call `promptLoader.get("classify.system")` in the constructor so a missing `prompts/*.md` stops startup; mark the bean `@Primary` (the hooks' comments say so). Callers already catch every `RuntimeException`, `LlmFailure` included.
+- **Tests:** `LlamaServerClientTest` (10, against the JDK's built-in HTTP server as a fake `llama-server`: valid answer and request shape, API key, `length`, invalid JSON, 503 then 200, two 500s, 401 not retried, timeout, stopped server, daily cap), `anLlmFailureFromTheLlamaServerClientAlsoGivesTheFallback` in `MessageIntakeServiceTest`, and `LlamaServerSmokeTest` (tagged `eval`). Whole suite: 306.
+
 ## Done when
-- [ ] The smoke test passes against S04's `llama-server`.
-- [ ] The app starts with the LLM disabled, and with it enabled while `llama-server` is stopped.
-- [ ] A timeout, a stopped server or invalid JSON gives `LlmFailure`, and a unit test with a fake shows the caller falling back.
-- [ ] Logs show latency and token counts, and no text.
+- [x] The smoke test passes against S04's `llama-server`. (2026-11-01: Gemma 4 12B classified a Romanian message as REPORT in 1.6 s.)
+- [x] The app starts with the LLM disabled, and with it enabled while `llama-server` is stopped. (Also checked with it running: the log says it answered `/health` with 200.)
+- [x] A timeout, a stopped server or invalid JSON gives `LlmFailure`, and a unit test with a fake shows the caller falling back.
+- [x] Logs show latency and token counts, and no text. (`LLM CLASSIFY ok: model=flare-llm latency=1595ms promptTokens=63 cachedTokens=0 completionTokens=19`)

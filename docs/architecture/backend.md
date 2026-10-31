@@ -18,7 +18,7 @@ com.fsociety.flarebackend
 │                          CategoryTeamRouting (category → Team, confidence rule)
 │   └── llm/           [C] LlmMessageClassifier, ClassificationSchema, ClassificationValidator
 ├── knowledge/         [C] KnowledgeBase (loads knowledge-base/*.md from the classpath at startup)
-├── llm/               [C] LlmClient (interface), LlamaServerClient (llama.cpp over HTTP), LlmTask enum, PromptLoader,
+├── llm/               [C] LlmClient (interface), LlamaServerClient (llama.cpp over HTTP), LlmTask enum, PromptLoader, LlmConfig,
 │                          LlmFailure exception, LlmUsageCounter (daily cap, token logging)
 ├── grouping/          [A] GroupingWorker (single thread + queue + startup recovery), CandidateSelector (pure),
 │                          ReportGrouper (the steps), IssueMatcher (interface), NoMatchIssueMatcher (fallback),
