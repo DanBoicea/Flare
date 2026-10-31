@@ -9,6 +9,8 @@ Depends on: W01, B01 (where the files live and their key style)
 ## Goal
 Every UI string in both languages, plain and short, with a check that the two files never drift apart.
 
+**Design:** [docs/design](../design/README.md): [foundations](../design/foundations.md), [components](../design/components.md), [screens](../design/screens.md), [mobile](../design/mobile.md), [reference screens](../design/reference/README.md).
+
 ## Do
 1. **`apps/flare-webapp/src/i18n/{ro,en}.json`:** every key from the [passenger copy deck](../architecture/frontends.md#passenger-copy-deck-draft-d04-turns-it-into-string-files), plus `error.*` for every Problem Details `code` the public API can return, and the screen `<title>`s.
 2. **`apps/flare-mobile/src/i18n/{ro,en}.json`:** every key from the [staff copy](../architecture/frontends.md#staff-copy-draft-d04-completes-it), plus:

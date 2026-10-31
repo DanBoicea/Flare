@@ -57,7 +57,7 @@ Items marked **(pending)** depend on a decision not made yet (see [technical](te
   - the system text size is respected
 - **Plain text only.** No `dangerouslySetInnerHTML` on the web. In React Native, data is shown with `Text`, never in a web view.
 - **The passenger web app stays light.** No heavy UI kits, system fonts, and it must work on a slow connection.
-- **Design:** clean, calm, clearly human-made, and readable by elderly and non-technical people. Avoid the generic "AI app" look: gratuitous gradients, glow, glassmorphism, emoji used as icons.
+- **Design:** follow [docs/design](design/README.md): tokens from [foundations](design/foundations.md), components and screens as specified, compared against the [reference screens](design/reference/README.md). No new colours, sizes or components without updating the design docs in the same PR. Avoid the generic "AI app" look: gratuitous gradients, glow, glassmorphism, emoji used as icons.
 
 ## 6. Tests
 

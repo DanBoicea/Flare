@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Flare design explorations</title>
+<!-- Exploration harness: ?theme=a|b|c&screen=<id>[&cvd=deuteranopia|protanopia|achromatopsia]
+     Same markup and copy for every direction; only the stylesheet changes. All data is simulated. -->
+<script>
+  const params = new URLSearchParams(location.search)
+  const theme = params.get('theme') || 'a'
+  const fonts = {
+    a: 'https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;700;800&display=swap',
+    c: 'https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Semi+Condensed:wght@600;700&display=swap',
+  }
+  if (fonts[theme]) document.write(`<link rel="stylesheet" href="${fonts[theme]}">`)
+  // Headless Chrome clamps windows to ~500px wide; render.mjs passes ?w=390 to lay out at true phone width.
+  if (params.get('w')) document.documentElement.style.width = `${params.get('w')}px`
+  document.write(`<link rel="stylesheet" href="base.css"><link rel="stylesheet" href="theme-${theme}.css">`)
+</script>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <filter id="cvd-deuteranopia" color-interpolation-filters="linearRGB"><feColorMatrix type="matrix" values="0.367322 0.860646 -0.227968 0 0  0.280085 0.672501 0.047413 0 0  -0.011820 0.042940 0.968881 0 0  0 0 0 1 0"/></filter>
+    <filter id="cvd-protanopia" color-interpolation-filters="linearRGB"><feColorMatrix type="matrix" values="0.152286 1.052583 -0.204868 0 0  0.114503 0.786281 0.099216 0 0  -0.003882 -0.048116 1.051998 0 0  0 0 0 1 0"/></filter>
+    <filter id="cvd-achromatopsia" color-interpolation-filters="linearRGB"><feColorMatrix type="matrix" values="0.2126 0.7152 0.0722 0 0  0.2126 0.7152 0.0722 0 0  0.2126 0.7152 0.0722 0 0  0 0 0 1 0"/></filter>
+  </defs>
+  <!-- Icons: Feather/Lucide-style 24px, 2px stroke (MIT/ISC licensed shapes). -->
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+  <symbol id="i-chevron-down" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></symbol>
+  <symbol id="i-chevron-left" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></symbol>
+  <symbol id="i-direction" viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+  <symbol id="i-check-circle" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></symbol>
+  <symbol id="i-sev-critical" viewBox="0 0 24 24"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></symbol>
+  <symbol id="i-sev-high" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></symbol>
+  <symbol id="i-sev-medium" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></symbol>
+  <symbol id="i-sev-low" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="8 12 12 16 16 12"/><line x1="12" y1="8" x2="12" y2="16"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  <symbol id="i-user-check" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></symbol>
+  <symbol id="i-inbox" viewBox="0 0 24 24"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><polyline points="23 20 23 14 17 14"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/></symbol>
+</svg>
+
+<!-- ================= Passenger web app ================= -->
+<div class="p-app">
+  <div class="strip" role="note">
+    <p class="strip__text"><strong>Urgență?</strong> Sună la 112.</p>
+    <a class="strip__call" href="tel:112"><svg class="i"><use href="#i-phone"/></svg><span>112</span></a>
+  </div>
+  <header class="topbar">
+    <span class="brand"><span class="brand__mark" aria-hidden="true"></span><span class="brand__name">Flare</span></span>
+    <button class="lang" type="button" lang="en">English</button>
+  </header>
+
+  <main class="p-main">
+    <section class="screen" id="compose">
+      <h1 class="title">Cu ce te putem ajuta?</h1>
+      <div class="field">
+        <label class="field__label" for="msg">Mesajul tău</label>
+        <textarea class="field__input" id="msg" rows="5">Nu mai e hârtie igienică în toaleta de lângă banda 2.</textarea>
+        <p class="field__hint">Scrie cu cuvintele tale. Poți folosi și dictarea de pe tastatură.</p>
+      </div>
+      <button class="disclosure" type="button" aria-expanded="false">
+        <span class="disclosure__text"><span>Vrei să te contactăm telefonic?</span><span class="muted">Opțional</span></span>
+        <svg class="i"><use href="#i-chevron-down"/></svg>
+      </button>
+      <button class="btn btn--primary" type="button">Trimite</button>
+      <ul class="trust">
+        <li><svg class="i"><use href="#i-lock"/></svg><span>Nu cerem niciodată plăți, parole sau documente personale.</span></li>
+        <li><svg class="i"><use href="#i-info"/></svg><span>Aceasta nu este o linie de urgență.</span></li>
+      </ul>
+    </section>
+
+    <section class="screen" id="sending" aria-live="polite">
+      <div class="beacon" aria-hidden="true"><span></span></div>
+      <h1 class="title">Verificăm mesajul…</h1>
+      <p class="lead">Poate dura câteva secunde.</p>
+    </section>
+
+    <section class="screen" id="answer">
+      <p class="asked"><span class="asked__label">Ai întrebat</span>Nu mi-a venit bagajul. Unde mă duc?</p>
+      <article class="answer">
+        <header class="answer__head"><svg class="i"><use href="#i-direction"/></svg><span>Răspuns automat</span></header>
+        <div class="answer__body">
+          <p>Mergi la biroul de bagaje din zona de sosiri, lângă banda 2, înainte să ieși din zona de bagaje.</p>
+          <p>Ia cu tine cartea de îmbarcare și eticheta bagajului primită la check‑in.</p>
+        </div>
+        <p class="answer__source">Generat de AI din informațiile aeroportului. Date simulate pentru demonstrație.</p>
+      </article>
+      <div class="actions">
+        <button class="btn btn--primary" type="button">M-a ajutat</button>
+        <button class="btn btn--secondary" type="button">Trimite personalului</button>
+      </div>
+    </section>
+
+    <section class="screen" id="bounced">
+      <div class="notice">
+        <svg class="i notice__icon"><use href="#i-edit"/></svg>
+        <div>
+          <h1 class="notice__title">Nu am înțeles mesajul ca problemă sau întrebare.</h1>
+          <p>Încearcă din nou, în câteva cuvinte. De exemplu: „Lift stricat la poarta 3”.</p>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn btn--primary" type="button">Modifică mesajul</button>
+        <button class="btn btn--secondary" type="button">Trimite oricum pentru verificare</button>
+      </div>
+      <p class="fine">Mesajele trimise oricum sunt verificate de un om înainte să ajungă la echipe.</p>
+    </section>
+
+    <section class="screen" id="confirm">
+      <div class="done-mark" aria-hidden="true"><svg class="i"><use href="#i-check"/></svg></div>
+      <h1 class="title">Mulțumim. Raportul a ajuns la personalul aeroportului.</h1>
+      <p class="lead">Echipa potrivită îl vede pe telefon. Nu mai trebuie să faci nimic.</p>
+      <p class="text">Dacă ai lăsat un număr de telefon, te pot suna pentru detalii.</p>
+      <div class="actions"><button class="btn btn--secondary" type="button">Trimite alt mesaj</button></div>
+    </section>
+
+    <section class="screen" id="emergency">
+      <div class="emergency" role="alert">
+        <h1 class="emergency__title">Dacă cineva este în pericol, sună acum la 112.</h1>
+        <a class="btn btn--call" href="tel:112"><svg class="i"><use href="#i-phone"/></svg>Sună la 112</a>
+      </div>
+      <p class="lead">Dacă poți, anunță cel mai apropiat angajat al aeroportului.</p>
+      <p class="text">Mesajul tău a fost trimis și personalului.</p>
+      <div class="actions"><button class="btn btn--quiet" type="button">Înapoi</button></div>
+    </section>
+  </main>
+
+  <footer class="demo">Demonstrație cu date simulate</footer>
+</div>
+
+<!-- ================= Staff app ================= -->
+<div class="s-app">
+  <header class="s-head">
+    <div class="s-head__row">
+      <span class="brand brand--staff"><span class="brand__mark" aria-hidden="true"></span><span class="brand__name">Flare</span></span>
+      <button class="lang lang--small" type="button" lang="en">EN</button>
+    </div>
+    <h1 class="s-title">Active</h1>
+    <p class="s-who"><span>Mihai (simulat)</span><span class="chip">Manager de tură</span></p>
+  </header>
+
+  <main class="s-main">
+    <section class="screen" id="staff-list">
+      <ul class="issues">
+        <li class="issue issue--critical">
+          <div class="issue__top">
+            <span class="sev sev--critical"><svg class="i"><use href="#i-sev-critical"/></svg>Critic</span>
+            <span class="status status--new">Nou</span>
+            <span class="age">acum 1 min</span>
+          </div>
+          <h2 class="issue__title">Persoană căzută lângă poarta 3, nu răspunde</h2>
+          <div class="issue__where"><span class="plate">DEP-G03</span><span>Poarta 3, zona de așteptare</span></div>
+          <div class="issue__foot">
+            <span class="facts-inline"><svg class="i"><use href="#i-users"/></svg>2 persoane în 1 minut</span>
+            <button class="btn btn--primary btn--sm" type="button">Mă ocup eu</button>
+          </div>
+        </li>
+        <li class="issue issue--high">
+          <div class="issue__top">
+            <span class="sev sev--high"><svg class="i"><use href="#i-sev-high"/></svg>Ridicat</span>
+            <span class="status">Confirmat</span>
+            <span class="age">acum 12 min</span>
+          </div>
+          <h2 class="issue__title">Liftul de la check‑in nu funcționează</h2>
+          <div class="issue__where"><span class="plate">CHK-LIFT-01</span><span>Check‑in, lângă intrare</span></div>
+          <div class="issue__foot">
+            <span class="facts-inline"><svg class="i"><use href="#i-users"/></svg>4 persoane în 12 minute</span>
+            <button class="btn btn--secondary btn--sm" type="button">Mă ocup eu</button>
+          </div>
+        </li>
+        <li class="issue issue--medium">
+          <div class="issue__top">
+            <span class="sev sev--medium"><svg class="i"><use href="#i-sev-medium"/></svg>Mediu</span>
+            <span class="status status--new">Nou</span>
+            <span class="age">acum 3 min</span>
+          </div>
+          <h2 class="issue__title">Lipsește hârtia igienică, cabina 2</h2>
+          <div class="issue__where"><span class="plate">ARR-WC-02</span><span>Toalete sosiri, lângă banda 2</span></div>
+          <div class="issue__foot">
+            <span class="facts-inline"><svg class="i"><use href="#i-users"/></svg>3 persoane în 8 minute</span>
+            <button class="btn btn--secondary btn--sm" type="button">Mă ocup eu</button>
+          </div>
+        </li>
+        <li class="issue issue--medium">
+          <div class="issue__top">
+            <span class="sev sev--medium"><svg class="i"><use href="#i-sev-medium"/></svg>Mediu</span>
+            <span class="status status--progress"><svg class="i"><use href="#i-user-check"/></svg>Ana se ocupă</span>
+            <span class="age">acum 20 min</span>
+          </div>
+          <h2 class="issue__title">Toaleta este murdară</h2>
+          <div class="issue__where"><span class="plate">ARR-WC-02</span><span>Toalete sosiri, lângă banda 2</span></div>
+        </li>
+        <li class="issue issue--low">
+          <div class="issue__top">
+            <span class="sev sev--low"><svg class="i"><use href="#i-sev-low"/></svg>Scăzut</span>
+            <span class="status">Confirmat</span>
+            <span class="age">acum 41 min</span>
+          </div>
+          <h2 class="issue__title">Indicatorul spre parcare se citește greu</h2>
+          <div class="issue__where"><span class="plate">LND-ENT-01</span><span>Intrare principală</span></div>
+          <p class="mentioned">Menționat: „la ieșirea spre parcare”</p>
+        </li>
+      </ul>
+    </section>
+
+    <section class="screen" id="staff-detail">
+      <button class="back" type="button"><svg class="i"><use href="#i-chevron-left"/></svg>Active</button>
+      <div class="d-top">
+        <span class="sev sev--medium"><svg class="i"><use href="#i-sev-medium"/></svg>Mediu</span>
+        <span class="status status--new">Nou</span>
+        <span class="chip">Curățenie</span>
+      </div>
+      <h1 class="d-title">Lipsește hârtia igienică în toaleta de lângă banda 2, cabina 2.</h1>
+      <p class="ai-note">Rezumat scris de AI din 3 rapoarte. Rapoartele originale sunt mai jos.</p>
+      <div class="d-place">
+        <span class="plate plate--lg">ARR-WC-02</span>
+        <div><p class="d-place__name">Toalete sosiri, lângă banda 2</p><p class="d-place__area">Sosiri și bagaje</p></div>
+      </div>
+      <dl class="facts">
+        <div><dt>Raportări</dt><dd>3 persoane în 8 minute</dd></div>
+        <div><dt>Prima raportare</dt><dd>10:02, acum 14 min</dd></div>
+      </dl>
+      <h2 class="d-h2">Rapoartele pasagerilor</h2>
+      <ol class="reports">
+        <li class="report"><p class="report__text">Hârtie igienică terminată</p><p class="report__meta">10:10, în română</p></li>
+        <li class="report"><p class="report__text">No toilet paper in cubicle 2</p><p class="report__meta">10:06, în engleză</p></li>
+        <li class="report"><p class="report__text">Nu mai e hârtie în toaleta de lângă banda 2</p><p class="report__meta">10:02, în română</p></li>
+      </ol>
+      <div class="actionbar">
+        <button class="btn btn--primary" type="button">Mă ocup eu</button>
+        <button class="btn btn--secondary" type="button">Confirmă</button>
+        <button class="btn btn--secondary btn--icon" type="button" aria-label="Mai multe acțiuni"><svg class="i"><use href="#i-more"/></svg></button>
+      </div>
+    </section>
+  </main>
+
+  <nav class="tabbar" aria-label="Secțiuni">
+    <a class="tab is-current" href="#"><svg class="i"><use href="#i-list"/></svg><span>Active</span><span class="tab__count">5</span></a>
+    <a class="tab" href="#"><svg class="i"><use href="#i-check-circle"/></svg><span>Rezolvate</span></a>
+    <a class="tab" href="#"><svg class="i"><use href="#i-inbox"/></svg><span>De verificat</span><span class="tab__count">2</span></a>
+  </nav>
+</div>
+
+<!-- ================= Palette and type sheet ================= -->
+<div class="sheet" id="palette">
+  <h1 class="title">Direcția <span class="sheet__theme"></span></h1>
+  <p class="text sheet__font"></p>
+  <div class="swatches"></div>
+  <p class="specimen specimen--title">Cu ce te putem ajuta?</p>
+  <p class="specimen specimen--lead">Ăă Ââ Îî Șș Țț „ghilimele” 0123456789</p>
+  <p class="specimen">Mergi la biroul de bagaje din zona de sosiri, lângă banda 2.</p>
+  <div class="sheet__row">
+    <button class="btn btn--primary btn--sm" type="button">Trimite</button>
+    <button class="btn btn--secondary btn--sm" type="button">Înapoi</button>
+    <span class="plate">ARR-WC-02</span>
+  </div>
+  <div class="sheet__row">
+    <span class="sev sev--critical"><svg class="i"><use href="#i-sev-critical"/></svg>Critic</span>
+    <span class="sev sev--high"><svg class="i"><use href="#i-sev-high"/></svg>Ridicat</span>
+    <span class="sev sev--medium"><svg class="i"><use href="#i-sev-medium"/></svg>Mediu</span>
+    <span class="sev sev--low"><svg class="i"><use href="#i-sev-low"/></svg>Scăzut</span>
+  </div>
+</div>
+
+<script>
+  const screen = params.get('screen') || 'compose'
+  const root = document.documentElement
+  root.dataset.theme = theme
+  root.dataset.screen = screen
+  root.dataset.app = screen === 'palette' ? 'sheet' : screen.startsWith('staff') ? 'staff' : 'passenger'
+  document.getElementById(screen)?.classList.add('is-active')
+  const cvd = params.get('cvd')
+  if (cvd) root.style.filter = `url(#cvd-${cvd})`
+
+  if (screen === 'palette') {
+    const style = getComputedStyle(root)
+    document.querySelector('.sheet__theme').textContent = `${theme.toUpperCase()}: ${style.getPropertyValue('--theme-name').replace(/"/g, '')}`
+    document.querySelector('.sheet__font').textContent = `Font: ${style.getPropertyValue('--font-name').replace(/"/g, '')}`
+    const names = ['bg', 'surface-2', 'text', 'text-2', 'primary-bg', 'secondary-border', 'strip-bg', 'success-bg',
+      'plate-bg', 'sev-critical', 'sev-high', 'sev-medium', 'sev-low', 'answer-head-bg', 'divider']
+    document.querySelector('.swatches').innerHTML = names.map((n) => {
+      const value = style.getPropertyValue('--' + n).trim()
+      return `<div class="sw"><div class="sw__chip" style="background:${value}"></div><div class="sw__meta"><b>${n}</b><br>${value}</div></div>`
+    }).join('')
+  }
+</script>
+</body>
+</html>

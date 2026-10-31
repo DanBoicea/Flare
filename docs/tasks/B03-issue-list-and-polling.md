@@ -12,6 +12,8 @@ A glanceable list of the Issues this staff member should act on, updating live (
 ## Read first
 [frontends: Staff app](../architecture/frontends.md#staff-app-appsflare-mobile-expo-router) · [api: `IssueCard`](../architecture/api.md#get-apistaffissuesviewactiveresolved) · [product: Staff app requirements](../product.md#staff-app-requirements).
 
+**Design:** [docs/design](../design/README.md): [foundations](../design/foundations.md), [components](../design/components.md), [screens](../design/screens.md), [mobile](../design/mobile.md), [reference screens](../design/reference/README.md).
+
 ## Do
 1. **`useIssueFeed(view)`:**
    - polls `ACTIVE` every 5 s while `AppState` is `active`; pauses in the background and polls at once on return

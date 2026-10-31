@@ -15,7 +15,7 @@ Both apps use TypeScript, have no state library, and keep strings in `ro.json` /
   - Severity shown with colour, icon and word together
   - system text scaling respected
   - focus order follows the visual order
-- **Design:** calm, high-contrast, human-made. Neutral surfaces, one accent colour, system fonts, generous spacing. No gradients, glow, glassmorphism or emoji icons. The design tokens (colours, type scale, spacing, radii) are defined once per app in `styles/tokens.css` and `constants/theme.ts` with the same values, so both apps feel related. Use the frontend-design skill for W04 and B06.
+- **Design:** follow [docs/design](../design/README.md) (tokens, components, screens, reference HTML). Calm, high-contrast, human-made. Neutral surfaces, one accent colour, system fonts, generous spacing. No gradients, glow, glassmorphism or emoji icons. The design tokens (colours, type scale, spacing, radii) are defined once per app in `styles/tokens.css` and `constants/theme.ts` with the same values, so both apps feel related. Use the frontend-design skill for W04 and B06.
 
 ## Passenger web app (`apps/flare-webapp`)
 
@@ -58,11 +58,11 @@ Compose ──send──▶ Sending ──┬─ REPORTED  ─▶ Confirmation �
 
 | Key | EN | RO |
 | --- | --- | --- |
-| `emergency.strip` | Emergency? Call 112. This is not an emergency line. | Urgență? Sună la 112. Aceasta nu este o linie de urgență. |
+| `emergency.strip` | Emergency? Call (followed by the 112 button) | Urgență? Sună la (followed by the 112 button) |
 | `compose.title` | How can we help? | Cu ce te putem ajuta? |
 | `compose.placeholder` | Report an issue in the airport or ask for help... | Raportează o problemă în aeroport sau cere ajutor... |
-| `compose.contact.toggle` | Want us to contact you? (optional) | Vrei să te contactăm? (opțional) |
-| `compose.contact.label` | Phone or email | Telefon sau e-mail |
+| `compose.contact.toggle` | I would like a call back | Vreau să fiu sunat înapoi |
+| `compose.contact.label` | Phone number | Număr de telefon |
 | `compose.contact.note` | Only used for this report. Deleted 30 days after it is resolved. | Folosit doar pentru acest raport. Șters la 30 de zile după rezolvare. |
 | `compose.send` | Send | Trimite |
 | `compose.privacy` | We never ask for payments, passwords or personal documents. | Nu cerem niciodată plăți, parole sau documente personale. |
@@ -70,7 +70,7 @@ Compose ──send──▶ Sending ──┬─ REPORTED  ─▶ Confirmation �
 | `sending.slow` | This can take a few seconds. | Poate dura câteva secunde. |
 | `answer.label` | Automatic answer | Răspuns automat |
 | `answer.helped` | That helped | M-a ajutat |
-| `answer.sendToStaff` | Send to staff | Trimite personalului |
+| `answer.sendToStaff` | Ask staff | Întreabă personalul |
 | `answer.notFound` | We don't have an answer for this. Send it to airport staff? | Nu avem un răspuns pentru asta. O trimitem personalului aeroportului? |
 | `bounce.NOT_AIRPORT_RELATED` | This doesn't seem to be about the airport or your journey. Please describe a problem here or ask a question. | Mesajul nu pare să fie despre aeroport sau călătoria ta. Descrie o problemă de aici sau pune o întrebare. |
 | `bounce.JOKE_OR_NONSENSE` | We couldn't understand this as a problem or a question. Please try again in a few words. | Nu am înțeles mesajul ca problemă sau întrebare. Încearcă din nou, în câteva cuvinte. |
@@ -78,7 +78,7 @@ Compose ──send──▶ Sending ──┬─ REPORTED  ─▶ Confirmation �
 | `bounce.ABUSIVE` | Please describe the problem without offensive language. | Te rugăm să descrii problema fără limbaj ofensator. |
 | `bounce.TOO_UNCLEAR` | Please add a little more detail: what is wrong, and where? | Adaugă puțin mai multe detalii: ce nu e în regulă și unde? |
 | `bounce.edit` | Edit message | Modifică mesajul |
-| `bounce.sendAnyway` | Send anyway for staff review | Trimite oricum pentru verificare |
+| `bounce.sendAnyway` | Send anyway | Trimite oricum |
 | `confirm.title` | Thank you. Your report was sent to airport staff. | Mulțumim. Raportul tău a fost trimis personalului aeroportului. |
 | `confirm.next` | Staff will look at it as soon as possible. You don't need to do anything else. | Personalul îl va verifica cât mai curând. Nu mai trebuie să faci nimic. |
 | `confirm.another` | Send another message | Trimite alt mesaj |

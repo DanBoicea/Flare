@@ -1,0 +1,49 @@
+/* Direction A: "Semnalistică" (airfield signage).
+   Borrows the international airfield sign families (ICAO Annex 14): mandatory instruction = white on red,
+   direction = black on yellow, location = yellow on black with a yellow border. Everything else is quiet:
+   white page, dark text, hairline dividers. Typeface: Atkinson Hyperlegible Next (Braille Institute, OFL),
+   designed for low-vision readers. Yellow never sits on white without a black frame (1.6:1 otherwise). */
+:root {
+  --theme-name: "Semnalistică (airfield signage)";
+  --font-name: "Atkinson Hyperlegible Next";
+  --font-body: "Atkinson Hyperlegible Next", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: var(--font-body);
+  --title-size: 1.875rem; --title-weight: 800; --title-tracking: -0.015em; --title-leading: 1.15;
+  --body-size: 1.125rem; --lead-size: 1.25rem; --small-size: 1rem; --btn-size: 1.1875rem; --row-title-size: 1.125rem;
+
+  --bg: #FFFFFF; --surface-2: #F2F4F5; --field-bg: #FFFFFF;
+  --text: #1A1C1F; --text-2: #4A4F57; --border-strong: #1A1C1F; --divider: #D5D9DD; --divider-strong: #1A1C1F;
+
+  --primary-bg: #FFC20E; --primary-text: #000000; --primary-border: #000000;
+  --secondary-bg: #FFFFFF; --secondary-text: #1A1C1F; --secondary-border: #1A1C1F;
+
+  --strip-bg: #C8102E; --strip-text: #FFFFFF; --strip-call-bg: #FFFFFF; --strip-call-text: #A0102A; --strip-call-border: #FFFFFF;
+  --emergency-bg: #C8102E; --emergency-text: #FFFFFF; --call-bg: #FFFFFF; --call-text: #A0102A;
+  --success-bg: #1E7B4A; --success-text: #FFFFFF;
+
+  --answer-border: #000000; --answer-border-w: 2px; --answer-bg: #FFFFFF;
+  --answer-head-bg: #FFC20E; --answer-head-text: #000000;
+  --notice-bg: #F2F4F5; --notice-text: #1A1C1F; --notice-border: #1A1C1F; --notice-border-w: 0;
+
+  --plate-bg: #000000; --plate-text: #FFC20E; --plate-border: #FFC20E; --plate-border-w: 2px;
+
+  --sev-critical: #C8102E; --sev-critical-badge-bg: #C8102E; --sev-critical-badge-text: #FFFFFF;
+  --sev-high: #E8590C; --sev-high-tint: #FFF0E6; --sev-high-text: #9C3B00;
+  --sev-medium: #1F5FAD; --sev-medium-tint: #E9F1FB; --sev-medium-text: #1A4F91;
+  --sev-low: #858C96; --sev-low-tint: #EEF0F2; --sev-low-text: #474D55;
+  --row-bg: #FFFFFF; --row-critical-bg: #FDECEE;
+  --new-dot: #FFC20E; --new-dot-ring: #000000;
+
+  --s-head-bg: #FFFFFF; --s-head-text: #1A1C1F; --chip-bg: #F2F4F5; --chip-text: #1A1C1F;
+  --tab-bg: #FFFFFF; --tab-text: #4A4F57; --tab-active: #000000; --count-bg: #000000; --count-text: #FFC20E;
+  --brand-outer: #000000; --brand-inner: #FFC20E;
+  --beacon: #FFC20E; --beacon-ring: #000000; --beacon-ring-w: 3px;
+
+  --r-plate: 3px; --r-btn: 8px; --r-field: 8px; --r-card: 10px; --r-chip: 4px;
+  --btn-border-w: 2px; --field-border-w: 2px; --btn-height: 3.5rem; --pad-x: 20px; --gap: 20px;
+}
+
+/* Signature details */
+.tab.is-current::before { content: ""; position: absolute; top: 0; left: 28%; right: 28%; height: 4px; background: #FFC20E; box-shadow: 0 1px 0 #000; }
+.answer__head .i { stroke-width: 2.75; }
+.done-mark { border-radius: 10px; }

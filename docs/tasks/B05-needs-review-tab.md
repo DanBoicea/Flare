@@ -8,6 +8,8 @@ Depends on: B04 (real data needs A09)
 ## Goal
 The duty manager sees what the system held back and decides with one tap ([security and abuse](../security-and-abuse.md)).
 
+**Design:** [docs/design](../design/README.md): [foundations](../design/foundations.md), [components](../design/components.md), [screens](../design/screens.md), [mobile](../design/mobile.md), [reference screens](../design/reference/README.md).
+
 ## Do
 1. **`src/app/(tabs)/review.tsx`:** polls `/api/staff/review` every 10 s while focused.
 2. **Alerts first:** Strict mode banners with the QR code's Location label, how long it has lasted and the message count.

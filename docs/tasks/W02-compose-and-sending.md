@@ -12,6 +12,8 @@ A stressed, elderly or one-handed Passenger can send a message in about 30 secon
 ## Read first
 [frontends: passenger web app](../architecture/frontends.md#passenger-web-app-appsflare-webapp) (state machine and copy deck) · [ADR-0019](../adr/0019-bot-check-without-third-party.md).
 
+**Design:** [docs/design](../design/README.md): [foundations](../design/foundations.md), [components](../design/components.md), [screens](../design/screens.md), [mobile](../design/mobile.md), [reference screens](../design/reference/README.md).
+
 ## Do
 1. **`EmergencyStrip`:** always at the top, high contrast, with a `tel:112` link, "This is not an emergency line", and `role="note"`.
 2. **`LanguageButton`:** top right, shows the *other* language's name ("Română" / "English"), switches instantly, and has an `aria-label`.

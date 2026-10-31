@@ -1,0 +1,61 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  overflow-wrap: break-word;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+p {
+  margin: 0;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+/* Two-tone focus ring, visible on every background (docs/design/foundations.md#focus). */
+:focus-visible {
+  outline: 3px solid var(--black);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px var(--paper);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

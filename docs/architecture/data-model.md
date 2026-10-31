@@ -123,7 +123,7 @@ Categories and Severities are tentative. Changing them means one migration, the 
 | `location_id` | uuid null FK | |
 | `text` | text | max 1000 characters |
 | `language` | text `Language` | |
-| `contact` | text null | Optional, max 120 characters; erased by retention |
+| `contact` | text null | Optional phone number, max 120 characters; erased by retention |
 | `device_hash`, `network_hash` | text | HMAC ([ADR-0018](../adr/0018-hashed-device-and-network-keys.md)) |
 | `status` | text `ReportStatus` | |
 | `quarantine_reason` | text null `QuarantineReason` | |

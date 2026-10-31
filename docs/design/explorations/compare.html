@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flare: the three directions compared (round 1)</title>
+<style>
+  body { margin: 0; padding: 24px; background: #E9EBEE; font: 16px/1.5 system-ui, sans-serif; color: #1A1C1F; }
+  h1 { margin: 0 0 4px; font-size: 24px; }
+  p { margin: 0 0 16px; color: #4A4F57; max-width: 80ch; }
+  h2 { margin: 28px 0 10px; font-size: 18px; }
+  .row { display: flex; flex-wrap: wrap; gap: 24px; }
+  figure { margin: 0; }
+  figcaption { margin-top: 8px; font-weight: 700; font-size: 14px; }
+  iframe { width: 390px; height: 844px; zoom: 0.62; border: 0; border-radius: 28px; background: #fff; box-shadow: 0 0 0 10px #1A1C1F; }
+</style>
+</head>
+<body>
+<h1>Round 1: three directions, same screens, same copy</h1>
+<p>A = Semnalistică (airfield signage), B = Serviciu public (civic, NHS-style), C = Panou de plecări (dark departures board).
+All five persona reviewers chose A. These are the original round-1 versions; the refined A is in <a href="../reference/gallery.html">reference/gallery.html</a>.
+Full results: docs/design/reviews.md.</p>
+<div id="rows"></div>
+<script>
+  const screens = [['compose', 'Scrie mesajul'], ['answer', 'Răspuns automat'], ['bounced', 'Mesaj neînțeles'], ['emergency', 'Urgență'], ['staff-list', 'Personal: lista'], ['staff-detail', 'Personal: o problemă']]
+  const names = { a: 'A: Semnalistică (aleasă)', b: 'B: Serviciu public', c: 'C: Panou de plecări' }
+  document.getElementById('rows').innerHTML = screens.map(([id, label]) =>
+    `<h2>${label}</h2><div class="row">` + Object.entries(names).map(([theme, name]) =>
+      `<figure><iframe src="index.html?theme=${theme}&screen=${id}&w=390" title="${name}" loading="lazy"></iframe><figcaption>${name}</figcaption></figure>`
+    ).join('') + '</div>').join('')
+</script>
+</body>
+</html>

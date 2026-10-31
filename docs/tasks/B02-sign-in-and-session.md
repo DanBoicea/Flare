@@ -12,6 +12,8 @@ Staff sign in with their own account and see tabs that match their role ([ADR-00
 ## Read first
 [auth and security: staff sign-in](../architecture/auth-and-security.md#staff-sign-in-adr-0010) · [frontends: Staff app](../architecture/frontends.md#staff-app-appsflare-mobile-expo-router).
 
+**Design:** [docs/design](../design/README.md): [foundations](../design/foundations.md), [components](../design/components.md), [screens](../design/screens.md), [mobile](../design/mobile.md), [reference screens](../design/reference/README.md).
+
 ## Do
 1. **`src/auth/supabase.ts`:** a Supabase client from `EXPO_PUBLIC_SUPABASE_URL` and `EXPO_PUBLIC_SUPABASE_ANON_KEY`, with AsyncStorage session storage and auto-refresh. Follow Supabase's current Expo guide, including any polyfill it requires. **Use it for auth only:** no `from(...)` queries, no Realtime.
 2. **`src/auth/session.tsx`:** a provider exposing `session`, `signIn(email, password)`, `signOut()`, and the access token for `client.ts`.

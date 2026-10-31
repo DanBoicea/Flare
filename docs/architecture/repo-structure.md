@@ -38,7 +38,7 @@ Flare/
 │   │       ├── api/                       schema.d.ts (generated), client.ts, mock.ts
 │   │       ├── screens/                   Compose, Sending, Answer, Bounced, Confirmation, Emergency
 │   │       ├── components/                EmergencyStrip, LanguageButton, MessageField, …
-│   │       ├── i18n/                      ro.json, en.json, i18n.ts
+│   │       ├── i18n/                      ro.json, en.json, strings.ts (t), context.ts, I18nProvider.tsx
 │   │       ├── lib/                       deviceId.ts, qrCode.ts, elapsed.ts
 │   │       ├── fixtures/                  mock responses (D05)
 │   │       └── styles/                    tokens.css, global.css (replace the template's App.css / index.css)

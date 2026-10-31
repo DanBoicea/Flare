@@ -12,6 +12,8 @@ Every outcome tells the Passenger honestly and plainly what happened and what to
 ## Read first
 [frontends: state machine and copy deck](../architecture/frontends.md#passenger-web-app-appsflare-webapp) · [api: response](../architecture/api.md#post-apipublicmessages).
 
+**Design:** [docs/design](../design/README.md): [foundations](../design/foundations.md), [components](../design/components.md), [screens](../design/screens.md), [mobile](../design/mobile.md), [reference screens](../design/reference/README.md).
+
 ## Do
 1. **Answer:**
    - the label "Automatic answer", which honestly marks AI involvement
