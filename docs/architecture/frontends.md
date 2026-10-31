@@ -37,7 +37,7 @@ Compose ──send──▶ Sending ──┬─ REPORTED  ─▶ Confirmation �
    └──── error/offline ─────┘ (Compose shows an inline error, text kept, "Try again")
 ```
 
-- **On every screen:** the `EmergencyStrip` at the top, and the `LanguageButton` at the top right.
+- **On every screen:** the `EmergencyStrip` at the top ("Emergency?" on the left, a red "Call 112" button with a phone icon on the right), and the `LanguageButton` at the top right.
 - **Compose:**
   - the title, which is the big text field's label, then the field with a dictation hint and a counter near the limit (from 800 of 1000 characters). Enter sends, Shift+Enter adds a new line
   - a "I would like a call back (optional)" checkbox; ticking it reveals the phone input and one line on retention. Unticked sends no contact ([ADR-0021](../adr/0021-design-v1-navy-cobalt-instrument-sans.md))
@@ -47,10 +47,10 @@ Compose ──send──▶ Sending ──┬─ REPORTED  ─▶ Confirmation �
   - `elapsedMs` measured from page load
 - **Sending:** "Checking your message…" with the pulsing beacon, "Don't close this page.", an `aria-live` region, and the Passenger's text quoted under "You wrote". After 6 s it adds "This can take a few seconds." The request times out after 20 s and shows the error state.
 - **Focus:** on every screen change, focus moves to the new screen's heading (not on first load).
-- **Answer:** labelled "Automatic answer". It shows the answer text and two buttons, "That helped" and "Send to staff". If `found` is false, "Send to staff" is the main button.
-- **Bounced:** the reason text, chosen by `bounce.reason`, and "Edit message". From the third Bounce, also "Send anyway".
-- **Confirmation:** "Thank you. Your report was sent to airport staff." plus a line on what happens next. No status page.
-- **Emergency:** the fixed instructions. The message has also gone to staff.
+- **Answer:** the question under "You asked", then a card labelled "Automatic answer" with the answer as plain text and the line "Answer generated automatically (AI) from the airport's information. It can be wrong." Buttons "That helped" and "Ask staff". If `found` is false, the card shows `answer.notFound`, "Ask staff" is the main button and "Send another message" the second.
+- **Bounced:** a short title (`bounce.title.<REASON>`) and a body (`bounce.<REASON>`), the Passenger's text under "You wrote", and "Edit message", which returns to Compose with focus in the field. When `sendAnywayAvailable`, also "Send anyway".
+- **Confirmation:** a check mark, "Thank you. Your report was sent to airport staff." plus a line on what happens next, and "Send another message" as a secondary button. No status page. The wording stays true after "Send anyway", whose Report is Quarantined.
+- **Emergency:** a red card with the title in the UI language and, under it, in the other language; a 72 px "Call 112" button; then the fixed body (tell the nearest staff member; the message has also gone to staff) and "Back".
 
 **Mock mode:** `VITE_MOCK=true` routes each send to a fixture by keyword (`"?"` gives an answer, `"joke"` a Bounce, `"fire"` an Emergency, anything else a Report), with a 1.5 s delay.
 
@@ -60,7 +60,8 @@ Compose ──send──▶ Sending ──┬─ REPORTED  ─▶ Confirmation �
 
 | Key | EN | RO |
 | --- | --- | --- |
-| `emergency.strip` | Emergency? Call (followed by the 112 button) | Urgență? Sună la (followed by the 112 button) |
+| `emergency.strip` | Emergency? | Urgență? |
+| `emergency.strip.call` | Call 112 (the strip's button) | Sună la 112 |
 | `emergency.strip.note` | This is not an emergency line. | Aceasta nu este o linie de urgență. |
 | `compose.title` | How can we help? | Cu ce te putem ajuta? |
 | `compose.placeholder` | Report an issue in the airport or ask for help... | Raportează o problemă în aeroport sau cere ajutor... |
@@ -76,14 +77,21 @@ Compose ──send──▶ Sending ──┬─ REPORTED  ─▶ Confirmation �
 | `sending.keepOpen` | Don't close this page. | Nu închide pagina. |
 | `sending.youWrote` | You wrote | Ai scris |
 | `answer.label` | Automatic answer | Răspuns automat |
+| `answer.youAsked` | You asked | Ai întrebat |
+| `answer.disclaimer` | Answer generated automatically (AI) from the airport's information. It can be wrong. | Răspuns generat automat (AI) din informațiile aeroportului. Poate greși. |
 | `answer.helped` | That helped | M-a ajutat |
 | `answer.sendToStaff` | Ask staff | Întreabă personalul |
 | `answer.notFound` | We don't have an answer for this. Send it to airport staff? | Nu avem un răspuns pentru asta. O trimitem personalului aeroportului? |
+| `bounce.title.NOT_AIRPORT_RELATED` | We can only help with the airport. | Putem ajuta doar cu aeroportul. |
+| `bounce.title.JOKE_OR_NONSENSE` | We couldn't understand your message. | Nu am înțeles mesajul. |
+| `bounce.title.SPAM_OR_ADVERTISING` | Your message was not sent. | Mesajul nu a fost trimis. |
+| `bounce.title.ABUSIVE` | Please rephrase your message. | Te rugăm să reformulezi. |
+| `bounce.title.TOO_UNCLEAR` | Please add a few details. | Adaugă câteva detalii. |
 | `bounce.NOT_AIRPORT_RELATED` | This doesn't seem to be about the airport or your journey. Please describe a problem here or ask a question. | Mesajul nu pare să fie despre aeroport sau călătoria ta. Descrie o problemă de aici sau pune o întrebare. |
-| `bounce.JOKE_OR_NONSENSE` | We couldn't understand this as a problem or a question. Please try again in a few words. | Nu am înțeles mesajul ca problemă sau întrebare. Încearcă din nou, în câteva cuvinte. |
+| `bounce.JOKE_OR_NONSENSE` | Please try again in a few words, for example: "I lost a bag in arrivals." | Încearcă din nou în câteva cuvinte, de exemplu: „Am pierdut o geantă la sosiri.” |
 | `bounce.SPAM_OR_ADVERTISING` | This looks like advertising or spam, so it was not sent. | Mesajul pare reclamă sau spam, așa că nu a fost trimis. |
 | `bounce.ABUSIVE` | Please describe the problem without offensive language. | Te rugăm să descrii problema fără limbaj ofensator. |
-| `bounce.TOO_UNCLEAR` | Please add a little more detail: what is wrong, and where? | Adaugă puțin mai multe detalii: ce nu e în regulă și unde? |
+| `bounce.TOO_UNCLEAR` | Tell us what is wrong and where, for example: "The lift near the entrance is not working." | Spune-ne ce nu e în regulă și unde, de exemplu: „Nu funcționează liftul de lângă intrare.” |
 | `bounce.edit` | Edit message | Modifică mesajul |
 | `bounce.sendAnyway` | Send anyway | Trimite oricum |
 | `confirm.title` | Thank you. Your report was sent to airport staff. | Mulțumim. Raportul tău a fost trimis personalului aeroportului. |
