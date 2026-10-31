@@ -27,12 +27,13 @@ Step 9 by kind:
 
 Rules:
 - A Report row is committed **before** it is enqueued, and before the response is sent.
+- A classifier result that breaks the output rules (no kind, a Question without an answer, garbage without a reason) is a failure, like an exception: the fallback is used.
 - Rate-limit counters count every message, including Questions and Bounced ones, except Emergencies.
 - Passenger text never appears in logs. Log the outcome, the report or question ID, latency, and token counts.
 
 ## 2. "Send to staff anyway" for a Question
 
-`POST /api/public/questions/{id}/send-to-staff`: load the Question (it must match the hashed device and be at most 30 minutes old). Create a Report from its text and Location, unclassified, and link `sent_to_staff_report_id`. Enqueue it and return `REPORTED`. The worker classifies it, telling the classifier that the Passenger insisted, so it must return `REPORT`.
+`POST /api/public/questions/{id}/send-to-staff`: load the Question (it must match the hashed device and be at most `flare.questions.send-to-staff-window` old, 30 minutes). Create a Report from its text and Location, unclassified, and link `sent_to_staff_report_id`. The QR code is resolved again: if it is now muted or unknown, the Report is `QUARANTINED` with that reason and not enqueued. Otherwise enqueue it. Return `REPORTED` either way. The worker classifies it, telling the classifier that the Passenger insisted (it finds the Question linked to the Report), so it must return `REPORT`.
 
 ## 3. Rate limits and Strict mode (in memory, [ADR-0015](../adr/0015-single-instance-in-memory-limits.md))
 

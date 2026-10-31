@@ -2,6 +2,7 @@ package com.fsociety.flarebackend.issue;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.domain.Limit;
@@ -42,4 +43,7 @@ public interface IssueRepository extends JpaRepository<Issue, UUID> {
 			order by i.updatedAt desc
 			""")
 	List<Issue> findCandidates(@Param("areaId") String areaId, @Param("resolvedSince") Instant resolvedSince, Limit limit);
+
+	/** The open Emergency Issue at a Location, for the grouping worker's Emergency shortcut (pipeline.md section 5). */
+	Optional<Issue> findFirstByLocationIdAndEmergencyTrueAndStatusNotOrderByCreatedAtDesc(UUID locationId, IssueStatus status);
 }

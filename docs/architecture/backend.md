@@ -8,11 +8,12 @@ com.fsociety.flarebackend
 ├── common/            [A] ProblemDetail error handling, ErrorCode enum, LocalizedText, Clock bean, text limits
 ├── config/            [A] FlareProperties (typed @ConfigurationProperties, Lombok @Value classes), SecurityConfig, CorsConfig, WorkerConfig
 ├── location/          [A] Area, Location, QrCode (entities + repositories), QrCodeService (resolve ID → ACTIVE/MUTED/UNKNOWN + Location)
-├── safety/            [A] TextNormalizer, EmergencyDetector (+ emergency-terms.yml), BotCheck            — pure
-├── ratelimit/         [A] SlidingWindowCounter, RateLimitService, QrCodeFloodGuard (Strict mode), BounceTracker, ClientFingerprint (HMAC)
+├── safety/            [A] TextNormalizer, EmergencyDetector (+ emergency-terms.yml) — pure; BotCheck (interface; NoBotCheck until A07)
+├── ratelimit/         [A] SlidingWindowCounter, RateLimitService and BounceTracker (interfaces; NoRateLimits and NoBounceTracker
+│                          until A07), QrCodeFloodGuard (Strict mode), ClientFingerprint (HMAC)
 ├── intake/            [A] PublicMessageController, PublicQuestionController, MessageIntakeService (orchestrator), dto/
 ├── question/          [A] Question entity + repository, QuestionService (send to staff)
-├── report/            [A] Report entity + repository
+├── report/            [A] Report entity + repository, ReportClassifications (copies a Classification onto a Report, pure)
 ├── classification/    [A] MessageClassifier (interface), ClassificationInput, Classification, FallbackClassifier,
 │                          CategoryTeamRouting (category → Team, confidence rule)
 │   └── llm/           [C] LlmMessageClassifier, ClassificationSchema, ClassificationValidator
@@ -93,6 +94,8 @@ flare:
   grouping:
     window: 30m
     max-candidates: 10
+  questions:
+    send-to-staff-window: 30m
   routing:
     low-confidence-threshold: 0.5
     category-team:

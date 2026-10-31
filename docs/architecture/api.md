@@ -54,7 +54,7 @@ Response `200`:
 
 ### `POST /api/public/questions/{questionId}/send-to-staff`
 
-Request `{ "deviceId": "uuid" }`. Response `200 { "outcome": "REPORTED" }`. This creates a Report from the Question's text and Location, unclassified, and the worker classifies it. It is idempotent: a second call returns `REPORTED` without creating another Report. Returns `404 NOT_FOUND` if the ID is unknown, older than 30 minutes, or from a different device.
+Request `{ "deviceId": "uuid" }`. Response `200 { "outcome": "REPORTED" }`. This creates a Report from the Question's text and Location, unclassified, and the worker classifies it. It is idempotent: a second call returns `REPORTED` without creating another Report. Returns `404 NOT_FOUND` if the ID is unknown, older than 30 minutes, or from a different device (the same answer for all three, so IDs can't be probed). If the Question's QR code is muted or unknown, the Report is Quarantined, but the response is still `REPORTED`.
 
 ## Staff endpoints (Staff app)
 

@@ -38,6 +38,7 @@ class FlarePropertiesTest {
 				.doesNotContainKey("OTHER");
 		assertThat(flare.getPriority().getSeverityWeight()).containsEntry("CRITICAL", 10000);
 		assertThat(flare.getRetention().getDismissedDays()).isEqualTo(7);
+		assertThat(flare.getQuestions().getSendToStaffWindow()).isEqualTo(Duration.ofMinutes(30));
 		assertThat(flare.getCors().getAllowedOrigins()).containsExactly("http://localhost:5173");
 		assertThat(flare.getSecurity().getHashSecret()).isEqualTo("test-secret");
 	}

@@ -51,6 +51,8 @@ flare:
   grouping:
     window: 30m
     max-candidates: 10
+  questions:
+    send-to-staff-window: 30m   # how long an answered Question can still be sent to staff (api.md)
   routing:
     low-confidence-threshold: 0.5
     category-team:

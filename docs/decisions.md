@@ -151,6 +151,12 @@ Mentor feedback, verbatim: "De adresat partea de impersonare qr code; Marketingu
 - **Passengers wait rather than get the fallback:** classify's timeout is 40 s (was 15 s), and the passenger web app waits 50 s (was 20 s). A busy `llama-server` queues requests instead of failing them. The fallback only answers when the server is unreachable or loading (fail fast), the daily cap is reached, the output is invalid, or 40 s pass (ADR-0016).
 - **Tasks:** S04 becomes "llama-server and first model"; C01 becomes the `llama-server` client; new S10 runs `llama-server` on the demo machine. The `claude` back-end packages are renamed `llm`.
 
+### Round 10: intake built (A06, 2026-10-31)
+
+- **Send to staff from a flagged QR code:** a Question from a muted or unknown QR code is still answered, but sending it to staff makes a Quarantined Report (duty manager only). The 30-minute window is config (`flare.questions.send-to-staff-window`).
+- **Unusable classifier output counts as a failure:** a missing kind, a Question without an answer or garbage without a reason falls back to Unclassified, so a bad LLM answer never reaches a Passenger or a list.
+- **A07 seams:** `BotCheck`, `RateLimitService` and `BounceTracker` are interfaces with pass-through placeholders until A07. Until then, nothing is rate limited and "Send anyway" is never offered.
+
 ## Open questions
 
 ### Waiting for the team's answer

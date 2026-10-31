@@ -20,6 +20,7 @@ public class FlareProperties {
 	Llm llm;
 	Limits limits;
 	Grouping grouping;
+	Questions questions;
 	Routing routing;
 	Priority priority;
 	Retention retention;
@@ -91,6 +92,12 @@ public class FlareProperties {
 	public static class Grouping {
 		Duration window;
 		int maxCandidates;
+	}
+
+	/** "Send to staff anyway" on an answered Question (api.md). */
+	@Value
+	public static class Questions {
+		Duration sendToStaffWindow;
 	}
 
 	@Value
