@@ -82,7 +82,7 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Me' }
-              example: { id: 5b8e1c2d-0a4f-4e6b-8c7d-1f2a3b4c5d6e, displayName: Ana (simulat), role: STAFF, teams: [CLEANING] }
+              example: { id: 5b8e1c2d-0a4f-4e6b-8c7d-1f2a3b4c5d6e, displayName: Ana (simulat), roles: [STAFF], teams: [CLEANING] }
         '401': { $ref: '#/components/responses/Problem' }
         '403': { $ref: '#/components/responses/Problem' }
 
@@ -387,11 +387,11 @@ components:
     Me:
       type: object
       additionalProperties: false
-      required: [id, displayName, role, teams]
+      required: [id, displayName, roles, teams]
       properties:
         id: { type: string, format: uuid }
         displayName: { type: string }
-        role: { $ref: '#/components/schemas/StaffRole' }
+        roles: { type: array, items: { $ref: '#/components/schemas/StaffRole' }, description: A staff member can hold several roles }
         teams: { type: array, items: { $ref: '#/components/schemas/TeamId' } }
     Team:
       type: object

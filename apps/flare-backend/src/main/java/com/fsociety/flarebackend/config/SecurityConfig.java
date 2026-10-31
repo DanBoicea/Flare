@@ -1,11 +1,17 @@
 package com.fsociety.flarebackend.config;
 
+import java.io.IOException;
+
 import com.fsociety.flarebackend.common.ErrorCode;
 import com.fsociety.flarebackend.common.ProblemResponses;
 import jakarta.servlet.DispatcherType;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -32,10 +38,20 @@ public class SecurityConfig {
 						.requestMatchers("/api/public/**", "/actuator/health").permitAll()
 						.requestMatchers("/api/staff/**").authenticated()
 						.anyRequest().denyAll())
-				// TODO(A03): .oauth2ResourceServer(...) with the Supabase JWKS decoder, issuer and audience checks.
+				// Bearer tokens are checked by the JwtDecoder from SupabaseJwtConfig.
+				.oauth2ResourceServer(resourceServer -> resourceServer
+						.jwt(Customizer.withDefaults())
+						.authenticationEntryPoint(SecurityConfig::unauthorized))
 				.exceptionHandling(errors -> errors
-						.authenticationEntryPoint((request, response, e) -> ProblemResponses.write(response, ErrorCode.UNAUTHORIZED))
+						.authenticationEntryPoint(SecurityConfig::unauthorized)
 						.accessDeniedHandler((request, response, e) -> ProblemResponses.write(response, ErrorCode.FORBIDDEN)));
 		return http.build();
+	}
+
+	/** Missing, expired or invalid token. The body never says which, so tokens can't be probed. */
+	private static void unauthorized(HttpServletRequest request, HttpServletResponse response, AuthenticationException e)
+			throws IOException {
+		response.setHeader(HttpHeaders.WWW_AUTHENTICATE, "Bearer");
+		ProblemResponses.write(response, ErrorCode.UNAUTHORIZED);
 	}
 }
