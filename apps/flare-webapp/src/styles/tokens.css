@@ -1,27 +1,48 @@
-/* Design tokens: copied from docs/design/reference/flare.css (:root). Source of truth: docs/design/foundations.md.
+/* Design tokens: Design V1 (ADR-0021). Source of truth: docs/design/foundations.md.
    Change them there first, then here and in apps/flare-mobile/src/constants/theme.ts. */
+
+/* Instrument Sans (SIL OFL, licence in src/assets/fonts/OFL.txt), self-hosted so no Passenger
+   request ever goes to a third party. Variable font, weights 400-700; latin-ext carries ă â î ș ț. */
+@font-face {
+  font-family: 'Instrument Sans';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('../assets/fonts/instrument-sans-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
+    U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Instrument Sans';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('../assets/fonts/instrument-sans-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 :root {
   color-scheme: only light;
 
-  /* Colour: ink and paper */
-  --black: #000000;
-  --ink: #1A1C1F;
-  --ink-2: #4A4F57;
-  --ink-3: #646B74;
+  /* Colour */
+  --navy: #0B2545;      /* header, text */
+  --cobalt: #2457E6;    /* the one main action per screen (6.1:1 on white) */
+  --cobalt-press: #1C46BD;
+  --page: #EAF0FB;      /* page background */
+  --tint: #DCE6FA;      /* notices, tags */
   --paper: #FFFFFF;
-  --paper-2: #F2F4F5;
-  --line: #D5D9DD;
+  --ink: var(--navy);
+  --ink-2: #44587A;     /* muted text (6.3:1 on --page) */
+  --line: #CBD8EF;      /* hairlines */
+  --on-navy-2: #BCD0F5; /* secondary text on the navy header */
+  --on-navy-line: #8FB2FF;
+  --danger: #C8102E;    /* only 112, emergency and Critical */
+  --danger-soft: #FDECEE;
 
-  /* Colour: signals (one meaning each) */
-  --signal: #FFC20E; /* yellow fill = press this; yellow ink on black = location sign */
-  --danger: #C8102E;  --danger-ink: #A0102A;  --danger-soft: #FDECEE;
-  --warn: #D9480F;    --warn-ink: #9C3B00;    --warn-soft: #FFF0E6;
-  --info: #4A86DC;    --info-ink: #1A4F91;    --info-soft: #E9F1FB;
-  --quiet: #8A9099;   --quiet-ink: #474D55;   --quiet-soft: #EEF0F2;
-  --ok: #1E7B4A;      --ok-ink: #17623B;      --ok-soft: #E7F4EC;
-
-  /* Type (Atkinson Hyperlegible Next is self-hosted in W04; system fallback until then) */
-  --font: "Atkinson Hyperlegible Next", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  /* Type: nothing below 16 px */
+  --font: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --fs-caption: 1rem;
   --fs-body: 1.125rem;
   --fs-lead: 1.25rem;
@@ -34,12 +55,12 @@
 
   /* Space, shape, lines */
   --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 20px; --s6: 24px; --s8: 32px; --s10: 40px;
-  --r-sign: 3px;
-  --r-control: 8px;
-  --r-card: 12px;
-  --frame: 2px solid var(--black);
+  --r-control: 16px;  /* buttons, fields */
+  --r-card: 20px;     /* cards, the message field */
+  --r-header: 28px;   /* navy header's bottom corners */
+  --r-pill: 999px;
   --hairline: 1px solid var(--line);
-  --tap: 48px;
+  --tap: 44px;
   --tap-main: 56px;
   --page-max: 36rem;
 }

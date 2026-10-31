@@ -12,7 +12,7 @@ html {
 body {
   margin: 0;
   min-height: 100dvh;
-  background: var(--paper);
+  background: var(--page);
   color: var(--ink);
   font-family: var(--font);
   font-size: var(--fs-body);
@@ -36,9 +36,15 @@ textarea {
 
 /* Two-tone focus ring, visible on every background (docs/design/foundations.md#focus). */
 :focus-visible {
-  outline: 3px solid var(--black);
+  outline: 3px solid var(--navy);
   outline-offset: 2px;
   box-shadow: 0 0 0 2px var(--paper);
+}
+
+/* Headings get focus on every screen change (for screen readers); they are not controls, so no ring. */
+h1[tabindex='-1']:focus {
+  outline: none;
+  box-shadow: none;
 }
 
 .visually-hidden {

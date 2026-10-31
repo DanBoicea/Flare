@@ -1,6 +1,8 @@
 # Flare design system
 
-One visual language for the passenger web app, the Staff app, the QR posters and the pitch. Read this before building any screen. The decision is recorded in [ADR-0020](../adr/0020-design-language-airfield-signage.md).
+One visual language for the passenger web app, the Staff app, the QR posters and the pitch. Read this before building any screen.
+
+> **Current design: [Design V1](flare-design-v1/README.md)** ([ADR-0021](../adr/0021-design-v1-navy-cobalt-instrument-sans.md)): navy and cobalt, Instrument Sans. Its tokens are in [foundations](foundations.md). The airfield-signage text below, [components](components.md), [screens](screens.md) and [reference/](reference/README.md) describe the superseded direction (ADR-0020); keep their layout, behaviour and accessibility rules, but take colours, type and shapes from V1. Where they disagree, V1 wins.
 
 ## In one paragraph
 
@@ -26,7 +28,8 @@ Flare looks like **airfield signage**: the international sign families that airp
 | [accessibility.md](accessibility.md) | WCAG 2.2 AA checklist mapped to Flare, React Native equivalents, how we test |
 | [content.md](content.md) | Voice, honesty rules, Romanian typography, RO/EN UI vocabulary |
 | [reviews.md](reviews.md) | How the direction was chosen: persona reviews, findings and changes |
-| [reference/](reference/README.md) | **The visual source of truth:** live HTML screens and the render script |
+| [flare-design-v1/](flare-design-v1/README.md) | **The visual source of truth:** the chosen V1 mock-ups (static HTML) |
+| [reference/](reference/README.md) | The superseded signage reference screens and the render script |
 | [explorations/](explorations/README.md) | The three round-1 directions (frozen record) |
 | [open-design-prompt.md](open-design-prompt.md) | Open brief for a **new, different** design from Claude Design, Lovable or v0 (product, content and constraints fixed, look free) |
 | [claude-design-prompt.md](claude-design-prompt.md) | A prompt for producing high-fidelity mock-ups or slides in another Claude session |
@@ -40,5 +43,7 @@ Flare looks like **airfield signage**: the international sign families that airp
 ## Open decisions (team)
 
 - **Typeface files:** accept adding Atkinson Hyperlegible Next to both apps (ADR-0020).
+- **Severity colours** for High, Medium and Low in V1 (B01, ADR-0021).
+- **Staff app icons:** `react-native-svg`, a new dependency (B01).
 - **"tu" or "dumneavoastră"** when addressing Passengers ([reviews](reviews.md)).
 - **Location on the passenger page:** showing the scanned code would help Passengers verify the poster, but conflicts with ADR-0006 ([reviews](reviews.md)).

@@ -1,60 +1,67 @@
-/* Layout and shared building blocks, following docs/design/components.md. W02-W04 complete them. */
+/* Layout and shared building blocks, following docs/design/components.md (Design V1, ADR-0021). */
 .app {
   display: flex;
   flex-direction: column;
   min-height: 100dvh;
 }
 
+/* Navy header with rounded bottom corners: logo and airport on the left, language on the right. */
 .app__header {
-  display: grid;
-  grid-template-columns: auto auto;
-  justify-content: space-between;
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 6px var(--s3);
-  padding: var(--s3) var(--s5) 0;
+  justify-content: space-between;
+  gap: var(--s3);
+  padding: 18px var(--s5) 22px;
+  border-radius: 0 0 var(--r-header) var(--r-header);
+  background: var(--navy);
+  color: var(--paper);
 }
 
-.brand__place {
-  grid-column: 1 / -1;
+.app__header :focus-visible {
+  outline-color: var(--paper);
+  box-shadow: 0 0 0 2px var(--navy);
 }
 
-.app__header > .brand__plate {
-  justify-self: start;
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  /* The airport name wraps first; the language button only moves to its own line when space runs out. */
+  flex: 1 1 11rem;
+  min-width: 0;
 }
 
-.app__header > .language-button {
-  justify-self: end;
+.brand__mark {
+  flex: none;
 }
 
-/* The logo is a location sign: yellow on black with a yellow inner border. */
-.brand__plate {
-  display: inline-flex;
-  padding: 3px 10px 4px;
-  border-radius: var(--r-sign);
-  background: var(--black);
-  color: var(--signal);
-  box-shadow: inset 0 0 0 2px var(--signal);
-  font-weight: 800;
-  font-size: 1.25rem;
-  line-height: 1.2;
-  letter-spacing: 0.01em;
-}
-
-.brand__place {
-  font-size: var(--fs-caption);
+.brand__name {
+  font-size: 1.625rem;
   font-weight: 700;
-  color: var(--ink-2);
+  line-height: 1;
+}
+
+.brand__place {
+  margin-top: var(--s1);
+  font-size: var(--fs-caption);
+  color: var(--on-navy-2);
   line-height: 1.25;
 }
 
 .language-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   min-height: var(--tap);
-  padding: 0 var(--s4);
-  border: 1.5px solid var(--ink-3);
-  border-radius: var(--r-control);
-  background: var(--paper);
+  padding: 0 14px;
+  border: 1.5px solid var(--on-navy-line);
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--paper);
   font-size: var(--fs-caption);
-  font-weight: 700;
+  font-weight: 600;
+  white-space: nowrap;
   cursor: pointer;
 }
 
@@ -63,12 +70,14 @@
   width: 100%;
   max-width: var(--page-max);
   margin: 0 auto;
-  padding: var(--s6) var(--s5) var(--s8);
+  padding: 22px var(--s5) var(--s8);
 }
 
 .app__footer {
-  padding: var(--s4) var(--s5) max(var(--s4), env(safe-area-inset-bottom));
-  border-top: var(--hairline);
+  width: 100%;
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: 10px var(--s5) max(var(--s4), env(safe-area-inset-bottom));
   font-size: var(--fs-caption);
   color: var(--ink-2);
 }
@@ -76,14 +85,13 @@
 .screen {
   display: flex;
   flex-direction: column;
-  gap: var(--s5);
+  gap: var(--s4);
 }
 
 .screen__title {
   font-size: var(--fs-h1);
   font-weight: 700;
-  line-height: var(--lh-tight);
-  letter-spacing: -0.01em;
+  line-height: 1.15;
   text-wrap: balance;
 }
 
@@ -98,24 +106,25 @@
   line-height: 1.25;
   text-align: center;
   text-wrap: balance;
-  border: var(--frame);
+  border: 2px solid var(--navy);
   border-radius: var(--r-control);
   background: var(--paper);
-  color: var(--ink);
-  font-size: var(--fs-lead);
-  font-weight: 800;
+  color: var(--navy);
+  font-size: 1.1875rem;
+  font-weight: 600;
   text-decoration: none;
   cursor: pointer;
 }
 
-/* Yellow fill = press this. Always framed in black (yellow on white alone is 1.6:1). */
+/* Cobalt fill: the one main action on the screen. */
 .button--primary {
-  background: var(--signal);
-  color: var(--black);
+  border-color: var(--cobalt);
+  background: var(--cobalt);
+  color: var(--paper);
 }
 
 .button--primary:active {
-  background: #e6ae00;
+  background: var(--cobalt-press);
 }
 
 .button:active {
@@ -124,7 +133,7 @@
 
 .button:disabled {
   cursor: not-allowed;
-  opacity: 0.5;
+  opacity: 0.45;
 }
 
 .field {
@@ -133,24 +142,329 @@
   gap: var(--s2);
 }
 
+.field label {
+  font-weight: 600;
+}
+
 .field textarea,
 .field input {
   width: 100%;
   min-height: var(--tap-main);
   padding: 14px var(--s4);
-  border: var(--frame);
+  border: 2px solid var(--line);
   border-radius: var(--r-control);
   background: var(--paper);
   font-size: var(--fs-lead);
 }
 
-.field small {
+.field textarea:focus,
+.field input:focus {
+  border-color: var(--cobalt);
+}
+
+.field__hint {
   font-size: var(--fs-body);
   color: var(--ink-2);
+  line-height: 1.4;
 }
 
 .notice {
   padding: var(--s4);
   border-radius: var(--r-card);
-  background: var(--warn-soft);
+  background: var(--tint);
+}
+
+/* Errors are not emergencies, so no red: a navy bar on the tint. */
+.notice--error {
+  border-left: 6px solid var(--navy);
+  font-weight: 600;
+}
+
+/* ---- Compose (design 01 / 10) ---- */
+.compose__message.compose__message {
+  min-height: 176px;
+  padding: var(--s4);
+  border-color: var(--cobalt);
+  border-radius: var(--r-card);
+  font-size: var(--fs-lead);
+  line-height: 1.4;
+  resize: vertical;
+}
+
+.compose__message::placeholder {
+  color: var(--ink-2);
+}
+
+.compose__under {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--s1) var(--s4);
+}
+
+.compose__counter {
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.callback {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--r-control);
+  background: var(--paper);
+}
+
+.callback__toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  min-height: var(--tap-main);
+  padding: 10px var(--s4);
+  font-size: var(--fs-body);
+  cursor: pointer;
+}
+
+.callback__toggle input {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  accent-color: var(--cobalt);
+}
+
+.callback__toggle svg {
+  flex: none;
+}
+
+.callback__details {
+  padding: 0 var(--s4) var(--s4);
+}
+
+.callback__details[hidden] {
+  display: none;
+}
+
+.compose__privacy {
+  font-size: var(--fs-caption);
+  color: var(--ink-2);
+}
+
+/* ---- Sending (design 02) ---- */
+.sending {
+  align-items: center;
+  gap: var(--s5);
+  padding-top: var(--s8);
+  text-align: center;
+}
+
+.sending__pulse {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 150px;
+  height: 150px;
+}
+
+.sending__ring {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--cobalt);
+}
+
+.sending__ring--outer {
+  inset: 0;
+  opacity: 0.18;
+}
+
+.sending__ring--inner {
+  inset: 26px;
+  opacity: 0.28;
+}
+
+.sending__dot {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: var(--cobalt);
+}
+
+@keyframes sending-pulse {
+  from {
+    transform: scale(0.8);
+    opacity: 0.35;
+  }
+  to {
+    transform: scale(1.1);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sending__ring--outer {
+    animation: sending-pulse 2.4s ease-out infinite;
+  }
+}
+
+.sending__status {
+  font-size: var(--fs-body);
+  color: var(--ink-2);
+}
+
+
+/* ---- Shared: the Passenger's own words, stacked actions ---- */
+.quote {
+  width: 100%;
+  margin: 0;
+  padding: var(--s4) 18px;
+  border-radius: var(--r-control);
+  background: var(--paper);
+  font-size: var(--fs-lead);
+  line-height: 1.4;
+  text-align: left;
+  white-space: pre-wrap;
+}
+
+.quote__label {
+  display: block;
+  margin-bottom: var(--s1);
+  font-size: var(--fs-caption);
+  color: var(--ink-2);
+}
+
+.screen__actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  margin-top: var(--s1);
+}
+
+/* ---- Answer (design 03) ---- */
+.answer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  padding: var(--s5);
+  border: 2px solid var(--navy);
+  border-radius: 24px;
+  background: var(--paper);
+}
+
+.answer__label {
+  align-self: flex-start;
+  padding: var(--s1) 14px;
+  border-radius: var(--r-pill);
+  background: var(--tint);
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+/* Plain text from the server: keep its line breaks, never interpret it. */
+.answer__text {
+  font-size: var(--fs-lead);
+  line-height: 1.45;
+  white-space: pre-line;
+}
+
+.answer__disclaimer {
+  font-size: var(--fs-caption);
+  color: var(--ink-2);
+}
+
+/* ---- Bounced (design 04) ---- */
+.bounce {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: var(--s5);
+  border-radius: 24px;
+  background: var(--tint);
+}
+
+.bounce__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--navy);
+  color: var(--paper);
+  font-size: 1.375rem;
+  font-weight: 700;
+}
+
+/* ---- Confirmation (design 05) ---- */
+.confirmation {
+  align-items: center;
+  gap: var(--s5);
+  padding-top: var(--s8);
+  text-align: center;
+}
+
+.confirmation__check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 116px;
+  height: 116px;
+  border-radius: 50%;
+  background: var(--cobalt);
+}
+
+.confirmation__next {
+  font-size: var(--fs-lead);
+  color: var(--ink-2);
+}
+
+/* ---- Emergency (design 06): the only screen with a solid red block ---- */
+.emergency {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 26px 22px 22px;
+  border-radius: var(--r-header);
+  background: var(--danger);
+  color: var(--paper);
+}
+
+.emergency__title {
+  font-size: var(--fs-display);
+  font-weight: 700;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+.emergency__other {
+  font-size: var(--fs-lead);
+  line-height: 1.4;
+}
+
+.emergency__call {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 72px;
+  margin-top: 6px;
+  padding: var(--s3) var(--s4);
+  border-radius: 18px;
+  background: var(--paper);
+  color: var(--danger);
+  font-size: 1.5625rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.emergency :focus-visible {
+  outline-color: var(--paper);
+  box-shadow: 0 0 0 2px var(--navy);
+}
+
+.emergency__body {
+  font-size: var(--fs-lead);
+  line-height: 1.45;
 }
