@@ -2,8 +2,8 @@ package com.fsociety.flarebackend.ratelimit;
 
 /**
  * Counts Bounced messages per device within {@code flare.limits.bounce.window} (pipeline.md steps 7 and 9).
- * From {@code send-anyway-after} Bounces the Passenger may "Send anyway". A07 provides the real counter;
- * until then {@link NoBounceTracker}.
+ * From {@code send-anyway-after} Bounces the Passenger may "Send anyway". Implemented by
+ * {@link InMemoryBounceTracker}.
  */
 public interface BounceTracker {
 

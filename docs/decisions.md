@@ -155,13 +155,21 @@ Mentor feedback, verbatim: "De adresat partea de impersonare qr code; Marketingu
 
 - **Send to staff from a flagged QR code:** a Question from a muted or unknown QR code is still answered, but sending it to staff makes a Quarantined Report (duty manager only). The 30-minute window is config (`flare.questions.send-to-staff-window`).
 - **Unusable classifier output counts as a failure:** a missing kind, a Question without an answer or garbage without a reason falls back to Unclassified, so a bad LLM answer never reaches a Passenger or a list.
-- **A07 seams:** `BotCheck`, `RateLimitService` and `BounceTracker` are interfaces with pass-through placeholders until A07. Until then, nothing is rate limited and "Send anyway" is never offered.
+- **A07 seams:** `BotCheck`, `RateLimitService` and `BounceTracker` are interfaces; A07 replaced the pass-through placeholders with the real implementations.
 
 ### Round 11: staff actions (A05, 2026-10-31)
 
 - **Take after a hand over:** an `IN_PROGRESS` Issue that nobody holds can be taken; one someone holds cannot (use hand over).
 - **Hand over** to the same Team, or of a resolved Issue, is refused (`INVALID_TRANSITION`). An overridden category does not move the Issue to another Team.
 - **Concurrent changes** that slip past the version check fail on the database version column and are answered `409 VERSION_CONFLICT`, like a stale version.
+
+### Round 12: limits built (A07, 2026-10-31)
+
+- **Refused attempts count:** a device, network or QR code that keeps sending over its limit stays blocked for as long as it keeps sending.
+- **Strict mode wins** over a plain rate limit when both apply.
+- **No `elapsedMs` means a bot:** the passenger web app always sends it, so its absence means the request did not come from our page.
+- **"Send anyway" keeps its label:** an eligible "Send anyway" (3 to 5 Bounces) is Quarantined as `SEND_ANYWAY` even when the device is over its limit, since Bounces count towards it. Every message is still counted.
+- **Full demo runs from one laptop** raise only the network limit, for that run, with `FLARE_LIMITS_NETWORK_PER10MIN=200`. No config file changes; the real limits apply on every normal start.
 
 ## Open questions
 

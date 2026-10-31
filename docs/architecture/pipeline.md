@@ -13,8 +13,8 @@ The orchestrator is `MessageIntakeService` (Track A). Steps run in this order. T
 | 3 | Resolve the QR code: `ACTIVE` gives a Location; `MUTED` → `MUTED_QR_CODE`; unknown, retired or missing → `UNKNOWN_QR_CODE` | `location.QrCodeService` | Remembered for step 7 |
 | 4 | **Emergency word list** (RO/EN, diacritics-insensitive) | `safety.EmergencyDetector` | Store the Report as `ACCEPTED`, `emergency=true`, `severity=CRITICAL`, unclassified. Enqueue for the worker. Return `EMERGENCY`. **Skips steps 5-9 and ignores every limit.** |
 | 5 | Bot check: honeypot not empty, or `elapsedMs` < 2000 | `safety.BotCheck` | Store the Report as `QUARANTINED` / `BOT_CHECK`. Return `REPORTED` |
-| 6 | Rate limits and QR code Strict mode (section 3) | `ratelimit.RateLimitService` | Store as `QUARANTINED` / `RATE_LIMIT` or `QR_CODE_STRICT_MODE`. Return `REPORTED` |
-| 7 | `sendAnyway=true` and the Bounce counter is at least 3 | `ratelimit.BounceTracker` | Store as `QUARANTINED` / `SEND_ANYWAY`. Return `REPORTED` |
+| 6 | Rate limits and QR code Strict mode (section 3); counts the message | `ratelimit.RateLimitService` | Store as `QUARANTINED` / `RATE_LIMIT` or `QR_CODE_STRICT_MODE` (after the step 7 check). Return `REPORTED` |
+| 7 | `sendAnyway=true` and the Bounce counter is at least 3 (and below the block at 6) | `ratelimit.BounceTracker` | Store as `QUARANTINED` / `SEND_ANYWAY`, even when step 6 found the device over its limit (Bounces count towards it), unless the QR code is in Strict mode. Return `REPORTED` |
 | 8 | **Classify** with one LLM call ([ADR-0014](../adr/0014-single-classification-call-with-knowledge-base.md)), timeout 10 s. On any failure, fall back to Unclassified (section 4) | `classification.MessageClassifier` | See step 9 |
 | 9 | Act on the classification (below) | `intake` | `ANSWERED`, `BOUNCED`, `EMERGENCY` or `REPORTED` |
 
@@ -44,7 +44,7 @@ Rules:
 | QR code | 20 messages / 10 min | The QR code enters **Strict mode** for 30 min: its messages go to `QR_CODE_STRICT_MODE`, and an alert appears in Needs review |
 | Bounces per device | Counted for 30 min | 3 or more enables `sendAnywayAvailable`. At 6 or more, messages from that device go to `RATE_LIMIT` |
 
-The implementation is a pure `SlidingWindowCounter` (timestamps in a deque per key, and an injected `Clock` so tests can control time), wrapped by `RateLimitService`. Old keys are evicted every few minutes.
+The implementation is a pure `SlidingWindowCounter` (timestamps in a deque per key, and an injected `Clock` so tests can control time), wrapped by `InMemoryRateLimitService`. Every attempt is recorded, including one over the limit, so a flood stays blocked while it lasts; an event exactly a window old no longer counts. Old keys are evicted every 5 minutes. When several limits apply, Strict mode wins, so Needs review shows the attack on the QR code. A Strict mode alert counts the messages since it began. The bot check treats a missing `elapsedMs` as a bot, since the web app always sends it.
 
 ## 4. LLM calls (Track C; [ADR-0022](../adr/0022-self-hosted-llm-llama-cpp.md), [ADR-0016](../adr/0016-llm-model-per-task-in-config.md))
 

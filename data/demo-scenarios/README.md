@@ -8,7 +8,11 @@ Scripted sequences of Passenger messages, played against the back end by `script
 
 1. **The back end is running** (see [operations](../../docs/architecture/operations.md#running-locally-for-the-readme-setup-section-filled-in-by-s01-and-the-skeleton-tasks)), with the `local` profile so the demo seed is loaded.
 2. **Reset the dev database.** The runner creates real Reports and Issues. Run [`scripts/sql/reset-dev.sql`](../../scripts/sql/reset-dev.sql) in the Supabase SQL editor for `flare-dev`. It clears Reports, Issues, Questions and audit events, and keeps Locations, QR codes and staff.
-3. **Restart the back end before a full run.** Rate limits are counted in memory ([ADR-0015](../../docs/adr/0015-single-instance-in-memory-limits.md)), so a restart resets them. This matters because every simulated Passenger is really your one laptop, which counts as one network: the default limit is 30 messages per 10 minutes per network, and `all` sends about 45. See "Rate limits" below.
+3. **For a full run, raise the network limit for that run only.** Every simulated Passenger is really your one laptop, which counts as one network: the limit is 30 messages per 10 minutes, and `all` sends about 45. Start the back end with the override, which lasts until you stop it:
+   ```
+   FLARE_LIMITS_NETWORK_PER10MIN=200 ./mvnw spring-boot:run -Dspring-boot.run.profiles=local
+   ```
+   The device and QR code limits stay real, so the spam wave still shows Quarantine and Strict mode. To test the real limits afterwards, stop the back end and start it again **without** the override. Limits are counted in memory ([ADR-0015](../../docs/adr/0015-single-instance-in-memory-limits.md)), so a restart also resets them.
 
 ## Run
 
@@ -56,8 +60,8 @@ The defaults are in `apps/flare-backend/src/main/resources/application.yml` (`fl
 
 - Each scenario uses its own simulated phones: `d1` in one scenario is a different device from `d1` in another, so the per-device limit only applies within a scenario.
 - The spam wave is numbered last so it cannot spoil the other scenarios. On demo day, run it on its own as the final act.
-- If you run `all` twice without restarting the back end, the network limit Quarantines almost everything on the second run. Restart first.
-- `05-three-bounces-send-anyway`: Bounced messages count towards the device limit, so the fourth message ("Send anyway") is over the limit and is Quarantined as `RATE_LIMIT` rather than `SEND_ANYWAY`. The Passenger sees the same result. This was raised with the A07 owner (see the D06 task file).
+- Without the override, running `all` twice in 10 minutes Quarantines almost everything on the second run: restart the back end first.
+- `05-three-bounces-send-anyway`: Bounced messages count towards the device limit, so the fourth message ("Send anyway") is over it; it is still labelled `SEND_ANYWAY` in Needs review (decided in A07).
 
 ## File format
 

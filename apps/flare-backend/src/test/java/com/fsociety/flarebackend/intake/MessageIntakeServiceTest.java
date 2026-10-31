@@ -82,6 +82,7 @@ class MessageIntakeServiceTest {
 		when(qrCodes.resolve(UNKNOWN_QR)).thenReturn(new QrCodeService.Resolution(QrCodeService.Status.UNKNOWN, Optional.empty()));
 		when(rateLimits.check(anyString(), anyString(), any())).thenReturn(Optional.empty());
 		when(properties.getLimits().getBounce().getSendAnywayAfter()).thenReturn(3);
+		when(properties.getLimits().getBounce().getBlockAfter()).thenReturn(6);
 		when(reports.save(any(Report.class))).thenAnswer(call -> {
 			Report report = call.getArgument(0);
 			report.setId(UUID.randomUUID());
@@ -247,6 +248,42 @@ class MessageIntakeServiceTest {
 		assertThat(report.getQuarantineReason()).isEqualTo(QuarantineReason.SEND_ANYWAY);
 		assertThat(report.getClassificationSource()).isNull();
 		verifyNoInteractions(classifier, groupingWorker);
+	}
+
+	@Test
+	void sendAnywayOverTheDeviceLimitStillSaysSendAnyway() {
+		when(bounces.bounceCount(anyString())).thenReturn(3);
+		when(rateLimits.check(anyString(), anyString(), any())).thenReturn(Optional.of(QuarantineReason.RATE_LIMIT));
+		MessageRequest request = request("lol", ACTIVE_QR);
+		request.setSendAnyway(true);
+
+		intake.handle(request, "10.0.0.1");
+
+		assertThat(savedReport().getQuarantineReason()).isEqualTo(QuarantineReason.SEND_ANYWAY);
+	}
+
+	@Test
+	void sendAnywayDuringStrictModeKeepsTheStrictModeReason() {
+		when(bounces.bounceCount(anyString())).thenReturn(3);
+		when(rateLimits.check(anyString(), anyString(), any())).thenReturn(Optional.of(QuarantineReason.QR_CODE_STRICT_MODE));
+		MessageRequest request = request("lol", ACTIVE_QR);
+		request.setSendAnyway(true);
+
+		intake.handle(request, "10.0.0.1");
+
+		assertThat(savedReport().getQuarantineReason()).isEqualTo(QuarantineReason.QR_CODE_STRICT_MODE);
+	}
+
+	@Test
+	void sendAnywayFromADeviceBlockedForTooManyBouncesIsARateLimit() {
+		when(bounces.bounceCount(anyString())).thenReturn(6);
+		when(rateLimits.check(anyString(), anyString(), any())).thenReturn(Optional.of(QuarantineReason.RATE_LIMIT));
+		MessageRequest request = request("lol", ACTIVE_QR);
+		request.setSendAnyway(true);
+
+		intake.handle(request, "10.0.0.1");
+
+		assertThat(savedReport().getQuarantineReason()).isEqualTo(QuarantineReason.RATE_LIMIT);
 	}
 
 	@Test
