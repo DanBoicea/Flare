@@ -154,6 +154,7 @@ Mentor feedback, verbatim: "De adresat partea de impersonare qr code; Marketingu
 - **Classifier (C02):** the classify schema has one shape per kind (`anyOf`), so the grammar stops impossible combinations. An Emergency is always kept as a Critical Report, never handed to the fallback. A mentioned place that repeats the scanned Location is dropped. Warm classification takes 6-10 s with Gemma on the M4 Pro (target was 5 s); inside the 40 s timeout, C06 decides whether to trade accuracy for speed.
 - **Matcher (C03):** candidates are shown to the model as `C1`, `C2`, ..., and each call's schema only allows those labels, so it cannot invent an Issue ID.
 - **One slot is shared by Passenger and background calls:** `--cache-ram` is 2048 MiB (was 1024) so the classify prompt survives a match call, and the background `match` and `summarize` tasks get a 90 s timeout (was 20 s) because they may queue behind classifications. Found in C03's live run: Passengers had waited 37 s and a match had timed out.
+- **Summariser (C04):** an Issue's summary is rewritten from its newest Reports after each merge; any bad answer keeps the old one. With C02-C04 the whole LLM path runs on the local model: classify, route, merge, summarise.
 - **Tasks:** S04 becomes "llama-server and first model"; C01 becomes the `llama-server` client; new S10 runs `llama-server` on the demo machine. The `claude` back-end packages are renamed `llm`.
 
 ### Round 10: intake built (A06, 2026-10-31)
