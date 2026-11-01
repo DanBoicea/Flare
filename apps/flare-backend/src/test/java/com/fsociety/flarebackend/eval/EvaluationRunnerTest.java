@@ -139,8 +139,9 @@ class EvaluationRunnerTest {
 		}
 
 		List<PairResult> pairResults = new ArrayList<>();
+		Map<String, Classification> classified = new HashMap<>();
 		for (Pair p : pairs) {
-			PairResult r = groupPair(p, classifier, matcher, fallback);
+			PairResult r = groupPair(p, classifier, matcher, fallback, classified);
 			pairResults.add(r);
 			System.out.printf("%s same=%s predicted=%s (%s)%n", p.id(), p.sameIssue(), r.predictedSame(), r.how());
 		}
@@ -158,12 +159,16 @@ class EvaluationRunnerTest {
 	 * As the grouping worker does it: Reports in different Areas are never candidates for each other, so they stay
 	 * apart without an LLM call; otherwise A becomes an Issue and the matcher decides whether B joins it.
 	 */
-	private static PairResult groupPair(Pair p, LlmMessageClassifier classifier, LlmIssueMatcher matcher, FallbackClassifier fallback) {
+	private static PairResult groupPair(Pair p, LlmMessageClassifier classifier, LlmIssueMatcher matcher, FallbackClassifier fallback,
+			Map<String, Classification> classified) {
 		if (!Objects.equals(p.placeA().area(), p.placeB().area())) {
 			return new PairResult(p, false, "different Areas, not compared");
 		}
-		Classification a = classifyOrFallback(classifier, fallback, input(p.textA(), Language.EN, p.placeA()));
-		Classification b = classifyOrFallback(classifier, fallback, input(p.textB(), Language.EN, p.placeB()));
+		// Many pairs reuse a sentence at the same place: classify each one once per run.
+		Classification a = classified.computeIfAbsent(p.textA() + "|" + p.placeA().label(),
+				key -> classifyOrFallback(classifier, fallback, input(p.textA(), Language.EN, p.placeA())));
+		Classification b = classified.computeIfAbsent(p.textB() + "|" + p.placeB().label(),
+				key -> classifyOrFallback(classifier, fallback, input(p.textB(), Language.EN, p.placeB())));
 		LocalizedText summaryA = a.getStaffSummary() != null ? a.getStaffSummary() : new LocalizedText(p.textA(), p.textA());
 		CandidateIssueView issueA = new CandidateIssueView(java.util.UUID.randomUUID(), category(a), p.placeA().name(), summaryA,
 				IssueStatus.NEW, List.of(p.textA()));

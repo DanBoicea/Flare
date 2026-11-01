@@ -14,6 +14,8 @@ Answer with the candidate's id only when the new report describes the SAME real-
 - Different problems at the same place are different issues, even in the same room: "no toilet paper" and "the toilet is dirty" are two issues; "no soap" and "the tap is broken" are two issues.
 - The same kind of problem at a different place is a different issue: "lift broken" at departures and "lift broken" at arrivals are two issues. Only treat it as the same issue when it is clearly the same thing seen from nearby (for example the same baggage belt described from both ends).
 - A vague report ("something is wrong here") does not match a specific issue.
+- Different people each needing help are different issues, even at the same place: "my mother needs a wheelchair" and "a man with crutches needs help" are two issues.
+- A shortage of shared equipment (luggage trolleys, for example) reported from nearby places in the same area is the same issue: staff fix it once.
 - When you are not sure, answer null. Merging two different problems hides one of them from staff, which is worse than showing a duplicate.
 
 ## Input
