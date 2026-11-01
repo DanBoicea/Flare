@@ -1,5 +1,5 @@
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useCallback, useState, type ReactNode } from 'react';
+import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
+import { useCallback, useEffect, useState, type ReactNode } from 'react';
 import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -14,12 +14,17 @@ import { useIssue } from '@/hooks/use-issue';
 import { useNow } from '@/hooks/use-now';
 import { useTeams } from '@/hooks/use-teams';
 import { useI18n } from '@/i18n/context';
-import { hasKey } from '@/i18n/strings';
+import { hasKey, type StringKey } from '@/i18n/strings';
 import { ageText, clockTime, minutesSince } from '@/issues/format';
 import { CATEGORIES, SEVERITIES } from '@/issues/options';
 import { canDo, mainAction } from '@/issues/transitions';
 
 type Picker = 'team' | 'category' | 'severity' | null;
+
+/** The part of the root Stack's navigation state that originTabTitle reads. */
+type StackState = { routes: { name: string; state?: { index?: number; routes: { name: string }[] } }[] };
+
+const TAB_TITLES: Record<string, StringKey> = { index: 'tabs.active', resolved: 'tabs.resolved', review: 'tabs.review' };
 
 /**
  * Issue detail (B04): the card, the Passengers' Reports and the history, with the actions at the bottom within
@@ -37,6 +42,13 @@ export default function IssueDetailScreen() {
   const [picker, setPicker] = useState<Picker>(null);
   const goBack = useCallback(() => router.back(), [router]);
   const { busy, run } = useAction({ onUpdated: setIssue, onGone: goBack });
+  const navigation = useNavigation();
+
+  // iOS's native back button takes its label from this screen's headerBackTitle, or else shows the route name
+  // "(tabs)": name the tab the Issue was opened from.
+  useEffect(() => {
+    navigation.setOptions({ headerBackTitle: t(originTabTitle(navigation)) });
+  }, [navigation, t]);
 
   if (!issue) {
     return (
@@ -207,6 +219,13 @@ function Button({ label, onPress, busy, primary }: { label: string; onPress: () 
 }
 
 const button = { minHeight: tap.main, borderRadius: radius.control, alignItems: 'center', justifyContent: 'center', paddingHorizontal: space[4] } as const;
+
+/** The tab under this screen in the root Stack; Active when it can't be told (Active is the first tab). */
+function originTabTitle(navigation: { getState(): StackState | undefined }): StringKey {
+  const tabs = navigation.getState()?.routes.find((route) => route.name === '(tabs)')?.state;
+  const tab = tabs?.index !== undefined ? tabs.routes[tabs.index]?.name : undefined;
+  return (tab && TAB_TITLES[tab]) || 'tabs.active';
+}
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: color.page },

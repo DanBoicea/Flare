@@ -1,0 +1,5 @@
+- lucruri generice: unde este baia, exista farmacii, vreau sa cumpar suveniruri (aici intra knowledge base)
+- situatii de urgenta unde userul trebuie sa sune la 112
+- gibberish (spam sau lucruri irelevante)
+- raportarea de probleme, mici, medii, mari (trebuie sa si aratam ca problemele mai multor persoane se contopesc)
+- rate limit

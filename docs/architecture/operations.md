@@ -32,6 +32,8 @@ FLARE_LLM_API_KEY=
 Notes:
 - Use the connection string the Supabase dashboard shows for **session mode** (or the direct connection if your network has IPv6). Transaction-mode pooling (port 6543) breaks the prepared statements Hibernate uses.
 - Check the exact host and username format in the dashboard. The values above are placeholders.
+- `FLARE_LLM_ENABLED` defaults to `false`, except in the `demo` profile, where it defaults to `true` (`application-demo.yml`). With it off, every message gets the fallback classification (Unclassified, duty manager).
+- For local testing only, `FLARE_LIMIT_DEVICE_PER_10_MIN` and `FLARE_LIMIT_DEVICE_PER_DAY` raise the per-device limits (defaults 3 and 10). Leave them unset on the demo: the spam-wave scenario relies on the defaults.
 - The Maven run loads env vars from your shell. On Windows PowerShell set them with `$env:NAME="value"`, or keep a local, ignored `apps/flare-backend/.env` and load it with your IDE.
 
 **Passenger web app** (`apps/flare-webapp/.env.example`):
@@ -49,14 +51,13 @@ EXPO_PUBLIC_MOCK=false
 ```
 `EXPO_PUBLIC_*` values are bundled into the app, so only public values go there.
 
-## Running locally (for the README "Setup" section, filled in by S01 and the skeleton tasks)
+## Running locally
 
-1. **Prerequisites:** Java 21, Node 22, and Expo Go on your phone. Maven and Expo come with the projects (wrapper and npx).
-2. **LLM (optional):** install llama.cpp, put the model file in the git-ignored `models/` folder (S04 lists the file and link), and run `node scripts/llm/start-llama-server.mjs` (settings at the top of the script). When `http://127.0.0.1:8081/health` returns `{"status":"ok"}`, set `FLARE_LLM_ENABLED=true` for the back end. Without it, the back end runs on the fallbacks.
-3. **Back end:** set the env vars, then `cd apps/flare-backend && ./mvnw spring-boot:run -Dspring-boot.run.profiles=local` (on Windows `mvnw.cmd`). Flyway migrates and seeds on start. Check that `GET http://localhost:8080/actuator/health` returns UP.
-4. **Web:** `cd apps/flare-webapp && npm install && npm run dev`, then open `http://localhost:5173/q/<a seeded qrCodeId>`.
-5. **Staff:** `cd apps/flare-mobile && npm install && npx expo start`, scan the terminal QR with Expo Go, and sign in with a simulated demo account.
-6. **Tests:** `cd apps/flare-backend && ./mvnw test`, which excludes the `eval` tag. The evaluation is `./mvnw test -Dgroups=eval` (needs a running `llama-server`; C05). Strings: `node scripts/check-i18n.mjs`.
+The step-by-step start-up guide is in the root [README](../../README.md#run-it-locally): llama.cpp install, the model (local file, `--model <path>`, or `--download`), the back end with `docker compose up --build`, then both apps. In short:
+
+- **LLM:** `node scripts/llm/start-llama-server.mjs` on the host (bare metal, so it can use the GPU). If the model file is missing, the script asks whether llama-server should download it or you will.
+- **Back end:** `apps/flare-backend/Dockerfile`, built from the repo root because the JAR packs `data/knowledge-base`. `compose.yaml` reads `apps/flare-backend/.env` and points `FLARE_LLM_BASE_URL` at `host.docker.internal:8081`. Docker Desktop (macOS, Windows) reaches a `llama-server` bound to `127.0.0.1`; Linux needs `LLAMA_HOST=0.0.0.0` plus an API key.
+- **Tests:** `cd apps/flare-backend && ./mvnw test`, which excludes the `eval` tag. The evaluation is `./mvnw test -Dgroups=eval` (needs a running `llama-server`; C05). Strings: `node scripts/check-i18n.mjs`.
 
 ## Seeding and resetting
 

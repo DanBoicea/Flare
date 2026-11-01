@@ -44,7 +44,8 @@ flare:
       match:     { model: flare-llm, temperature: 0.0, max-tokens: 512, timeout: 90s }
       summarize: { model: flare-llm, temperature: 0.0, max-tokens: 512, timeout: 90s }
   limits:
-    device:    { per-10-min: 3, per-day: 10 }
+    # Overridable for local testing only; the demo keeps 3 and 10 (the spam-wave scenario relies on them).
+    device:    { per-10-min: "${FLARE_LIMIT_DEVICE_PER_10_MIN:3}", per-day: "${FLARE_LIMIT_DEVICE_PER_DAY:10}" }
     network:   { per-10-min: 30 }
     qr-code:   { per-10-min: 20, strict-mode-duration: 30m }
     bounce:    { window: 30m, send-anyway-after: 3, block-after: 6 }

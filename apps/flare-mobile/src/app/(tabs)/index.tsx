@@ -1,5 +1,5 @@
 import { useNavigation } from 'expo-router';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Alert, FlatList, RefreshControl, Text, View } from 'react-native';
 
 import { issueAction, USE_MOCK } from '@/api/client';
@@ -10,16 +10,18 @@ import { listStyles } from '@/components/list-styles';
 import { useAction } from '@/hooks/use-action';
 import { useIssueFeed } from '@/hooks/use-issue-feed';
 import { useI18n } from '@/i18n/context';
+import { activeOrder } from '@/issues/order';
 import { mainAction } from '@/issues/transitions';
 
 /**
- * The Active list (B03): polled every 5 s in the foreground, Critical first (the server sorts), new Issues
+ * The Active list (B03): polled every 5 s in the foreground, Critical first, then the newest Report first, new Issues
  * highlighted with a count on the tab, pull to refresh, and an offline banner that keeps the last list.
  */
 export default function ActiveScreen() {
   const { t } = useI18n();
   const navigation = useNavigation();
   const feed = useIssueFeed('ACTIVE', { poll: true });
+  const issues = useMemo(() => feed.issues && activeOrder(feed.issues), [feed.issues]);
 
   useEffect(() => {
     navigation.setOptions({ tabBarBadge: feed.newIds.size > 0 ? feed.newIds.size : undefined });
@@ -30,10 +32,10 @@ export default function ActiveScreen() {
       {USE_MOCK && <Text style={styles.mockNote}>{t('active.mockNote')}</Text>}
       {feed.offline && <Text style={styles.banner} accessibilityRole="alert">{t('feed.offline')}</Text>}
       {feed.error && <Text style={styles.message}>{feed.error}</Text>}
-      {!feed.error && feed.issues === null && <Text style={styles.message}>{t('list.loading')}</Text>}
-      {feed.issues && (
+      {!feed.error && issues === null && <Text style={styles.message}>{t('list.loading')}</Text>}
+      {issues && (
         <FlatList
-          data={feed.issues}
+          data={issues}
           keyExtractor={(issue) => issue.id}
           contentContainerStyle={styles.list}
           refreshControl={<RefreshControl refreshing={feed.refreshing} onRefresh={feed.refresh} />}

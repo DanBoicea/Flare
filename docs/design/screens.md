@@ -65,7 +65,7 @@ Frame: the black header (on every top-level tab), the content, and the tab bar. 
 - **Errors:** wrong details, no connection, not a staff member (each in plain words).
 
 ### `staff-list`: Active
-Header (logo, "Personal", name and role, "Actualizat acum N s"), then Issue rows sorted by priority (Critical first), then the tab bar.
+Header (logo, "Personal", name and role, "Actualizat acum N s"), then Issue rows with Critical always on top, then the most recent Report first, then the tab bar.
 - **Refresh:** pull to refresh, plus 5 s polling while the app is in the foreground.
 - **New Issues:** a soft highlight for 10 s and the "Nou" dot. A new **Critical** Issue is also announced to screen readers.
 - **Empty:** "Nicio problemă activă pentru echipele tale."

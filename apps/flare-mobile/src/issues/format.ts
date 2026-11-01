@@ -17,15 +17,28 @@ export function ageText(t: T, minutes: number): string {
 }
 
 /**
- * The card's "who reported" line. With several Passengers it comes from the REPORTERS priority reason
- * ("3 people reported · 8 min", first to last Report); with one, it gives the age.
+ * The card's "who reported, and since when" line, as in the V1 mock-up: "Reported by 3 people, 14 min ago".
+ * The time is said once, counted from the first Report.
  */
 export function reportersText(t: T, issue: IssueCard, nowMs: number): string {
-  const reporters = issue.priority.reasons.find((reason) => reason.code === 'REPORTERS');
-  if (reporters?.count && reporters.count > 1) {
-    return t('priority.REPORTERS', { count: reporters.count, minutes: reporters.minutes ?? 0 });
+  const age = ageText(t, minutesSince(issue.firstReportedAt, nowMs));
+  return issue.reporterCount > 1
+    ? t('card.reportedMany', { count: issue.reporterCount, age })
+    : t('card.reportedOne', { age });
+}
+
+/** What is happening with the Issue right now, from its status (and who took it). */
+export function statusText(t: T, issue: IssueCard): string {
+  switch (issue.status) {
+    case 'NEW':
+      return t('card.new');
+    case 'ACKNOWLEDGED':
+      return t('card.acknowledged');
+    case 'IN_PROGRESS':
+      return issue.takenBy ? t('card.takenBy', { name: issue.takenBy.displayName }) : t('card.inProgress');
+    case 'RESOLVED':
+      return t('card.resolved');
   }
-  return t('card.reportedOne', { minutes: minutesSince(issue.firstReportedAt, nowMs) });
 }
 
 /** A clock time in the app's language, e.g. 14:05. */

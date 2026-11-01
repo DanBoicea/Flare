@@ -74,7 +74,7 @@ The exact order of the checks is a planning decision. Emergency handling is neve
 ## Staff app requirements
 
 - React Native mobile app ([ADR-0002](adr/0002-three-apps-spring-boot-supabase.md)). Each staff member signs in to their own account and sees their Team's Issues ([ADR-0008](adr/0008-individual-staff-accounts-team-routing.md)).
-- A live list of Issues, sorted by priority. Each card shows:
+- A live list of Issues: Critical always on top, then the most recent Report first. Each card shows:
   - Severity, using colour, icon and word together
   - the LLM summary, labelled AI
   - the Location from the QR code, plus any differing place mentioned in the message

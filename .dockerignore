@@ -1,0 +1,16 @@
+# The back-end image is built from the repo root (apps/flare-backend/Dockerfile) and needs only
+# apps/flare-backend and data/knowledge-base. Keep everything else, and every secret, out of the build context.
+**/.env
+**/.env.*
+!**/.env.example
+**/node_modules
+**/target
+**/.idea
+**/.vscode
+**/.DS_Store
+.git
+models
+recordings
+apps/flare-webapp
+apps/flare-mobile
+docs

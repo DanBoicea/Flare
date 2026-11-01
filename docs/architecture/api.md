@@ -66,7 +66,7 @@ Request `{ "deviceId": "uuid" }`. Response `200 { "outcome": "REPORTED" }`. This
 
 ### `GET /api/staff/issues?view=ACTIVE|RESOLVED`
 `200 { "serverTime": "…", "issues": [IssueCard, …] }`
-- **`ACTIVE`:** every non-resolved Issue the caller can see ([auth and security](auth-and-security.md)), sorted by priority, highest first.
+- **`ACTIVE`:** every non-resolved Issue the caller can see ([auth and security](auth-and-security.md)), sorted by priority, highest first. The Staff app re-sorts it: Critical on top, then by `lastReportedAt`, newest first (`issues/order.ts`).
 - **`RESOLVED`:** Issues resolved in the last 24 hours, newest first, at most 50.
 - The Staff app polls `ACTIVE` every 5 seconds ([ADR-0011](../adr/0011-staff-app-polling.md)).
 

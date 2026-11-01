@@ -1,0 +1,17 @@
+# Starts the Flare back end in Docker: `docker compose up --build` from the repo root.
+# The LLM (llama-server) runs on the host, outside Docker: node scripts/llm/start-llama-server.mjs
+# The database and staff sign-in are the Supabase project named in apps/flare-backend/.env.
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: apps/flare-backend/Dockerfile
+    env_file: apps/flare-backend/.env
+    environment:
+      # Inside the container, localhost is the container itself; host.docker.internal is this machine.
+      # Point it elsewhere by exporting FLARE_LLM_BASE_URL before `docker compose up`.
+      FLARE_LLM_BASE_URL: ${FLARE_LLM_BASE_URL:-http://host.docker.internal:8081}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"   # needed on Linux; Docker Desktop has it already
+    ports:
+      - "8080:8080"

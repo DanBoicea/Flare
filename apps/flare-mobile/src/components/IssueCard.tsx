@@ -5,7 +5,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import type { IssueCard as Issue } from '@/api/types';
 import { SeverityBadge } from '@/components/SeverityBadge';
 import { color, font, radius, severity as severityTokens, size, space, tap } from '@/constants/theme';
-import { ageText, minutesSince, reportersText } from '@/issues/format';
+import { reportersText, statusText } from '@/issues/format';
 import { useI18n } from '@/i18n/context';
 
 interface Props {
@@ -27,10 +27,7 @@ interface Props {
  */
 export function IssueCard({ issue, now, highlighted = false, asLink = true, action }: Props) {
   const { t, language } = useI18n();
-  const status = issue.takenBy
-    ? t('card.takenBy', { name: issue.takenBy.displayName })
-    : issue.status === 'NEW' ? t('card.new') : t('card.nobody');
-  const age = ageText(t, minutesSince(issue.firstReportedAt, now));
+  const status = statusText(t, issue);
 
   const body = (
     <>
@@ -57,7 +54,7 @@ export function IssueCard({ issue, now, highlighted = false, asLink = true, acti
         </View>
       )}
       {issue.mentionedPlace && <Text style={styles.meta}>{t('card.mentioned', { place: issue.mentionedPlace })}</Text>}
-      <Text style={styles.meta}>{reportersText(t, issue, now)} · {age}</Text>
+      <Text style={styles.meta}>{reportersText(t, issue, now)}</Text>
     </>
   );
 

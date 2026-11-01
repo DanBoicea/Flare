@@ -1,7 +1,8 @@
 import type { ErrorCode, MessageRequest, MessageResponse, Problem, SendToStaffResponse } from "./types";
 import { mockSendMessage, mockSendQuestionToStaff } from "./mock";
 
-const BASE_URL = (import.meta.env.VITE_API_BASE_URL || "http://localhost:8080").replace(/\/+$/, "");
+// Empty means same origin: the Vite dev proxy forwards /api to the back end (vite.config.ts).
+const BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8080").replace(/\/+$/, "");
 const USE_MOCK = import.meta.env.VITE_MOCK === "true";
 const TIMEOUT_MS = 50_000;
 

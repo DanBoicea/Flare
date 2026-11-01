@@ -63,29 +63,105 @@ This is not an emergency channel. The passenger web app shows the emergency numb
 - Accuracy will be measured on a small labelled test set in Romanian and English, and reported honestly.
 - Competing products already exist. This project does not claim novelty.
 
-## Setup
+## Run it locally
 
-Prerequisites: Java 21 (or newer), Node 22, and Expo Go on your phone. Maven comes with the back end (wrapper); nobody installs it. Every environment variable is listed, with fake values, in each app's `.env.example`, and explained in [docs/architecture/operations.md](docs/architecture/operations.md).
+Five steps: install the tools, add the secrets, start the LLM, start the back end, open the apps. Every command runs from the **repo root** unless a step says otherwise. The commands work in macOS and Linux terminals and in Windows PowerShell, except where a line shows both.
 
-### Back end (`apps/flare-backend`)
+### 1. Install the tools (once)
 
-1. Set the environment variables from `apps/flare-backend/.env.example` with the real `flare-dev` values from the private team chat (never commit them). On macOS: `export NAME=value`. On Windows PowerShell: `$env:NAME="value"`.
-2. Run it:
-   ```sh
-   cd apps/flare-backend
-   ./mvnw spring-boot:run -Dspring-boot.run.profiles=local     # Windows: mvnw.cmd spring-boot:run "-Dspring-boot.run.profiles=local"
-   ```
-   Flyway migrates (and, in `local`, seeds) on start.
-3. Check `http://localhost:8080/actuator/health` returns `{"status":"UP"}`.
-4. Tests: `./mvnw test` (no database or API key needed). The LLM evaluation is `./mvnw test -Dgroups=eval`; it needs a running `llama-server` (see [docs/tasks/S04-llama-server-and-model.md](docs/tasks/S04-llama-server-and-model.md)).
+| Tool | Why | Install |
+| --- | --- | --- |
+| **Node 22** | the LLM start script and both apps | https://nodejs.org (LTS) |
+| **Docker Desktop** | runs the back end | https://www.docker.com/products/docker-desktop |
+| **llama.cpp** | runs the AI model on your machine | see below |
+| **Expo Go** | runs the Staff app on your phone | App Store or Google Play |
 
+Install llama.cpp:
+- **macOS:** `brew install llama.cpp`
+- **Windows:** `winget install llama.cpp`
+- **Linux:** `brew install llama.cpp` (Homebrew for Linux), or a prebuilt binary from https://github.com/ggml-org/llama.cpp/releases
 
-### Passenger web app and Staff app
+Check it worked: `llama-server --version`. The model needs about **10 GB of free memory** and **9 GB of disk**. An Apple Silicon Mac with 16 GB or more is what we tested on (24 GB).
 
-Each app has its own setup notes. Environment variables and the overall local setup are in [docs/architecture/operations.md](docs/architecture/operations.md).
+### 2. Add the secrets (once)
 
-- **Passenger web app:** [apps/flare-webapp/README.md](apps/flare-webapp/README.md). Runs on its own in mock mode (`VITE_MOCK=true`).
-- **Staff app:** [apps/flare-mobile/README.md](apps/flare-mobile/README.md). Runs on its own in mock mode (`EXPO_PUBLIC_MOCK=true`), opened in Expo Go.
+```sh
+cp apps/flare-backend/.env.example apps/flare-backend/.env
+```
+
+Open `apps/flare-backend/.env` and replace every `change-me` and `<project-ref>` with the real `flare-dev` values from the private team chat. Never commit this file (it is git-ignored). What each variable means: [docs/architecture/operations.md](docs/architecture/operations.md).
+
+### 3. Start the LLM (leave this terminal open)
+
+```sh
+node scripts/llm/start-llama-server.mjs
+```
+
+It looks for the model at `models/gemma-4-12b-it-Q5_K_M.gguf`. **The first time,** the file isn't there yet, so the script warns you and asks:
+1. **Let llama-server download it now** (about 8.4 GB from Hugging Face). Next time, start it with `--download` so it reuses that copy.
+2. **Download it yourself:** the script prints the link and the exact command, then exits. Run it again when the file is in `models/`.
+
+| Command | When |
+| --- | --- |
+| `node scripts/llm/start-llama-server.mjs` | The model is in `models/` (default) |
+| `node scripts/llm/start-llama-server.mjs --model <path/to/file.gguf>` | The model file is somewhere else |
+| `node scripts/llm/start-llama-server.mjs --download` | Let llama-server download it, or reuse its earlier download |
+
+It is ready when http://localhost:8081/health shows `{"status":"ok"}`. Stop it with Ctrl+C.
+
+### 4. Start the back end (a second terminal)
+
+```sh
+docker compose up --build
+```
+
+The first build takes a few minutes. It is ready when http://localhost:8080/actuator/health shows `"status":"UP"`, and the log shows `LLM enabled; llama-server at ... answered /health with 200`. Stop it with Ctrl+C, then `docker compose down`.
+
+### 5. Open the apps
+
+**Passenger web app** (a third terminal):
+```sh
+cd apps/flare-webapp
+npm install
+npm run dev
+```
+Open a simulated QR code, for example http://localhost:5173/q/skp4fq3r5e (arrivals toilets near belt 2). Every QR code ID is in [data/airport/airport.json](data/airport/airport.json).
+
+**Staff app** (a fourth terminal; your phone and laptop on the same Wi-Fi):
+```sh
+cd apps/flare-mobile
+npm install
+cp .env.example .env
+```
+In `apps/flare-mobile/.env`, set `EXPO_PUBLIC_API_BASE_URL` to `http://<your laptop's IP>:8080` (macOS: `ipconfig getifaddr en0`; Windows: `ipconfig`, the IPv4 address), and the two Supabase values from the team chat. Then:
+```sh
+npx expo start
+```
+Scan the QR code in the terminal with your phone (iOS: the Camera app; Android: Expo Go), and sign in with a simulated demo account from the team chat.
+
+### Other ways to run
+
+- **Without any back end (mock mode):** `VITE_MOCK=true` in `apps/flare-webapp/.env`, `EXPO_PUBLIC_MOCK=true` in `apps/flare-mobile/.env`. Both apps then use simulated answers. Details in each app's README: [web app](apps/flare-webapp/README.md), [Staff app](apps/flare-mobile/README.md).
+- **Back end without Docker:** Java 21 or newer. In IntelliJ, add `apps/flare-backend/.env` as the run configuration's environment file and run `FlareBackendApplication`. In a terminal, export the variables from `.env` first (`./mvnw` doesn't read the file), then `cd apps/flare-backend && ./mvnw spring-boot:run` (Windows: `mvnw.cmd spring-boot:run`).
+- **Web app on a phone or behind ngrok:** add `apps/flare-webapp/.env.local` with the line `VITE_API_BASE_URL=` (empty), then `npm run dev -- --host`. The dev server forwards `/api` to the back end, so one address serves both.
+
+### If something doesn't work
+
+| Symptom | Fix |
+| --- | --- |
+| Every message ends up "Unclassified" | The LLM isn't used: check step 3 is running, and that `FLARE_LLM_ENABLED=true` is in `apps/flare-backend/.env`. Restart the back end after changing it |
+| `port is already allocated` on 8080 | Another back end is running (IntelliJ, or an old container). Stop it, or `docker compose down` |
+| `Cannot connect to the Docker daemon` | Start Docker Desktop and wait until it says it's running |
+| `Could not start llama-server` | llama.cpp isn't installed or isn't on PATH: see step 1 |
+| Back end log: llama-server `is not reachable` (Linux only) | Docker on Linux can't reach `127.0.0.1` on the host. Start the LLM with `LLAMA_HOST=0.0.0.0 FLARE_LLM_API_KEY=<a long random key> node scripts/llm/start-llama-server.mjs`, and put the same key in `FLARE_LLM_API_KEY` in `apps/flare-backend/.env` |
+| Messages are accepted but never reach staff | You hit a rate limit (3 messages per 10 minutes per device): see [operations](docs/architecture/operations.md) |
+| The Staff app can't connect | `EXPO_PUBLIC_API_BASE_URL` must be your laptop's IP, not `localhost`, and the phone must be on the same Wi-Fi. Restart with `npx expo start --clear` after editing `.env` |
+
+### Tests
+
+- **Back end:** `cd apps/flare-backend && ./mvnw test` (no database or LLM needed). The LLM evaluation is `./mvnw test -Dgroups=eval` and needs step 3 running ([results](docs/eval-results.md)).
+- **Web app:** `cd apps/flare-webapp && npm test`.
+- **Staff app:** `cd apps/flare-mobile && npx tsc --noEmit && npm run lint`.
 
 ## Team
 

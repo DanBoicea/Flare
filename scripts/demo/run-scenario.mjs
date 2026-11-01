@@ -15,7 +15,9 @@ import { fileURLToPath } from "node:url";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const SCENARIO_DIR = join(ROOT, "data", "demo-scenarios");
 const DEFAULT_BASE_URL = "http://localhost:8080";
-const TIMEOUT_MS = 20_000;
+// Like the passenger web app: longer than the back end's 40 s classify timeout, so the back end always answers
+// first (ADR-0016). The first message after a back-end start can take about 30 s.
+const TIMEOUT_MS = 50_000;
 // The bot check (ADR-0019) rejects pages submitted too fast; a real Passenger takes seconds.
 const ELAPSED_MS = 5000;
 

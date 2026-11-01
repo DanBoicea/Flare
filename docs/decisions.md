@@ -199,6 +199,17 @@ Mentor feedback, verbatim: "De adresat partea de impersonare qr code; Marketingu
 - **The app mirrors the server's transition rules** (`issues/transitions.ts` = `IssueTransitions`) to show only valid actions; the server still decides, and the app handles 409 and 404.
 - **No new libraries:** the pickers use React Native's `Modal`, confirmations use `Alert`, and the toast is a small component.
 
+### Round 16: Active list order (2026-11-01)
+
+- **Critical always on top, then the most recent Report first** (`lastReportedAt`), so staff see new activity first. An older Issue that gets a new Report moves back up.
+- **Done in the Staff app** (`issues/order.ts`): the API still returns its priority order, and the priority reasons are still shown on the cards.
+
+### Round 17: plug-and-play start-up (2026-11-01)
+
+- **The back end runs in Docker, the LLM on bare metal:** `docker compose up --build` for Spring Boot; `llama-server` stays on the host so it can use the Mac's GPU (Metal), which Docker can't.
+- **The LLM script finds the model three ways:** the local file in `models/` (default), `--model <path>`, or `--download` (llama-server fetches the evaluated file, `unsloth/gemma-4-12b-it-GGUF` `Q5_K_M`, without the image projector). A missing local file prompts: download now, or download it yourself and start later.
+- **`.env.example` turns the LLM on,** because the README starts it before the back end.
+
 ## Open questions
 
 ### Waiting for the team's answer

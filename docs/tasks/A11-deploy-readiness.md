@@ -22,3 +22,7 @@ Whatever host the team picks can run the back end safely with one image and env 
 - [ ] `docker build` and `docker run` work on at least one laptop.
 - [ ] The hardening checklist is ticked or each gap is noted.
 - [ ] `operations.md` is updated with anything learned.
+
+## Notes
+
+- 2026-11-01: `apps/flare-backend/Dockerfile` (multi-stage, wrapper build, Java 21 JRE, non-root user `flare`, `EXPOSE 8080`, `demo` profile by default, no secrets) and the root `compose.yaml` exist. `docker build` and `docker compose up` worked on a MacBook (M4 Pro) against `flare-dev`, with `llama-server` on the host. Still to do: `server.forward-headers-strategy` and the hardening checklist.
