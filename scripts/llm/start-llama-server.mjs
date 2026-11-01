@@ -40,8 +40,11 @@ const SETTINGS = {
   // models. About 170 MiB each on Gemma 4 12B; one per slot is all a request needs.
   // llama-server's default (32) could reach about 11 GB with 2 slots.
   ctxCheckpoints: 4,
-  // Extra prompt cache in normal RAM, in MiB. llama-server's default is 8192.           LLAMA_CACHE_RAM_MIB
-  cacheRamMib: 1024,
+  // Prompt cache in normal RAM, in MiB, where a slot's cached prompt is kept while     LLAMA_CACHE_RAM_MIB
+  // another prompt (match, summarise) uses the slot. The classify state alone is about
+  // 724 MiB; with 1024 it was evicted after every match call and passengers waited
+  // 37 s instead of 9 (C03). 2048 keeps classify and match. llama-server's default is 8192.
+  cacheRamMib: 2048,
   // Thinking mode: off, because we want short JSON answers, not reasoning.             LLAMA_REASONING
   reasoning: 'off',
   // Required whenever host is not 127.0.0.1. Share it privately; never commit it.      FLARE_LLM_API_KEY

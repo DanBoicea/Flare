@@ -72,7 +72,7 @@ Measured on 2026-10-31 on a MacBook Pro M4 Pro, 24 GB, with llama.cpp build 1047
 - **What we learned about settings:**
   - **One slot beats two on one laptop.** With `-np 2`, two requests run at half speed each (about 10 tokens/s) and a slot can lose the cached prompt; a burst of 3 took 40 s. With `-np 1`, requests queue and each runs at full speed with the cached prompt: 8, 17 and 26 s.
   - **Prompt caching works without `--swa-full`:** after the first call, only about 70 new tokens are processed, about 3,700 come from the cache, thanks to context checkpoints.
-  - **Cap the caches**, or memory grows past the budget: each checkpoint is about 170 MiB (default 32 per slot) and the RAM prompt cache defaults to 8 GiB. With `--ctx-checkpoints 4 --cache-ram 1024` the process stayed bounded.
+  - **Cap the caches**, or memory grows past the budget: each checkpoint is about 170 MiB (default 32 per slot) and the RAM prompt cache defaults to 8 GiB. With `--ctx-checkpoints 4 --cache-ram 1024` the process stayed bounded. *(Raised to `--cache-ram 2048` in C03: classify and match share the one slot, and 1024 evicted the classify prompt after every match call.)*
   - **CORS:** llama-server allows every origin by default, so any website open in a browser could call it. The script sets `--cors-origins localhost`.
   - **Thinking off** server-wide with `--reasoning off`.
 - **Chosen first model:** Gemma 4 12B Q5_K_M (team, 2026-10-31): more accurate and better Romanian; Qwen 3.5 9B stays the faster fallback. The final choice comes from C05/C06.
