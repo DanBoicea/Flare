@@ -4,6 +4,7 @@ import java.net.ConnectException;
 import java.net.http.HttpClient;
 import java.net.http.HttpTimeoutException;
 import java.time.Duration;
+import java.util.concurrent.atomic.AtomicLong;
 
 import com.fsociety.flarebackend.config.FlareProperties;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +41,8 @@ public class LlamaServerClient implements LlmClient {
 	private final FlareProperties.Llm settings;
 	private final LlmUsageCounter usage;
 	private final HttpClient http;
+	private final AtomicLong promptTokens = new AtomicLong();
+	private final AtomicLong completionTokens = new AtomicLong();
 
 	public LlamaServerClient(FlareProperties.Llm settings, LlmUsageCounter usage) {
 		this.settings = settings;
@@ -59,6 +62,8 @@ public class LlamaServerClient implements LlmClient {
 			String body = requestBody(task, config, systemPrompt, userContent, jsonSchema);
 			JsonNode response = postWithOneRetry(body, started + config.getTimeout().toNanos());
 			T result = parseAnswer(response, type);
+			promptTokens.addAndGet(Math.max(0, response.path("usage").path("prompt_tokens").asInt(0)));
+			completionTokens.addAndGet(Math.max(0, response.path("usage").path("completion_tokens").asInt(0)));
 			log.info("LLM {} ok: model={} latency={}ms promptTokens={} cachedTokens={} completionTokens={}",
 					task, config.getModel(), millisSince(started),
 					response.path("usage").path("prompt_tokens").asInt(-1),
@@ -70,6 +75,16 @@ public class LlamaServerClient implements LlmClient {
 			log.warn("LLM {} failed after {}ms: {}", task, millisSince(started), e.getMessage());
 			throw e;
 		}
+	}
+
+	/** Prompt tokens of all successful calls since start (the evaluation reports it, C05). */
+	public long promptTokensUsed() {
+		return promptTokens.get();
+	}
+
+	/** Completion tokens of all successful calls since start. */
+	public long completionTokensUsed() {
+		return completionTokens.get();
 	}
 
 	private static String requestBody(LlmTask task, FlareProperties.LlmTask config, String systemPrompt,
