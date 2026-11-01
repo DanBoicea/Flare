@@ -1,6 +1,6 @@
 # C05: Evaluation runner and results doc
 
-Status: IN PROGRESS
+Status: DONE
 Owner: Florin Cristi
 Track: C · Phase 3 · Estimate: 1 h · Agent-friendly: partly (the runner code can go to OpenCode; interpreting the results is human work)
 Depends on: C02, C03, D02

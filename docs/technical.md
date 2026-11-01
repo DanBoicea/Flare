@@ -30,6 +30,5 @@ Team machines: 2 MacBooks, 1 Windows laptop. The Windows laptop has Java 21, Nod
 
 ## Open technical items
 
-- ADR-0016 (model and settings per task) is decided after the eval run (C06).
 - Which machine runs `llama-server` for the demo (S10).
 - Hosting is chosen by the team. The requirements are in [operations](architecture/operations.md).

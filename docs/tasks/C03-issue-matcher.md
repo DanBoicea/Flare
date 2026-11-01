@@ -1,6 +1,6 @@
 # C03: LLM issue matcher
 
-Status: IN PROGRESS
+Status: DONE
 Owner: Florin Cristi
 Track: C · Phase 2 · Estimate: 1 h · Agent-friendly: partly
 Depends on: C01, A08
