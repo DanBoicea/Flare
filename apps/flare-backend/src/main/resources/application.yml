@@ -39,9 +39,10 @@ flare:
     api-key: ${FLARE_LLM_API_KEY:}
     daily-call-limit: 2000
     tasks:   # model = the llama-server --alias; timeouts are set from the S04 measurements
-      classify:  { model: flare-llm, temperature: 0.0, max-tokens: 1024, timeout: 15s }
-      match:     { model: flare-llm, temperature: 0.0, max-tokens: 512, timeout: 20s }
-      summarize: { model: flare-llm, temperature: 0.0, max-tokens: 512, timeout: 20s }
+      classify:  { model: flare-llm, temperature: 0.0, max-tokens: 1024, timeout: 40s }   # Passengers wait rather than get the fallback (ADR-0016)
+      # Background calls: no Passenger waits for them, so they may queue behind classifications on the one slot (C03).
+      match:     { model: flare-llm, temperature: 0.0, max-tokens: 512, timeout: 90s }
+      summarize: { model: flare-llm, temperature: 0.0, max-tokens: 512, timeout: 90s }
   limits:
     device:    { per-10-min: 3, per-day: 10 }
     network:   { per-10-min: 30 }
@@ -51,6 +52,8 @@ flare:
   grouping:
     window: 30m
     max-candidates: 10
+  questions:
+    send-to-staff-window: 30m   # how long an answered Question can still be sent to staff (api.md)
   routing:
     low-confidence-threshold: 0.5
     category-team:

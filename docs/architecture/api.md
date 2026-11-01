@@ -54,7 +54,7 @@ Response `200`:
 
 ### `POST /api/public/questions/{questionId}/send-to-staff`
 
-Request `{ "deviceId": "uuid" }`. Response `200 { "outcome": "REPORTED" }`. This creates a Report from the Question's text and Location, unclassified, and the worker classifies it. It is idempotent: a second call returns `REPORTED` without creating another Report. Returns `404 NOT_FOUND` if the ID is unknown, older than 30 minutes, or from a different device.
+Request `{ "deviceId": "uuid" }`. Response `200 { "outcome": "REPORTED" }`. This creates a Report from the Question's text and Location, unclassified, and the worker classifies it. It is idempotent: a second call returns `REPORTED` without creating another Report. Returns `404 NOT_FOUND` if the ID is unknown, older than 30 minutes, or from a different device (the same answer for all three, so IDs can't be probed). If the Question's QR code is muted or unknown, the Report is Quarantined, but the response is still `REPORTED`.
 
 ## Staff endpoints (Staff app)
 
@@ -122,7 +122,8 @@ Every action takes `{ "version": <number from the card> }` plus the extra fields
 
 Errors:
 - `409 VERSION_CONFLICT`: someone else changed the Issue. The app reloads and shows who did what.
-- `409 INVALID_TRANSITION`: for example, reopening an Issue that is not resolved.
+- `409 INVALID_TRANSITION`: for example, reopening an Issue that is not resolved, taking one someone else holds, or handing over to the Team it already has.
+- `400 INVALID_REQUEST`: a missing `version`, an unknown Team or category, or an override with neither `category` nor `severity`.
 - `404`: the caller can't see the Issue.
 
 ### Needs review (duty manager only; `403 FORBIDDEN` for other roles)
@@ -137,8 +138,8 @@ Errors:
 
 | Endpoint | Body | Effect |
 | --- | --- | --- |
-| `POST /api/staff/review/{reportId}/release` | `{ "team": TeamId \| null }` | Becomes `ACCEPTED`, goes to the worker. A given Team overrides routing |
-| `POST /api/staff/review/{reportId}/dismiss` | none | Becomes `DISMISSED` |
+| `POST /api/staff/review/{reportId}/release` | `{ "team": TeamId \| null }` | Becomes `ACCEPTED`, goes to the worker. A given Team overrides routing and gets its own new Issue. `404` if the Report is not Quarantined |
+| `POST /api/staff/review/{reportId}/dismiss` | none | Becomes `DISMISSED`. `404` if the Report is not Quarantined |
 
 ## Health
 `GET /actuator/health` returns `{ "status": "UP" }`, without authentication. No other actuator endpoint is exposed.

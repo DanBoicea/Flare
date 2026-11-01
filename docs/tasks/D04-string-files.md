@@ -24,7 +24,7 @@ Every UI string in both languages, plain and short, with a check that the two fi
 ## Notes
 - **`scripts/check-i18n.mjs`** checks, for each app: the same keys in `ro.json` and `en.json`, the same `{placeholders}`, no empty strings, Romanian ș/ț with a comma below (not the cedilla ş/ţ), and complete server-value families. If an app has any `severity.*` key, it must have every `Severity` value from `contract/openapi.yaml`; the same goes for `category`, `team`, `role`, `status`, `reviewReason`, `history` and `bounce`. Only families an app already uses are checked, so screens that aren't built yet don't fail it.
 - The string files themselves were created by W01 and B01/B02. The passenger web app covers its copy deck (the doc's `error.network` is `error.NETWORK` in the app, matching the error code).
-- **Staff app keys still to add, with the screens that use them:** `action.ack`, `action.take`, `action.resolve`, `action.reopen`, `action.handOver` (B04), and `priority.*`, `card.mentioned` (B03). They are left to those tasks to avoid unused keys and conflicts with ongoing Staff app work; the checker then enforces both languages.
+- **Staff app keys left to B03/B04** (`action.*`, `priority.*`, `card.mentioned`) were added with B03-B05, along with the `category`, `history` and `reviewReason` families; the checker passes.
 
 ## Done when
 - [x] `node scripts/check-i18n.mjs` passes.

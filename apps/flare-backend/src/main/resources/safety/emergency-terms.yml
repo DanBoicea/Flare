@@ -1,0 +1,81 @@
+# Emergency phrases (pipeline.md step 4, A07 item 2). Matched as WHOLE phrases on normalised text:
+# lower case, no diacritics (ș→s, ț→t, ă→a, â→a, î→i), punctuation turned into spaces. So write them
+# without diacritics and without punctuation ("mi am pierdut copilul", "there s a fire").
+#
+# A match makes the message EMERGENCY: the Passenger sees the 112 instructions at once, and a Critical
+# Issue goes to Security and the duty manager. It runs before every limit and before the LLM, so an
+# outage never blocks it. A false positive costs little (staff can lower the Severity); a false negative
+# is still covered by the 112 strip on every screen and, once enabled, by the LLM.
+#
+# Prefer specific phrases over single words where a single word has an everyday meaning at an airport:
+# "fire" (fire exit, fire extinguisher), "incendiu" (iesire de incendiu), "smoke" / "fum" (smoke detector,
+# detector de fum) are therefore only matched inside phrases. EmergencyDetectorTest guards these cases.
+# All terms are an assumption to be reviewed by the team; they are not from the airport.
+
+ro:
+  # Fire and smoke
+  - foc                      # "foc" on its own almost always means a fire; "stingator"/"iesire de incendiu" don't contain it
+  - a luat foc
+  - a izbucnit un incendiu
+  - a izbucnit incendiu
+  - este un incendiu
+  - e un incendiu
+  - miroase a fum
+  - iese fum
+  - e fum
+  - este fum
+  - plin de fum
+  # Medical
+  - nu respira
+  - nu mai respira
+  - a lesinat
+  - lesinat
+  - inconstient
+  - si a pierdut cunostinta
+  - atac de cord
+  - infarct
+  - convulsii
+  - sangereaza
+  # Missing child
+  - copil pierdut
+  - copil disparut
+  - mi am pierdut copilul
+  - nu imi gasesc copilul
+  - nu mi gasesc copilul
+  # Threats
+  - are o arma
+  - are un pistol
+  - are un cutit
+  - bomba
+
+en:
+  # Fire and smoke
+  - there is a fire
+  - there s a fire
+  - on fire
+  - a fire in
+  - smell smoke
+  - smells of smoke
+  - see smoke
+  - full of smoke
+  - smoke coming
+  # Medical
+  - not breathing
+  - stopped breathing
+  - collapsed
+  - unconscious
+  - heart attack
+  - seizure
+  - bleeding
+  # Missing child
+  - lost child
+  - missing child
+  - my child is missing
+  - lost my child
+  - can t find my child
+  - cannot find my child
+  # Threats
+  - has a gun
+  - gun
+  - has a knife
+  - bomb

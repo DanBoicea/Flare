@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { SessionProvider, useSession } from '@/auth/session';
+import { ToastProvider } from '@/components/Toast';
 import { color, font, radius, size, space, tap } from '@/constants/theme';
 import { useI18n } from '@/i18n/context';
 import { I18nProvider } from '@/i18n/I18nProvider';
@@ -24,8 +25,10 @@ export default function RootLayout() {
   return (
     <I18nProvider>
       <SessionProvider>
-        <StatusBar style="light" />
-        <Gate fontsReady={fontsLoaded || fontError !== null} />
+        <ToastProvider>
+          <StatusBar style="light" />
+          <Gate fontsReady={fontsLoaded || fontError !== null} />
+        </ToastProvider>
       </SessionProvider>
     </I18nProvider>
   );

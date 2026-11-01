@@ -16,7 +16,7 @@ A Passenger scans a QR code in the airport and types a problem or a question int
 
 ## Stack (decided at the top level)
 
-React passenger web app (`apps/flare-webapp`), React Native Staff app (`apps/flare-mobile`), Spring Boot back end (`apps/flare-backend`), Supabase, and a self-hosted LLM (an open-weight model served by llama.cpp's `llama-server`) called only from Spring Boot. See [ADR-0002](docs/adr/0002-three-apps-spring-boot-supabase.md) and [ADR-0022](docs/adr/0022-self-hosted-llm-llama-cpp.md), which replaced the earlier Claude API plan (ADR-0003). The detailed technical choices are ADRs 0009 to 0019, all accepted except ADR-0016 (model choice), which waits for the eval run:
+React passenger web app (`apps/flare-webapp`), React Native Staff app (`apps/flare-mobile`), Spring Boot back end (`apps/flare-backend`), Supabase, and a self-hosted LLM (an open-weight model served by llama.cpp's `llama-server`) called only from Spring Boot. See [ADR-0002](docs/adr/0002-three-apps-spring-boot-supabase.md) and [ADR-0022](docs/adr/0022-self-hosted-llm-llama-cpp.md), which replaced the earlier Claude API plan (ADR-0003). The detailed technical choices are ADRs 0009 to 0019, all accepted; ADR-0016 (model choice) was accepted after the eval run and picks Gemma 4 12B:
 - Expo
 - Vite
 - TypeScript

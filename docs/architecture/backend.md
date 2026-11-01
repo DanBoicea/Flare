@@ -8,28 +8,31 @@ com.fsociety.flarebackend
 ├── common/            [A] ProblemDetail error handling, ErrorCode enum, LocalizedText, Clock bean, text limits
 ├── config/            [A] FlareProperties (typed @ConfigurationProperties, Lombok @Value classes), SecurityConfig, CorsConfig, WorkerConfig
 ├── location/          [A] Area, Location, QrCode (entities + repositories), QrCodeService (resolve ID → ACTIVE/MUTED/UNKNOWN + Location)
-├── safety/            [A] TextNormalizer, EmergencyDetector (+ emergency-terms.yml), BotCheck            — pure
-├── ratelimit/         [A] SlidingWindowCounter, RateLimitService, QrCodeFloodGuard (Strict mode), BounceTracker, ClientFingerprint (HMAC)
+├── safety/            [A] TextNormalizer, EmergencyDetector (+ emergency-terms.yml), BotCheck → HoneypotBotCheck — pure
+├── ratelimit/         [A] SlidingWindowCounter, RateLimitService → InMemoryRateLimitService, QrCodeFloodGuard (Strict mode),
+│                          BounceTracker → InMemoryBounceTracker, ClientFingerprint (HMAC) — pure; wired by RateLimitConfig
 ├── intake/            [A] PublicMessageController, PublicQuestionController, MessageIntakeService (orchestrator), dto/
 ├── question/          [A] Question entity + repository, QuestionService (send to staff)
-├── report/            [A] Report entity + repository
+├── report/            [A] Report entity + repository, ReportClassifications (copies a Classification onto a Report, pure)
 ├── classification/    [A] MessageClassifier (interface), ClassificationInput, Classification, FallbackClassifier,
 │                          CategoryTeamRouting (category → Team, confidence rule)
 │   └── llm/           [C] LlmMessageClassifier, ClassificationSchema, ClassificationValidator
 ├── knowledge/         [C] KnowledgeBase (loads knowledge-base/*.md from the classpath at startup)
-├── llm/               [C] LlmClient (interface), LlamaServerClient (llama.cpp over HTTP), LlmTask enum, PromptLoader,
+├── llm/               [C] LlmClient (interface), LlamaServerClient (llama.cpp over HTTP), LlmTask enum, PromptLoader, LlmConfig,
 │                          LlmFailure exception, LlmUsageCounter (daily cap, token logging)
 ├── grouping/          [A] GroupingWorker (single thread + queue + startup recovery), CandidateSelector (pure),
-│                          IssueMatcher (interface), NoMatchIssueMatcher (fallback)
+│                          ReportGrouper (the steps), IssueMatcher (interface), NoMatchIssueMatcher (fallback),
+│                          NewReportView, CandidateIssueView, GroupingConfig
 │   └── llm/           [C] LlmIssueMatcher
 ├── issue/             [A] Issue entity + repository, IssueService (create/merge/reopen), IssueActionService,
-│                          PriorityCalculator (pure), StaffIssueController, dto/
-│   └── summary/       [A] IssueSummarizer (interface), FallbackIssueSummarizer
+│                          IssueQueryService (list and detail), IssueCards (DTO mapping), IssueTransitions (pure),
+│                          PriorityCalculator (pure), IssueConfig, StaffIssueController, dto/
+│   └── summary/       [A] IssueSummarizer (interface), FallbackIssueSummarizer, IssueSummaryView, ReportTextView
 │       └── llm/       [C] LlmIssueSummarizer
 ├── review/            [A] ReviewController, ReviewService (Quarantined list, Strict mode alerts, release, dismiss)
 ├── staff/             [A] StaffMember, Team, entities + repositories, CurrentStaff (JWT → staff member),
 │                          StaffAccessPolicy (visibility, pure), MeController, TeamController
-├── audit/             [A] AuditEvent entity + repository, AuditService
+├── audit/             [A] AuditEvent entity + repository, AuditService (every history line, staff or system)
 └── retention/         [A] RetentionJob (@Scheduled daily)
 ```
 
@@ -60,7 +63,7 @@ public interface IssueMatcher {
 
 // issue.summary
 public interface IssueSummarizer {
-    LocalizedText summarize(IssueView issue, List<ReportTextView> newestReports);            // throws on failure
+    LocalizedText summarize(IssueSummaryView issue, List<ReportTextView> newestReports);     // throws on failure
 }
 ```
 
@@ -81,9 +84,9 @@ flare:
     base-url: ${FLARE_LLM_BASE_URL:http://localhost:8081}   # llama-server
     api-key: ${FLARE_LLM_API_KEY:}                          # llama-server --api-key; empty when it listens on 127.0.0.1 only
     tasks:   # timeouts are set from the S04 measurements
-      classify:  { model: flare-llm, temperature: 0.0, max-tokens: 1024, timeout: 15s }
-      match:     { model: flare-llm, temperature: 0.0, max-tokens: 512, timeout: 20s }
-      summarize: { model: flare-llm, temperature: 0.0, max-tokens: 512, timeout: 20s }
+      classify:  { model: flare-llm, temperature: 0.0, max-tokens: 1024, timeout: 40s }   # Passengers wait rather than get the fallback
+      match:     { model: flare-llm, temperature: 0.0, max-tokens: 512, timeout: 90s }    # background: may queue behind classifications
+      summarize: { model: flare-llm, temperature: 0.0, max-tokens: 512, timeout: 90s }
   limits:
     device:   { per-10-min: 3, per-day: 10 }
     network:  { per-10-min: 30 }
@@ -93,6 +96,8 @@ flare:
   grouping:
     window: 30m
     max-candidates: 10
+  questions:
+    send-to-staff-window: 30m
   routing:
     low-confidence-threshold: 0.5
     category-team:

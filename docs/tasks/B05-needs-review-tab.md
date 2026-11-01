@@ -1,7 +1,7 @@
 # B05: Needs review tab for the duty manager
 
-Status: TODO
-Owner:
+Status: IN PROGRESS
+Owner: Luciano
 Track: B · Phase 2 · Estimate: 1 h · Agent-friendly: yes (OpenCode, from the spec plus the existing components)
 Depends on: B04 (real data needs A09)
 
@@ -18,6 +18,11 @@ The duty manager sees what the system held back and decides with one tap ([secur
    - the text, the time, and the Location or "Unknown QR code: {id}"
    - actions: Release (opens `TeamPicker` with "No Team" as the first option) and Dismiss
 4. An empty state, and RO/EN strings for every reason.
+
+## Notes
+- **Built:** `app/(tabs)/review.tsx` (polls every 10 s while open; Strict mode alerts first with the Location label or "Unknown QR code: {id}", minutes and message count; items with the translated reason, time, text and place; Release opens the picker with "No team (route normally)" first; Dismiss), `client.ts` `getReview`, `releaseReport`, `dismissReport`, and mock fixtures in `fixtures/review.ts` (simulated, matching the D06 scenarios).
+- **Checked:** `npm run typecheck` and `npx eslint .` are clean, `node scripts/check-i18n.mjs` passes (including the new `category`, `history` and `reviewReason` families), and `npx expo export --platform android` bundles. **Not yet checked:** on a real phone in Expo Go, in mock mode and against the back end (the "Done when" items below).
+- B03, B04 and B05 were built together and go in one PR (decisions.md, Round 15).
 
 ## Done when
 - [ ] With the spam and unknown-QR-code scenarios (D06), the items and the alert appear.

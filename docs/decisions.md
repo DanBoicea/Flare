@@ -148,9 +148,58 @@ Mentor feedback, verbatim: "De adresat partea de impersonare qr code; Marketingu
 - **No Claude API:** the LLM is an open-weight model run by the team with llama.cpp's `llama-server`, still called only by Spring Boot (ADR-0022, superseding ADR-0003). Passenger text never leaves machines we control.
 - **No new back-end library:** the back end calls `llama-server`'s OpenAI-compatible API with Spring's `RestClient`; `anthropic-java` is dropped (ADR-0013). Output is constrained with `response_format` `json_schema` and validated again in our code.
 - **Config:** `FLARE_LLM_BASE_URL` and `FLARE_LLM_API_KEY` replace `ANTHROPIC_API_KEY`. Per task: model alias, `temperature`, `max-tokens`, timeout (ADR-0016, rewritten). Model files (`*.gguf`) are git-ignored.
+- **Passengers wait rather than get the fallback:** classify's timeout is 40 s (was 15 s), and the passenger web app waits 50 s (was 20 s). A busy `llama-server` queues requests instead of failing them. The fallback only answers when the server is unreachable or loading (fail fast), the daily cap is reached, the output is invalid, or 40 s pass (ADR-0016).
+- **First model: Gemma 4 12B Instruct, Q5_K_M** (S04, measured on the M4 Pro laptop): 19/20 on a test-set sample, about 9 s per message warm, about 10.3 GB in total (budget 14 GB). Qwen 3.5 9B is the faster alternative. Final choice by eval (C06).
+- **llama-server runs with one slot:** a second slot halves each request's speed and can lose the cached prompt; queued requests wait their turn instead (a burst of 3 finished at 8, 17 and 26 s, inside the 40 s timeout). Checkpoints and the RAM prompt cache are capped to stay inside the memory budget, and CORS is limited to localhost.
+- **Classifier (C02):** the classify schema has one shape per kind (`anyOf`), so the grammar stops impossible combinations. An Emergency is always kept as a Critical Report, never handed to the fallback. A mentioned place that repeats the scanned Location is dropped. Warm classification takes 6-10 s with Gemma on the M4 Pro (target was 5 s); inside the 40 s timeout, C06 decides whether to trade accuracy for speed.
+- **Matcher (C03):** candidates are shown to the model as `C1`, `C2`, ..., and each call's schema only allows those labels, so it cannot invent an Issue ID.
+- **One slot is shared by Passenger and background calls:** `--cache-ram` is 2048 MiB (was 1024) so the classify prompt survives a match call, and the background `match` and `summarize` tasks get a 90 s timeout (was 20 s) because they may queue behind classifications. Found in C03's live run: Passengers had waited 37 s and a match had timed out.
+- **First evaluation (C05):** Gemma 4 12B on the simulated test set: Emergency recall 100% (the word list alone 55%, so both layers stay), no false Bounces, Questions 100%, kind 99%, category 93%, grouping 91%, 8.6 s median. Results and misses in [eval-results.md](eval-results.md).
+- **Summariser (C04):** an Issue's summary is rewritten from its newest Reports after each merge; any bad answer keeps the old one. With C02-C04 the whole LLM path runs on the local model: classify, route, merge, summarise.
+- **Demo model: Gemma 4 12B Q5_K_M** (C06, ADR-0016 accepted): after two tuning rounds, Emergency recall 100%, no false Bounces, category 96%, severity 81% exact, grouping 94% with no false merges, 8.7 s median. Qwen 3.5 9B was faster (5.8 s) but invented Knowledge base answers and merged different problems. One abusive message now becomes a LOW Report instead of a Bounce (accepted). The 5 s target from C02 is dropped in favour of accuracy.
 - **Tasks:** S04 becomes "llama-server and first model"; C01 becomes the `llama-server` client; new S10 runs `llama-server` on the demo machine. The `claude` back-end packages are renamed `llm`.
 
-### Round 10: logo and Staff app icons (2026-11-01)
+### Round 10: intake built (A06, 2026-10-31)
+
+- **Send to staff from a flagged QR code:** a Question from a muted or unknown QR code is still answered, but sending it to staff makes a Quarantined Report (duty manager only). The 30-minute window is config (`flare.questions.send-to-staff-window`).
+- **Unusable classifier output counts as a failure:** a missing kind, a Question without an answer or garbage without a reason falls back to Unclassified, so a bad LLM answer never reaches a Passenger or a list.
+- **A07 seams:** `BotCheck`, `RateLimitService` and `BounceTracker` are interfaces; A07 replaced the pass-through placeholders with the real implementations.
+
+### Round 11: staff actions (A05, 2026-10-31)
+
+- **Take after a hand over:** an `IN_PROGRESS` Issue that nobody holds can be taken; one someone holds cannot (use hand over).
+- **Hand over** to the same Team, or of a resolved Issue, is refused (`INVALID_TRANSITION`). An overridden category does not move the Issue to another Team.
+- **Concurrent changes** that slip past the version check fail on the database version column and are answered `409 VERSION_CONFLICT`, like a stale version.
+
+### Round 12: limits built (A07, 2026-10-31)
+
+- **Refused attempts count:** a device, network or QR code that keeps sending over its limit stays blocked for as long as it keeps sending.
+- **Strict mode wins** over a plain rate limit when both apply.
+- **No `elapsedMs` means a bot:** the passenger web app always sends it, so its absence means the request did not come from our page.
+- **"Send anyway" keeps its label:** an eligible "Send anyway" (3 to 5 Bounces) is Quarantined as `SEND_ANYWAY` even when the device is over its limit, since Bounces count towards it. Every message is still counted.
+- **Full demo runs from one laptop** raise only the network limit, for that run, with `FLARE_LIMITS_NETWORK_PER10MIN=200`. No config file changes; the real limits apply on every normal start.
+
+### Round 13: Needs review (A09, 2026-10-31)
+
+- **Release to a chosen Team** creates a new Issue for that Team, skipping matching, and keeps the quarantine reason on the Report for the history.
+- **Only Quarantined Reports** can be released or dismissed; anything else is `404`.
+- **A released "Send anyway"** is classified as a Report the Passenger insisted on.
+
+### Round 14: grouping (A08, 2026-10-31)
+
+- **Over-merging is worse than under-merging:** a matcher failure, or an answer outside the candidates, creates a new Issue.
+- **A failed or unchanged summary keeps the old one;** a new one is marked as written by the LLM.
+- **Nothing is ever stuck:** after a failed retry, a Report becomes its own Unclassified Issue for the duty manager.
+- **The summariser's input is `IssueSummaryView`,** because `IssueView` already names the ACTIVE/RESOLVED list choice.
+
+### Round 15: Staff app screens (B03-B05, 2026-10-31)
+
+- **One PR for B03, B04 and B05** instead of one per task, to save time; each task file lists its part.
+- **Detail layout:** the status actions sit in the bottom bar; Hand over and the category or Severity change sit in "More actions" in the page, so the bar stays within thumb reach.
+- **The app mirrors the server's transition rules** (`issues/transitions.ts` = `IssueTransitions`) to show only valid actions; the server still decides, and the app handles 409 and 404.
+- **No new libraries:** the pickers use React Native's `Modal`, confirmations use `Alert`, and the toast is a small component.
+
+### Round 16: logo and Staff app icons (2026-11-01)
 
 - **New Flare logo:** a navy italic "F" with a white plane taking off and a cobalt trail (`docs/design/brand/flare-logo.png`). It replaces the cobalt beacon tile in both app headers, the favicons, the Staff app icon and splash, and the A4 poster mock-up. On navy it always sits on its own white tile, because the mark is navy on white. See [brand](design/brand/README.md).
 - **Staff app language button:** the other language's flag plus its code ("RO" / "EN"), the same as the web app (round 8). The accessible name starts with the code, for voice control.
