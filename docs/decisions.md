@@ -210,6 +210,13 @@ Mentor feedback, verbatim: "De adresat partea de impersonare qr code; Marketingu
 - **The LLM script finds the model three ways:** the local file in `models/` (default), `--model <path>`, or `--download` (llama-server fetches the evaluated file, `unsloth/gemma-4-12b-it-GGUF` `Q5_K_M`, without the image projector). A missing local file prompts: download now, or download it yourself and start later.
 - **`.env.example` turns the LLM on,** because the README starts it before the back end.
 
+### Round 18: logo and Staff app icons (2026-11-01)
+
+- **New Flare logo:** a navy italic "F" with a white plane taking off and a cobalt trail (`docs/design/brand/flare-logo.png`). It replaces the cobalt beacon tile in both app headers, the favicons, the Staff app icon and splash, and the A4 poster mock-up. On navy it always sits on its own white tile, because the mark is navy on white. See [brand](design/brand/README.md).
+- **Staff app language button:** the other language's flag plus its code ("RO" / "EN"), the same as the web app (round 8). The accessible name starts with the code, for voice control.
+- **Place icons on Issue cards:** a tile on the left shows what kind of place it is (toilets, baggage belt, lift, escalator, information desk, seating, entrance, family room), read from the `TYPE` part of the Location code. The place comes from the QR code, so it is more reliable than the LLM's Category; the Category icon is only the fallback. The security checkpoint entrance gets the shield.
+- **Issue detail back button** is labelled in the app language ("Înapoi" / "Back"); iOS showed its own English "Back" before.
+
 ## Open questions
 
 ### Waiting for the team's answer

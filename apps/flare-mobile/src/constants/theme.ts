@@ -46,6 +46,7 @@ export const font = {
 /** Nothing below 16. */
 export const size = { caption: 16, body: 17, lead: 18, rowTitle: 20, title: 28, logo: 26 } as const;
 export const space = { 1: 4, 2: 8, 3: 12, 4: 16, 5: 20, 6: 24, 8: 32 } as const;
-export const radius = { code: 8, logo: 10, control: 16, card: 20, header: 28, pill: 999 } as const;
+/** logo: the white logo tile in the header; tile: the place icon tile on Issue cards. */
+export const radius = { code: 8, logo: 12, tile: 14, control: 16, card: 20, header: 28, pill: 999 } as const;
 /** Staff main buttons are 48 tall; header buttons (language, back, sign-out) 44. */
 export const tap = { min: 44, main: 48 } as const;

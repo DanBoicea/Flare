@@ -33,7 +33,7 @@ export default function TabsLayout() {
           title: t('tabs.review'),
           // href: null removes the tab and its route for everyone else.
           href: isDutyManager ? undefined : null,
-          tabBarIcon: tabIcon('clock'),
+          tabBarIcon: tabIcon('inbox'),
         }}
       />
     </Tabs>
