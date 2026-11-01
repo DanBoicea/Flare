@@ -155,6 +155,7 @@ Mentor feedback, verbatim: "De adresat partea de impersonare qr code; Marketingu
 - **Matcher (C03):** candidates are shown to the model as `C1`, `C2`, ..., and each call's schema only allows those labels, so it cannot invent an Issue ID.
 - **One slot is shared by Passenger and background calls:** `--cache-ram` is 2048 MiB (was 1024) so the classify prompt survives a match call, and the background `match` and `summarize` tasks get a 90 s timeout (was 20 s) because they may queue behind classifications. Found in C03's live run: Passengers had waited 37 s and a match had timed out.
 - **First evaluation (C05):** Gemma 4 12B on the simulated test set: Emergency recall 100% (the word list alone 55%, so both layers stay), no false Bounces, Questions 100%, kind 99%, category 93%, grouping 91%, 8.6 s median. Results and misses in [eval-results.md](eval-results.md).
+- **Summariser (C04):** an Issue's summary is rewritten from its newest Reports after each merge; any bad answer keeps the old one. With C02-C04 the whole LLM path runs on the local model: classify, route, merge, summarise.
 - **Tasks:** S04 becomes "llama-server and first model"; C01 becomes the `llama-server` client; new S10 runs `llama-server` on the demo machine. The `claude` back-end packages are renamed `llm`.
 
 ### Round 10: intake built (A06, 2026-10-31)
