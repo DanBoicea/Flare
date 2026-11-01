@@ -55,6 +55,7 @@
 
   /* Space, shape, lines */
   --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 20px; --s6: 24px; --s8: 32px; --s10: 40px;
+  --r-logo: 12px;     /* the logo tile */
   --r-control: 16px;  /* buttons, fields */
   --r-card: 20px;     /* cards, the message field */
   --r-header: 28px;   /* navy header's bottom corners */

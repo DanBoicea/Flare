@@ -33,6 +33,7 @@ export default function RootLayout() {
 
 /** The session gate: signed-in staff get the tabs and Issue detail; everyone else gets sign-in. */
 function Gate({ fontsReady }: { fontsReady: boolean }) {
+  const { t } = useI18n();
   const { status } = useSession();
   const signedIn = status === 'signedIn';
 
@@ -50,6 +51,8 @@ function Gate({ fontsReady }: { fontsReady: boolean }) {
             options={{
               headerShown: true,
               headerTitle: '',
+              // Without this, iOS shows the system's English "Back" whatever the app language.
+              headerBackTitle: t('nav.back'),
               headerStyle: { backgroundColor: color.navy },
               headerTintColor: color.paper,
               headerShadowVisible: false,

@@ -150,6 +150,13 @@ Mentor feedback, verbatim: "De adresat partea de impersonare qr code; Marketingu
 - **Config:** `FLARE_LLM_BASE_URL` and `FLARE_LLM_API_KEY` replace `ANTHROPIC_API_KEY`. Per task: model alias, `temperature`, `max-tokens`, timeout (ADR-0016, rewritten). Model files (`*.gguf`) are git-ignored.
 - **Tasks:** S04 becomes "llama-server and first model"; C01 becomes the `llama-server` client; new S10 runs `llama-server` on the demo machine. The `claude` back-end packages are renamed `llm`.
 
+### Round 10: logo and Staff app icons (2026-11-01)
+
+- **New Flare logo:** a navy italic "F" with a white plane taking off and a cobalt trail (`docs/design/brand/flare-logo.png`). It replaces the cobalt beacon tile in both app headers, the favicons, the Staff app icon and splash, and the A4 poster mock-up. On navy it always sits on its own white tile, because the mark is navy on white. See [brand](design/brand/README.md).
+- **Staff app language button:** the other language's flag plus its code ("RO" / "EN"), the same as the web app (round 8). The accessible name starts with the code, for voice control.
+- **Place icons on Issue cards:** a tile on the left shows what kind of place it is (toilets, baggage belt, lift, escalator, information desk, seating, entrance, family room), read from the `TYPE` part of the Location code. The place comes from the QR code, so it is more reliable than the LLM's Category; the Category icon is only the fallback. The security checkpoint entrance gets the shield.
+- **Issue detail back button** is labelled in the app language ("Înapoi" / "Back"); iOS showed its own English "Back" before.
+
 ## Open questions
 
 ### Waiting for the team's answer

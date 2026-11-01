@@ -154,10 +154,17 @@ test('keyboard order on Compose: 112, language, message, call back, Send', async
   expect(stops).toEqual(['112', 'language', 'message', 'call back', 'send'])
 })
 
-test('the favicon is the Design V1 mark', async ({ request }) => {
-  const svg = await (await request.get('/favicon.svg')).text()
-  expect(svg).toContain('#2457E6')
-  expect(svg).not.toContain('#FFC20E')
+test('the favicon and touch icons are the Flare logo', async ({ page, request }) => {
+  await open(page, 'ro')
+  const icons = await page.locator('link[rel="icon"], link[rel="apple-touch-icon"]').evaluateAll((links) =>
+    links.map((link) => link.getAttribute('href')),
+  )
+  expect(icons).toEqual(['/favicon.ico', '/icon-192.png', '/apple-touch-icon.png'])
+  for (const href of icons) {
+    const response = await request.get(href!)
+    expect(response.ok(), href!).toBe(true)
+    expect(response.headers()['content-type'], href!).toMatch(/^image\//)
+  }
 })
 
 test('on wide screens the strip, header and content form one centred column', async ({ page }, info) => {

@@ -52,8 +52,12 @@
   min-width: 0;
 }
 
+/* The logo is navy on white, so on the navy header it sits on its own white tile. */
 .brand__mark {
   flex: none;
+  display: block;
+  border-radius: var(--r-logo);
+  background: var(--paper);
 }
 
 .brand__name {

@@ -23,7 +23,7 @@ The visual source of truth is [flare-design-v1/](flare-design-v1/README.md). The
 - **Shape:** controls 16 px radius, cards and the message field 20 px, pills 999 px, the navy header's bottom corners 28 px. Main buttons 56 px tall (staff 48 px), the 112 and language buttons 44 px.
 - **Focus:** 3 px navy outline with a 2 px white halo; white outline inside the navy header.
 - **Motion:** the sending beacon is a cobalt dot with two rings; the outer ring pulses (2.4 s ease-out) unless reduced motion is on.
-- **Logo:** a cobalt rounded square with a white beacon mark, next to "Flare" (700) and the airport name.
+- **Logo:** the Flare "F" with a plane taking off ([brand/](brand/README.md)) on a white rounded tile (12 px radius at 40 px), next to "Flare" (700) and the airport name. Replaced the cobalt beacon tile on 2026-11-01.
 - **Severity (Staff app):** see the table under "Tokens in code" below (decided 2026-10-31).
 
 The sections below describe the superseded airfield-signage direction (ADR-0020). Their space, severity, icon and accessibility rules still apply; their colours, typeface, radii and logo do not.
@@ -153,7 +153,7 @@ All interactive elements get a two-tone ring that is visible on every background
 
 ## Icons
 
-- **Style:** one stroke style everywhere, Feather/Lucide shapes (MIT/ISC licences), on a 24 px grid with a 2 px stroke and round caps.
+- **Style:** one stroke style everywhere, Feather/Lucide shapes (MIT/ISC licences), on a 24 px grid with a 2 px stroke and round caps. Place pictograms (toilets, lift, escalator, family room, wheelchair) are our own, drawn in the same style.
 - **Sizes:** 20-24 px next to text, 18 px inside badges.
 - **Meaning:** icons always sit next to a word, except the "Mai multe" (⋯) button, which has an accessible label.
 - **Web:** inline SVG symbols (see `reference/index.html`). No icon font and no library.
@@ -175,6 +175,9 @@ All interactive elements get a two-tone ring that is visible on every background
 | Taken by someone | `user-check` |
 | Opens detail | `chevron-right` |
 | Active, Resolved, Needs review tabs | `list`, `check-circle`, `inbox` |
+| Place on an Issue card (Staff app), from the Location code `TYPE` | `WC` toilets (man and woman), `BELT` luggage, `LIFT` lift, `ESC` escalator, `INFO` info, `SEAT` seat, `ENT` door (`SEC-ENT` shield), `FAM` family |
+| Category, when the place type is unknown | spill `droplet`, toilet, lift, broken `wrench`, sign `info`, assistance wheelchair, lost `search`, safety `shield`, other `map-pin` |
+| Teams (Staff header chips) | Cleaning `droplet`, Maintenance `wrench`, Security `shield`, Passenger assistance wheelchair |
 | More actions | `more-horizontal` |
 
 **Never:** sparkles or robots for AI, emoji, or arrows appended to button text.
@@ -215,4 +218,4 @@ All interactive elements get a two-tone ring that is visible on every background
 
   Critical, High and Medium come from `flare-design-v1/07-staff-list.html`; Low completes the set inside the V1 palette.
 - **Location codes** (`ARR-WC-02`) use Instrument Sans in a pill, as in the mock-ups: outlined in lists, navy in the detail. The letters-dash-digits format keeps O and 0 apart in practice.
-- **Shapes:** cards 20, controls 16, code pills 8, header bottom corners 28; staff main buttons 48 tall, header buttons 44.
+- **Shapes:** cards 20, controls 16, place icon tiles 14 (48 × 48), the logo tile 12 (40 × 40), code pills 8, header bottom corners 28; staff main buttons 48 tall, header buttons 44.

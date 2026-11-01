@@ -21,6 +21,7 @@ Posters that make the QR code trustworthy and correctly placed ([marketing: post
    - "Not an emergency line. Emergency: 112" in RO and EN
    - the **Location label** small in a corner, for staff
    - a footer: "Hackathon demo, simulated"
+   - the Flare logo from `docs/design/brand/flare-mark.png` on its white tile, as in `docs/design/flare-design-v1/09-poster-a4.html` ([brand rules](../design/brand/README.md))
 2. Print styles: black on white, large type, no background images.
 3. Print 3 posters for the demo (S07), and test scanning from about 1.5 m.
 

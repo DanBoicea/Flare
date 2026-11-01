@@ -3,6 +3,7 @@ import { ApiError, sendMessage, sendQuestionToStaff } from './api/client'
 import type { Answer, Bounce, ErrorCode, UiLanguage } from './api/types'
 import { EmergencyStrip } from './components/EmergencyStrip'
 import { LanguageButton } from './components/LanguageButton'
+import logoUrl from './assets/flare-mark.png'
 import { useI18n } from './i18n/context'
 import type { StringKey } from './i18n/strings'
 import { getDeviceId } from './lib/deviceId'
@@ -135,13 +136,8 @@ export default function App() {
       <EmergencyStrip />
       <header className="app__header">
         <div className="brand">
-          <svg className="brand__mark" width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
-            <rect width="32" height="32" rx="10" fill="var(--cobalt)" />
-            <g transform="translate(4 4)" fill="none" stroke="#fff" strokeWidth="2.4" strokeLinecap="round">
-              <circle cx="12" cy="12" r="3.5" fill="#fff" />
-              <path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3" />
-            </g>
-          </svg>
+          {/* Decorative: the word "Flare" next to it is the name. */}
+          <img className="brand__mark" src={logoUrl} alt="" width="40" height="40" />
           <div>
             <p className="brand__name">Flare</p>
             <p className="brand__place">{t('app.airport')}</p>
