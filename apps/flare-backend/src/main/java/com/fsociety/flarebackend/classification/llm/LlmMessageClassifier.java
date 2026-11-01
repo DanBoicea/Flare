@@ -8,6 +8,7 @@ import com.fsociety.flarebackend.knowledge.KnowledgeBase;
 import com.fsociety.flarebackend.llm.LlmClient;
 import com.fsociety.flarebackend.llm.LlmTask;
 import com.fsociety.flarebackend.llm.PromptLoader;
+import com.fsociety.flarebackend.llm.PromptText;
 
 /**
  * Classifies a Passenger message with the self-hosted LLM in one call, answering Questions from the Knowledge
@@ -48,15 +49,10 @@ public class LlmMessageClassifier implements MessageClassifier {
 		return "<scanned_location>" + location + "</scanned_location>\n"
 				+ "<ui_language>" + input.getUiLanguage().getCode() + "</ui_language>\n"
 				+ "<passenger_insisted>" + input.isPassengerInsisted() + "</passenger_insisted>\n"
-				+ "<passenger_message>" + escapeTags(input.getText()) + "</passenger_message>";
+				+ "<passenger_message>" + PromptText.escapeTags(input.getText()) + "</passenger_message>";
 	}
 
 	private static String describe(LocationInfo location) {
 		return location.getNameRo() + " / " + location.getNameEn();
-	}
-
-	/** Stops a Passenger from closing the tag and writing fake instructions after it. */
-	static String escapeTags(String text) {
-		return text.replace("<", "‹").replace(">", "›");
 	}
 }

@@ -96,7 +96,7 @@ The system prompt contains:
 
 ### 4.2 Match (asynchronous, in the worker)
 
-User turn: `<new_report>` (text, category, Location) plus `<candidate_issues>`. For each candidate: the ID, category, Location, current summary, status, and up to 3 recent Report texts. Output: `{ "matchIssueId": string | null, "reason": string ≤ 120 }`. Code rejects an ID that is not among the candidates. A failure means no match, so a new Issue is created.
+User turn: `<new_report>` (text, category, Location) plus `<candidate_issues>`. For each candidate: a short label (`C1`, `C2`, ...; never the Issue UUID), category, Location, current summary, status, and up to 3 recent Report texts. Each call's schema only allows those labels or null (C03). Output: `{ "matchIssueId": string | null, "reason": string ≤ 120 }`. Code rejects an ID that is not among the candidates. A failure means no match, so a new Issue is created.
 
 ### 4.3 Summarise (asynchronous, in the worker)
 

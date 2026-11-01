@@ -40,8 +40,9 @@ flare:
     daily-call-limit: 2000
     tasks:   # model = the llama-server --alias; timeouts are set from the S04 measurements
       classify:  { model: flare-llm, temperature: 0.0, max-tokens: 1024, timeout: 40s }   # Passengers wait rather than get the fallback (ADR-0016)
-      match:     { model: flare-llm, temperature: 0.0, max-tokens: 512, timeout: 20s }
-      summarize: { model: flare-llm, temperature: 0.0, max-tokens: 512, timeout: 20s }
+      # Background calls: no Passenger waits for them, so they may queue behind classifications on the one slot (C03).
+      match:     { model: flare-llm, temperature: 0.0, max-tokens: 512, timeout: 90s }
+      summarize: { model: flare-llm, temperature: 0.0, max-tokens: 512, timeout: 90s }
   limits:
     device:    { per-10-min: 3, per-day: 10 }
     network:   { per-10-min: 30 }
